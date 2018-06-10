@@ -1,3 +1,11 @@
+local mapManager = require('MapManager')
+
+--function generateLevel(size_x, size_y)
+--	local row, column
+--	local tilemap = {}
+--	for
+--end
+
 local tilemap = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
