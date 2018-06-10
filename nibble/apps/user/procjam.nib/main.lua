@@ -1,28 +1,83 @@
 local mapManager = require('MapManager')
 
---function generateLevel(size_x, size_y)
---	local row, column
---	local tilemap = {}
---	for
---end
+function generateLevel(size_x, size_y)	
+	-- In Spelunky the level is made of an 4x4 grid. There are 4 different basic rooms:
+	-- 0 : A side room that is not on solution path
+	-- 1 : A room that is guaranteed to have a left exit and a right exit
+	-- 2 : A room that is guaranteed to have exists on the left, right and bottom. 
+	--		If there's another "2" room above it, then it also is guaranteed a top exit
+	-- 3 : A room that is guaranteed to have exists on the, left, right and top
+	
+	local tilemap = {}
+	
+	-- Just to be safe,
+	-- first we create all the rooms as an empty rooms without exits
+	for row = 0, size_y do
+		for column = 0, size_x do
+			tilemap[row * size_x + column] = 0
+		end
+	end
+	
+	-- Here we start the process to generate all the level
+	row = 0
+	column = 0
+	
+	-- First, pick a random room on the first row to be the entrace
+	column = math.random(0,size_x)
+	dprint('Entrace:' .. column)
+	tilemap[column] = math.random(1,2)
+	
+	-- After put the first room, we decide if were should we go:
+	-- 1 or 2 	: right
+	-- 3 or 4 	: left
+	-- 5 		: down	
+	-- When a direction is decided, then we can start to create the rooms
+	direction = math.random(1,5)
+	while (true) do
+		if direction == 1 or direction == 2 then		-- right
+			if column - 1 > 0 then
+				column -= 1
+			else				-- If is on the extreme right, go down and change direction
+				tilemap[row * size_x + column] = 2
+				row += 1
+				direction = 3
+			end
+		elseif direction == 3 or direction == 4 then	-- left
+			if column + 1 < size_x then
+				column += 1
+			else				-- If is on the extreme left, go down and change direction
+				tilemap[row * size_x + column] = 2 
+				row += 1
+				direction = 1
+			end
+		else											-- down
+			if row + 1 < size_y then
+				row += 1
+			else			-- Then just create the end room
+				break
+			end
+		end
+		tilemap[row * size_x + column] = 1 -- Jus putting 1 while dont run smoothly
+	end
+	
+	return tilemap
+end
 
-local tilemap = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 0,
-    0, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 0,
-    0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-}
+function isInsideMap(x, y, size_x, size_y)
+	return x > 0 and x < size_x and y > 0 and y < size_y
+end
+
+
+function printTilemap(t, size_x, size_y)
+	local s = ''
+	for row = 0, size_y do
+		for column = 0, size_x do
+			s = s .. tilemap[row * size_x + column]
+		end
+		dprint (s)
+		s = ''
+	end
+end
 
 local tile_w, tile_h = 16, 16
 local tilemap_w, tilemap_h = 20, 15 
@@ -70,6 +125,11 @@ end
 function init()
     -- Color 0 is transparent
     mask(0)
+	
+	-- Getting a seed from the OS
+	math.randomseed( 100 )
+	
+	tilemap = generateLevel(20,15)
 end
 
 function draw()
@@ -79,7 +139,7 @@ function draw()
     for _, tile in ipairs(tilemap) do
         local tile_x = tile%tileset_w+tileset_x
         local tile_y = tile/tileset_w+tileset_y
-
+		
         spr(x, y, tile_x, tile_y)
 
         x += tile_w
