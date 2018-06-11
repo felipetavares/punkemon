@@ -3,7 +3,8 @@
 -- https://github.com/pongboy/nibble
 
 -- Apaga variáveis globais desnecessárias
-time = os.clock
+clock = os.clock
+time = os.time
 
 os = nil
 dprint = print

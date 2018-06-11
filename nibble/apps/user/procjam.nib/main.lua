@@ -1,4 +1,10 @@
-local mapManager = require('MapManager')
+-- Imports
+require('MapManager')
+local Boid = require('Boid')
+local BoidManager = require('BoidManager')
+
+-- Singletons
+local boidManager = BoidManager:new()
 
 local tile_w, tile_h = 16, 16
 local tilemap_w, tilemap_h = 20, 15 
@@ -48,9 +54,16 @@ function init()
     mask(0)
 	
 	-- Getting a seed from the OS
-	math.randomseed( 115 )
+	math.randomseed( time() )
 	
 	tilemap = generateLevel(20,15)
+
+    -- Creates fish
+    for i=1,50 do
+        boidManager:add(Boid:new())
+    end
+
+    start_recording('fishes.gif')
 end
 
 function draw()
@@ -73,6 +86,9 @@ function draw()
 
     -- Draws player
     --spr(player_x, player_y, 6, 1)
+    
+    -- Draws fishes
+    boidManager:draw()
 
     -- Draws collision check
     rect(check_x1*tile_w, check_y1*tile_h, tile_w, tile_h, 15)
@@ -85,6 +101,8 @@ function draw()
 end
 
 function update(dt)
+    boidManager:update(dt)
+
     local movement = dt*player_speed 
 
     if btd(UP) then
