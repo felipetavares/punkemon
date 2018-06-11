@@ -39,8 +39,8 @@ function generateLevel(size_x, size_y)
 		dprint('Actual Row:' .. row .. '\t Column:' .. column .. '\t Direction:' .. direction .. '\t Tile:' .. tilemap[row * size_x + column])
 		if direction == 1 or direction == 2 then		-- right
 			if column - 1 > 0 then
+				tilemap[row * size_x + column] = 1 -- math.random(1,3)
 				column -= 1
-				tilemap[row * size_x + column] = math.random(1,3)
 			else				-- If is on the extreme right, go down and change direction
 				tilemap[row * size_x + column] = 2
 				row += 1
@@ -48,8 +48,8 @@ function generateLevel(size_x, size_y)
 			end
 		elseif direction == 3 or direction == 4 then	-- left
 			if column + 1 <= size_x then
+				tilemap[row * size_x + column] = 1 --math.random(1,3)
 				column += 1
-				tilemap[row * size_x + column] = math.random(1,3)
 			else				-- If is on the extreme left, go down and change direction
 				tilemap[row * size_x + column] = 2 
 				row += 1
@@ -57,7 +57,6 @@ function generateLevel(size_x, size_y)
 			end
 		else											-- down
 			if row < size_y then
-				tilemap[row * size_x + column] = 2
 				tilemap[row * size_x + column] = 2
 				row += 1
 			end
