@@ -10,7 +10,6 @@
 
 function generateLevel(size_x, size_y)	
 	local tilemap = {}
-	
 	-- Just to be safe,
 	-- first we create all the rooms as an empty rooms without exits
 	for row = 0, size_y do
@@ -36,46 +35,49 @@ function generateLevel(size_x, size_y)
 	
 	-- When a direction is decided, then we can start to create the rooms
 	while (true) do
-		dprint('Actual Row:' .. row .. '\t Column:' .. column .. '\t Direction:' .. direction .. '\t Tile:' .. tilemap[row * size_x + column])
-		if direction == 1 or direction == 2 then		-- right
+		dprint('R:' .. row .. '\t C:' .. column .. '\t Direction:' .. direction .. '\t aPos: '.. row * size_x + column)
+		if direction == 1 or direction == 2 then		-- left
 			if column - 1 > 0 then
-				tilemap[row * size_x + column] = 1 -- math.random(1,3)
+				tilemap[row * size_x + column] = math.random(1,3)
 				column -= 1
-			else				-- If is on the extreme right, go down and change direction
-				tilemap[row * size_x + column] = 2
+				direction = chooseNewDirection(direction)
+			else				-- If is on the extreme left, go down and change direction
+				tilemap[row * size_x + column ] = 2
 				row += 1
 				direction = 3
 			end
-		elseif direction == 3 or direction == 4 then	-- left
-			if column + 1 <= size_x then
-				tilemap[row * size_x + column] = 1 --math.random(1,3)
+		elseif direction == 3 or direction == 4 then	-- right
+			if column + 1 < size_x then
+				tilemap[row * size_x + column] = math.random(1,3)
 				column += 1
-			else				-- If is on the extreme left, go down and change direction
+				direction = chooseNewDirection(direction)
+			else				-- If is on the extreme right, go down and change direction
 				tilemap[row * size_x + column] = 2 
 				row += 1
 				direction = 1
 			end
 		else											-- down
 			if row < size_y then
-				tilemap[row * size_x + column] = 2
+				tilemap[row * size_x + column] = 3
 				row += 1
+				direction = math.random(1,4) -- Can only get down 1 level at time
+			else
+				break -- Dont you dare to put tiles out of the map limits
 			end
 		end
 		
-		if row > size_y then
+		if row == size_y  and (column == 0 or column == size_x) then
 			break
 		end
 		
-		dprint('Next Row:' .. row .. '\t Column:' .. column .. '\t Direction:' .. direction .. '\t Tile:' .. tilemap[row * size_x + column])
+		dprint('NR:' .. row .. '\t NC:' .. column .. '\t Direction:' .. direction .. '\t aPos: '.. row * size_x + column)
+		printTilemap(tilemap,size_x, size_y)
+		
 	end
 	return tilemap
 end
 
-function isInsideMap(x, y, size_x, size_y)
-	return x > 0 and x <= size_x and y > 0 and y <= size_y
-end
-
-function printTilemap(t, size_x, size_y)
+function printTilemap(tilemap, size_x, size_y)
 	local s = ''
 	for row = 0, size_y do
 		for column = 0, size_x do
@@ -87,11 +89,10 @@ function printTilemap(t, size_x, size_y)
 end
 
 function chooseNewDirection(actualDirection)
-	local newDirection = math.random(1,5)
-	while( newDirection ~= actualDirection and newDirection ~= 5) do
-		newDirection = math.random(1,5)
-		dprint(newDirection)
+	if math.random(50)%10 ~= 0 then
+		return actualDirection
+	else
+		return 5	
 	end
 
-	return newDirection
 end

@@ -54,6 +54,8 @@ function init()
     mask(0)
 	
 	-- Getting a seed from the OS
+    -- Strange non-standard nibble
+    -- function: time()
 	math.randomseed( time() )
 	
 	tilemap = generateLevel(20,15)
@@ -63,25 +65,28 @@ function init()
         boidManager:add(Boid:new())
     end
 
+	tilemap = generateLevel(tilemap_w, tilemap_h)
+
     start_recording('fishes.gif')
 end
 
 function draw()
-    local x, y = 0, 0
+	local x = 0
+	local y = 0
 
     -- Draws tilemap
-    for _, tile in ipairs(tilemap) do
+	for _, tile in ipairs(tilemap) do
         local tile_x = tile%tileset_w+tileset_x
         local tile_y = tile/tileset_w+tileset_y
 		
         spr(x, y, tile_x, tile_y)
 
-        x += tile_w
+       x += tile_w
 
-        if x >= tilemap_w*tile_w then
+		if x >= tilemap_w*tile_w then
             x = 0
             y += tile_h
-        end
+		end
     end
 
     -- Draws player
