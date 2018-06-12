@@ -50,9 +50,12 @@ function can_move(to_x, to_y)
 end
 
 function init()
-    -- Color 0 is transparent
-    mask(0)
+    -- Set palette
+    kernel.write(32, '\x1e\x1c\x2e\xff\x1d\x1b\x29\xff\x3b\x40\x7f\xff\x29\x43\x50\xff\x66\x30\x6d\xff\x8d\x39\x7c\xff\x3b\x52\x8d\xff\x30\x66\x6d\xff\xb6\x44\x75\xff\xdd\x80\x5d\xff\x43\xa5\xcd\xff\x46\xb4\x7e\xff\xdb\xbc\x4b\xff\xe2\xea\x5a\xff\x00\x00\x00\xff\xff\xff\xff\xff')
 	
+    -- Color 0 is transparent
+    -- mask(0)
+
 	-- Getting a seed from the OS
     -- Strange non-standard nibble
     -- function: time()
@@ -61,8 +64,18 @@ function init()
 	tilemap = generateLevel(20,15)
 
     -- Creates fish
-    for i=1,50 do
-        boidManager:add(Boid:new())
+    local colors = {
+        {8, 9},
+        {12, 13},
+        {7, 11},
+        {6, 10},
+        {4, 11}
+    }
+    
+    for i=1,150 do
+        local c = math.random(1, #colors)
+
+        boidManager:add(Boid:new(colors[c][1], colors[c][2]))
     end
 
 	tilemap = generateLevel(tilemap_w, tilemap_h)
@@ -91,18 +104,9 @@ function draw()
 
     -- Draws player
     --spr(player_x, player_y, 6, 1)
-    
+
     -- Draws fishes
     boidManager:draw()
-
-    -- Draws collision check
-    rect(check_x1*tile_w, check_y1*tile_h, tile_w, tile_h, 15)
-    rect(check_x2*tile_w, check_y2*tile_h, tile_w, tile_h, 15)
-    rect(check_x3*tile_w, check_y3*tile_h, tile_w, tile_h, 15)
-    rect(check_x4*tile_w, check_y4*tile_h, tile_w, tile_h, 15)
-
-    -- Debug info
-    print(tostring(math.floor(player_x)) .. ', ' .. tostring(math.floor(player_y)), 0, 0)
 end
 
 function update(dt)

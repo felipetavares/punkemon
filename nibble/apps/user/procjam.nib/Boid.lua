@@ -1,6 +1,6 @@
 local Boid = {}
 
-function Boid:new()
+function Boid:new(color, accent)
     local instance = {
         -- Where is this boid off to?
         dir = {
@@ -8,15 +8,15 @@ function Boid:new()
         },
         -- Where is this boid?
         pos = {
-            x = 320/2, y = 240/2
+            x = 300*math.random()+10, y = 240/2
         },
         -- Previous positions
         snake = {},
         speed = 0.5,
         length = 3,
-        color = 6,
-        accent = 14,
-        contour = 2,
+        color = color or 8,
+        accent = accent or 9,
+        contour = 1,
         height = 5,
         turnSide = -1,
         turnUpdateChance = 0.3

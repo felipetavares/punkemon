@@ -34,7 +34,8 @@ function BoidManager:closeTo(boid, distance)
     local intensity = 0
 
     for _, other in ipairs(self.boids) do
-        if self.distance(boid, other) < distance then
+        if self.distance(boid, other) < distance and 
+           boid.color == other.color then
             table.insert(close, other)
 
             intensity += self.distance(boid, other)
