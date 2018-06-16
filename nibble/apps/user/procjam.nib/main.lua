@@ -67,10 +67,10 @@ function init()
 	-- Getting a seed from the OS
     -- Strange non-standard nibble
     -- function: time()
-	--math.randomseed( time() )
+	math.randomseed( time() )
 	
 	
-	math.randomseed(100)
+	--math.randomseed(100)
 	
 	dungeon = generateLevel(dungeon_w, dungeon_h)
 	
