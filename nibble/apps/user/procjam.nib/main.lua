@@ -1,7 +1,9 @@
 -- Imports
 require('MapManager')
+require('Room')
 local Boid = require('Boid')
 local BoidManager = require('BoidManager')
+local TilemapBuilder = require('TilemapBuilder')
 
 -- Singletons
 local boidManager = BoidManager:new()
@@ -9,8 +11,8 @@ local boidManager = BoidManager:new()
 local tile_w, tile_h = 16, 16
 local tilemap_w, tilemap_h = 20, 15 
 
-local tileset_w = 4
-local tileset_x, tileset_y = 6, 0
+local tileset_w = 5
+local tileset_x, tileset_y = 5, 0
 
 local player_x, player_y = tilemap_w/2*tile_w, tilemap_h/2*tile_h
 local player_speed = 30
@@ -61,24 +63,42 @@ function init()
     -- function: time()
 	math.randomseed( time() )
 	
-	tilemap = generateLevel(20,15)
+    tilemap = {
+        00,01,01,01,01,01,02,01,03,01,01,01,01,01,01,01,01,01,01,04,
+        05,06,06,06,06,06,06,06,06,06,06,06,06,06,06,06,06,06,06,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,07,09,
+        05,07,07,07,31,32,33,07,07,07,07,07,19,07,07,07,07,07,07,09,
+        05,07,07,07,36,37,38,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        05,07,07,07,41,42,43,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        05,07,07,07,07,07,07,07,07,07,07,07,24,07,07,07,07,07,07,09,
+        10,11,11,11,11,11,11,11,11,11,11,11,12,11,11,11,11,11,11,14,
+    }
+
+    tilemap = g_room(TilemapBuilder:new()):tilemap()
 
     -- Creates fish
     local colors = {
         {8, 9},
         {12, 13},
         {7, 11},
-        {6, 10},
-        {4, 11}
+        --{6, 10},
+        --{4, 11}
     }
     
-    for i=1,150 do
+    for i=1,60 do
         local c = math.random(1, #colors)
 
         boidManager:add(Boid:new(colors[c][1], colors[c][2]))
     end
 
-	tilemap = generateLevel(tilemap_w, tilemap_h)
+	--tilemap = generateLevel(tilemap_w, tilemap_h)
 
     start_recording('fishes.gif')
 end

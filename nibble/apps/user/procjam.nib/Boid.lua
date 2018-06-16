@@ -14,8 +14,7 @@ function Boid:new(color, accent)
         snake = {},
         speed = 0.5,
         length = 3,
-        color = color or 8,
-        accent = accent or 9,
+        color = color or 8, accent = accent or 9,
         contour = 1,
         height = 5,
         turnSide = -1,
@@ -86,18 +85,18 @@ function Boid:update(dt, heading, closeCenter, farCenter, overlapIntensity)
     local intensity = 1
 
     -- Avoid walls
-    if self.pos.y < 10 then
+    if self.pos.y < 24 then
         heading = math.pi*3/2
         intensity = -self.pos.y
-    elseif self.pos.y > 230 then
+    elseif self.pos.y > 216 then
         heading = -math.pi*3/2
-        intensity = self.pos.y-230
-    elseif self.pos.x < 10 then
+        intensity = self.pos.y-216
+    elseif self.pos.x < 24 then
         heading = -math.pi
         intensity = -self.pos.x
-    elseif self.pos.x > 310 then
+    elseif self.pos.x > 296 then
         heading = math.pi
-        intensity = self.pos.x-310
+        intensity = self.pos.x-296
     end
 
     -- Update heading
