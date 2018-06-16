@@ -15,7 +15,7 @@ function g_room(builder)
 
     while not builder:all_terminals() and max_iterations > 0 do
         -- Operate in the entire builder that was passed to us
-        builder:use(0, 0, 1, 1)
+        builder:use(0, 0, 0.5, 1)
 
         -- Rule 1
         if builder:all(1000) then

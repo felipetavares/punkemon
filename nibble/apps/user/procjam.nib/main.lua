@@ -11,8 +11,14 @@ local boidManager = BoidManager:new()
 local tile_w, tile_h = 16, 16
 local tilemap_w, tilemap_h = 20, 14 
 
+local room_w, room_h = 16, 16
+local dungeon_w, dungeon_h = 5, 5
+
 local tileset_w = 5
 local tileset_x, tileset_y = 5, 0
+
+local dungeon_w = 5
+local dungeon_x, dungeon_y = 5, 0
 
 local player_x, player_y = tilemap_w/2*tile_w, tilemap_h/2*tile_h
 local player_speed = 30
@@ -61,7 +67,12 @@ function init()
 	-- Getting a seed from the OS
     -- Strange non-standard nibble
     -- function: time()
-	math.randomseed( time() )
+	--math.randomseed( time() )
+	
+	
+	math.randomseed(100)
+	
+	dungeon = generateLevel(dungeon_w, dungeon_h)
 	
     tilemap = {
         00,01,01,01,01,01,02,01,03,01,01,01,01,01,01,01,01,01,01,04,
@@ -106,15 +117,26 @@ end
 function draw()
 	local x = 0
 	local y = 0
+	
+	--drawDungeon()
+	drawRoom()
 
-    -- Draws tilemap
+    -- Draws player
+    --spr(player_x, player_y, 6, 1)
+
+    -- Draws fishes
+    boidManager:draw()
+end
+
+function drawRoom()
+	local x, y = 0,0
 	for _, tile in ipairs(tilemap) do
         local tile_x = tile%tileset_w+tileset_x
         local tile_y = tile/tileset_w+tileset_y
 		
         spr(x, y, tile_x, tile_y)
 
-       x += tile_w
+        x += tile_w
 
 		if x >= tilemap_w*tile_w then
             x = 0
@@ -122,11 +144,23 @@ function draw()
 		end
     end
 
-    -- Draws player
-    --spr(player_x, player_y, 6, 1)
+end
 
-    -- Draws fishes
-    boidManager:draw()
+function drawDungeon()
+	local x, y = 0,0
+	for _, room in ipairs(dungeon) do
+        local room_x = room%dungeon_w+dungeon_x
+        local room_y = room/dungeon_w+dungeon_y
+		
+        spr(x, y, room_x, room_y)
+
+       x += room_w
+
+		if x >= dungeon_w * dungeon_w then
+            x = 0
+            y += dungeon_h
+		end
+    end
 end
 
 function update(dt)
