@@ -1,7 +1,7 @@
 local mapManager = require('MapManager')
 
 local tile_w, tile_h = 16, 16
-local tilemap_w, tilemap_h = 20, 15 
+local tilemap_w, tilemap_h = 20, 14 
 
 local tileset_w = 4
 local tileset_x, tileset_y = 6, 0

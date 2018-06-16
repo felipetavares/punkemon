@@ -89,7 +89,7 @@ function printTilemap(tilemap, size_x, size_y)
 end
 
 function chooseNewDirection(actualDirection)
-	if math.random(50)%10 ~= 0 then
+	if math.random(50)%5 ~= 0 then
 		return actualDirection
 	else
 		return 5	
