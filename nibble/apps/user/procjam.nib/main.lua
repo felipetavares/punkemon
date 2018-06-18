@@ -12,7 +12,7 @@ local tile_w, tile_h = 16, 16
 local tilemap_w, tilemap_h = 20, 14 
 
 local room_w, room_h = 16, 16
-local dungeon_w, dungeon_h = 5, 5
+local dungeon_w, dungeon_h = 10, 30
 
 local tileset_w = 5
 local tileset_x, tileset_y = 5, 0
@@ -69,8 +69,7 @@ function init()
     -- function: time()
 	math.randomseed( time() )
 	
-	
-	--math.randomseed(100)
+	--math.randomseed(111)
 	
 	dungeon = generateLevel(dungeon_w, dungeon_h)
 	

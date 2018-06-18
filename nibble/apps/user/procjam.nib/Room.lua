@@ -15,17 +15,13 @@ function g_room(builder)
 
     while not builder:all_terminals() and max_iterations > 0 do
         -- Operate in the entire builder that was passed to us
-        builder:use(0, 0, 0.5, 1)
+        builder:use(0, 0, 1, 1)
 
         -- Rule 1
         if builder:all(1000) then
             builder:fill(T_FLOOR)
             builder:borders(N_WALL)
             builder:line(1, 1, 19, 1, T_SHADOW)
-
-            builder:line(5, 0, 5, 10, N_WALL)
-            builder:set(5, 10, T_SHADOW)
-            builder:line(5, 11, 5, 15, N_WALL)
         end
 
         -- Rule 2

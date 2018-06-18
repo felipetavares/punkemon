@@ -8,102 +8,133 @@
 		--		If there's another "2" room above it, then it also is guaranteed a top exit
 	-- 3 : A room that is guaranteed to have exits on the left, right and top
 
-	--- OOOOOOR WE COULD JUST USE AND ARRAY WITH LEFT, RIGHT, BOTTOM AND TOP BOOLEANS FOR EACH EXIT!
-local Rooms = { {0,0,0,0},
-				{1,1,0,0},
-				{1,1,1,0},
-				{1,1,0,1},
-				{1,1,1,1}
-				}
-				
-local left, right, bottom, top = 1, 2, 3, 4
+	--- OOOOOOR WE COULD JUST USE AND ARRAY WITH LEFT, RIGHT, DOWN AND TOP BOOLEANS FOR EACH EXIT!
 
+-- Bit definitions
+local EMPTY = 0
+
+local TOP = (1<<0)
+local LEFT = (1<<1)
+local RIGHT = (1<<2)
+local DOWN = (1<<3)
+
+local ALL = TOP+DOWN+LEFT+RIGHT
+
+-- This function returns true if the room
+-- at the given position exists
+function tileExists(dungeon, size_x, size_y, x, y)
+    -- Check if it is out of bounds
+    if x < 0 or x >= size_x or
+       y < 0 or y >= size_y then
+       return false
+    end
+
+    return dungeon[y*size_x+x] ~= 0
+end
+
+function checkDoors(dungeon, size_x, size_y)
+    for row=0,size_y-1 do
+        for column=0,size_x-1 do
+            local index = row*size_x+column
+
+            if (dungeon[index]&TOP) ~= 0 then
+                if not tileExists(dungeon, size_x, size_y, column, row-1) then
+                    dungeon[index] = dungeon[index] & (~TOP)
+                end
+            end
+
+            if (dungeon[index]&DOWN) ~= 0 then
+                if not tileExists(dungeon, size_x, size_y, column, row+1) then
+                    dungeon[index] = dungeon[index] & (~DOWN)
+                end
+            end 
+
+            if (dungeon[index]&LEFT) ~= 0 then
+                if not tileExists(dungeon, size_x, size_y, column-1, row) then
+                    dungeon[index] = dungeon[index] & (~LEFT)
+                end
+            end
+
+            if (dungeon[index]&RIGHT) ~= 0 then
+                if not tileExists(dungeon, size_x, size_y, column+1, row) then
+                    dungeon[index] = dungeon[index] & (~RIGHT)
+                end
+            end
+        end
+    end
+end
 
 function generateLevel(size_x, size_y)	
-	local tilemap = {}
+	local dungeon = {}
 	
 	-- Just to be safe,
 	-- first we create all the rooms as an empty rooms without exits
 	for row = 0, size_y - 1 do
 		for column = 0, size_x - 1 do
-			tilemap[row * size_x + column] = Rooms[1]
+			dungeon[row * size_x + column] = EMPTY
 		end
 	end
 	
-	createRooms(tilemap, size_x, size_y)
-	printTilemap(tilemap,size_x, size_y)
+	createRooms(dungeon, size_x, size_y)
+	printDungeon(dungeon, size_x, size_y)
 	
-	dprint ('\n\nCLEANING TOP AND BOTTOM EDGES \nNOT IMPLEMENTED YET')
-	for column = 0 , size_x - 1 do
-		tilemap[column][top] = 0 -- QUE PORRA TÁ ROLANDO AQUI?
-		tilemap[ (size_y-2) * size_x + column][bottom] = 0
-	end
-	printTilemap(tilemap,size_x, size_y)
-	
-	dprint ('\n\nCLEANING THE LEFT AND RIGHT EDGES \nNOT IMPLEMENTED YET')
-	--for row = 0, size_y - 1 do
-		--tilemap[row * size_x][left] = 0
-		--tilemap[row * size_x + size_x - 1][right] = 0
-	--end 
+	dprint ('\n\nCLEANING EVERYTHING. \nNOT IMPLEMENTED YET')
+    checkDoors(dungeon, size_x, size_y)
 	
 	dprint('\n\nFINAL DUNGEON')
-	printTilemap(tilemap,size_x, size_y)
-	return tilemap
+	printDungeon(dungeon,size_x, size_y)
+	return dungeon
 end
 
-function createRooms(tilemap,size_x, size_y)
-
+function createRooms(dungeon, size_x, size_y)
 	-- First, pick a random room on the first row to be the entrace
-	local entrance = math.random(0,size_x - 1)
+	local entrance = math.random(0, size_x - 1)
 	dprint('Entrace:' .. entrance)
 
 	-- After put the first room, we decide if were should we go:
-	-- 1 or 2 	: left
-	-- 3 or 4 	: right
-	-- 5 		: down	
+    -- LEFT
+    -- RIGHT
+    -- DOWN
 	
-	direction = math.random(1,5)
+	direction = 1<<math.floor((math.random(1, 5)+1)/2)
+
 	dprint('Direction:' .. direction)
 
 	local row = 0
 	local column = entrance
 	-- When a direction is decided, then we can start to create the rooms
 	while (true) do
-		--dprint('R:' .. row .. '\t C:' .. column .. '\t Direction:' .. direction .. '\t aPos: '.. row * size_x + column)
-		
-		if direction == 1 or direction == 2 then				-- left
-			if column < 0 then 										-- Verify if is not out of bounds
-				dprint('Error: Out of bounds negative Column')
-				break
-			elseif column - 1 >= 0 then
-				tilemap[row * size_x + column] = Rooms[math.random(2,4)]
+		if direction == LEFT then				                    -- left
+			if column - 1 >= 0 then
+				dungeon[row * size_x + column] = ALL
+				direction = chooseNewDirection(direction)
+
 				column -= 1
-				direction = chooseNewDirection(direction)
 			else													-- If is on the extreme left, go down and change direction
-				tilemap[row * size_x + column] = Rooms[3]
+				dungeon[row * size_x + column] = ALL
+                direction = RIGHT
+
 				row += 1
-				direction = 3
-	--			--dprint ('Extreme Left, lets go down')
 			end
-	--		
-		elseif direction == 3 or direction == 4 then			-- right
-			--if column + 1 >= size_x then 							-- Verify if is not out of bounds
-			--	dprint('Error: Out of bounds positive column')
+        elseif direction == RIGHT then			                    -- right
 			if column < size_x - 1 then
-				tilemap[row * size_x + column] = Rooms[math.random(2,4)]
-				column += 1
+				dungeon[row * size_x + column] = ALL
 				direction = chooseNewDirection(direction)
+
+				column += 1
 			elseif column == size_x - 1 then						-- If is on the extreme right, go down and change direction
-				tilemap[row * size_x + column] = Rooms[3]
+				dungeon[row * size_x + column] = ALL
+				direction = LEFT
+
 				row += 1
-				direction = 1
-				--dprint ('Extreme right, lets go down')
 			end
-		else													-- down
+        else		    											-- down
 			if row + 1 < size_y then
-				tilemap[row * size_x + column] = Rooms[3]
+				dungeon[row * size_x + column] = ALL
+
+                direction = ({RIGHT, LEFT})[math.random(1, 2)]
+
 				row += 1
-				direction = math.random(1,4) 						-- Can only get down 1 level at time
 			else
 				dprint('Out of Bounds Row, ending this now\n\n')
 				break 												-- Dont you dare to put tiles out of the map limits
@@ -113,34 +144,33 @@ function createRooms(tilemap,size_x, size_y)
 		if row == size_y  and (column == 0 or column == size_x) then
 			break
 		end
-		
-		--dprint('NR:' .. row .. '\t NC:' .. column .. '\t Direction:' .. direction .. '\t aPos: '.. row * size_x + column)
-		--printTilemap(tilemap,size_x, size_y)
 	end
 end
 
 
-function printTilemap(tilemap, size_x, size_y)
+function printDungeon(dungeon, size_x, size_y)
 	local s = ''
 	for row = 0, size_y - 1 do
 		for column = 0, size_x - 1 do
-			s = s .. '('
-			local e = tilemap[row * size_x + column][1]
-			for exits = 2, 4 do
-				e = e .. ','.. tilemap[row * size_x + column][exits] 
-			end
-			s = s .. e .. ')'
-		end
+            local tile = dungeon[row * size_x + column]
+
+            local t = ({'_', 'T'})[(tile & TOP)+1]
+            local l = ({'_', 'L'})[((tile & LEFT)>>1)+1]
+            local r = ({'_', 'R'})[((tile & RIGHT)>>2)+1]
+            local d = ({'_', 'D'})[((tile & DOWN)>>3)+1]
+
+			s = s .. t .. d .. l .. r .. ' '
+        end
 		dprint (s)
 		s = ''
 	end
 end
 
-function chooseNewDirection(actualDirection)
-	if math.random(50)%5 ~= 0 then
-		return actualDirection
+function chooseNewDirection(currentDirection)
+	if math.random(5) ~= 1 then
+		return currentDirection
 	else
-		return 5	
+		return DOWN
 	end
 
 end
