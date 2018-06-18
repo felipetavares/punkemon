@@ -40,7 +40,7 @@ function ParticleSystem:add(particle)
 end
 
 function ParticleSystem:Emit()
-	self.dprint(self)
+	self:dprint()
 	self.active = true
     for _, p in ipairs(self.particles) do
 		p.position = self.position

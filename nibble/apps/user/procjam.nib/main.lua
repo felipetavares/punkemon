@@ -5,8 +5,13 @@ local Boid = require('Boid')
 local BoidManager = require('BoidManager')
 local TilemapBuilder = require('TilemapBuilder')
 
+local Particle = require('Particle')
+local ParticleSystem = require('ParticleSystem')
+local ParticleManager = require('ParticleManager')
+
 -- Singletons
 local boidManager = BoidManager:new()
+local particleManager = ParticleManager:new()
 
 local tile_w, tile_h = 16, 16
 local tilemap_w, tilemap_h = 20, 14 
@@ -88,9 +93,15 @@ function init()
     
     for i=1,60 do
         local c = math.random(1, #colors)
-
         boidManager:add(Boid:new(colors[c][1], colors[c][2]))
     end
+	
+	local c = math.random(1, #colors)
+	local ps = ParticleSystem:new(10, {x = 10, y = 10}, colors[c][1], colors[c][2], { x = 1, y = 2})
+	
+	ps:Emit()
+	particleManager:add(ps)
+
 
     start_recording('fishes.gif')
 end
@@ -107,6 +118,9 @@ function draw()
 
     -- Draws fishes
     boidManager:draw()
+	
+	-- Draw particles
+	particleManager:draw()
 end
 
 function drawRoom()
@@ -146,6 +160,7 @@ end
 
 function update(dt)
     boidManager:update(dt)
+	particleManager:update(dt)
 
     local movement = dt*player_speed 
 
