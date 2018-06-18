@@ -52,10 +52,10 @@ function TilemapBuilder:use(x, y, w, h)
     local bounds = self:bounds()
 
     table.insert(self.stack, {
-        bounds.x+math.floor(bounds.w*x),
-        bounds.y+math.floor(bounds.h*y),
-        math.floor(bounds.w*w),
-        math.floor(bounds.h*h)
+        math.floor(bounds.x+bounds.w*x),
+        math.floor(bounds.y+bounds.h*y),
+        math.ceil(bounds.w*w),
+        math.ceil(bounds.h*h)
     })
 end
 
@@ -102,12 +102,14 @@ end
 function TilemapBuilder:apply()
     local bounds = self:bounds()
 
+    local copy = self:copy()
+
     for y=bounds.y,bounds.y+bounds.h-1 do
         for x=bounds.x,bounds.x+bounds.w-1 do
             for _, result in ipairs(self.results) do
                 local kind = result:get(x, y).kind
 
-                if kind < 1000 then
+                if copy:get(x, y).kind ~= kind then
                     self:set(x, y, kind)
                 end
             end
@@ -120,8 +122,8 @@ end
 function TilemapBuilder:each(w, h, fn)
     local bounds = self:bounds()
 
-    for y=bounds.y,bounds.y+bounds.h-h do
-        for x=bounds.x,bounds.x+bounds.w-w do
+    for y=bounds.y-1,bounds.y+bounds.h-h+1 do
+        for x=bounds.x-1,bounds.x+bounds.w-w+1 do
             local copy = self:copy()
             copy:use_exact(x, y, w, h)
 
@@ -168,7 +170,6 @@ function TilemapBuilder:into(pattern)
             i += 1
         end
     end
-
 end
 
 function TilemapBuilder:borders(kind)
@@ -180,6 +181,28 @@ function TilemapBuilder:borders(kind)
     self:line(bounds.x, bounds.y,
               bounds.x, bounds.y+bounds.h,
               kind)
+    self:line(bounds.x+bounds.w-1, bounds.y,
+              bounds.x+bounds.w-1, bounds.y+bounds.h,
+              kind)
+    self:line(bounds.x, bounds.y+bounds.h-1,
+              bounds.x+bounds.w, bounds.y+bounds.h-1,
+              kind)
+end
+
+function TilemapBuilder:topleft_half_borders(kind)
+    local bounds = self:bounds()
+
+    self:line(bounds.x, bounds.y,
+              bounds.x+bounds.w, bounds.y,
+              kind)
+    self:line(bounds.x, bounds.y,
+              bounds.x, bounds.y+bounds.h,
+              kind)
+end
+
+function TilemapBuilder:bottomright_half_borders(kind)
+    local bounds = self:bounds()
+
     self:line(bounds.x+bounds.w-1, bounds.y,
               bounds.x+bounds.w-1, bounds.y+bounds.h,
               kind)
@@ -220,12 +243,11 @@ end
 function TilemapBuilder:get(x, y)
     local p = y*self.w+x+1
 
-    if p >= 1 and p <= #self.tiles then
+    if x >= 0 and x < self.w and y >= 0 and y < self.h then
         return self.tiles[p]
     else
-        return nil
+        return Tile:new(x, y, 2000)
     end
-
 end
 
 function TilemapBuilder:fill(kind)
@@ -246,6 +268,21 @@ function TilemapBuilder:tilemap()
         for x=bounds.x,bounds.x+bounds.w-1 do
             table.insert(tilemap, self:get(x, y).kind)
         end
+    end
+
+    return tilemap, bounds.w, bounds.h
+end
+
+function TilemapBuilder:console_tilemap()
+    local bounds = self:bounds()
+    local tilemap = ''
+
+    for y=bounds.y,bounds.y+bounds.h-1 do
+        for x=bounds.x,bounds.x+bounds.w-1 do
+            tilemap = tilemap .. tostring(self:get(x, y).kind)
+        end
+
+        tilemap = tilemap .. '\n'
     end
 
     return tilemap, bounds.w, bounds.h

@@ -16,7 +16,7 @@ function Boid:new(color, accent)
         length = 3,
         color = color or 8, accent = accent or 9,
         contour = 1,
-        height = 5,
+        height = 8,
         turnSide = -1,
         turnUpdateChance = 0.3
     }
@@ -84,21 +84,6 @@ end
 function Boid:update(dt, heading, closeCenter, farCenter, overlapIntensity)
     local intensity = 1
 
-    -- Avoid walls
-    if self.pos.y < 24 then
-        heading = math.pi*3/2
-        intensity = -self.pos.y
-    elseif self.pos.y > 216 then
-        heading = -math.pi*3/2
-        intensity = self.pos.y-216
-    elseif self.pos.x < 24 then
-        heading = -math.pi
-        intensity = -self.pos.x
-    elseif self.pos.x > 296 then
-        heading = math.pi
-        intensity = self.pos.x-296
-    end
-
     -- Update heading
     local ang = math.atan(self.dir.y, self.dir.x)
     local dh = heading-ang
@@ -125,8 +110,8 @@ function Boid:update(dt, heading, closeCenter, farCenter, overlapIntensity)
     self.pos.y = self.pos.y + dy*dt/4
     
     -- Move in the heading direction
-    self.pos.x = self.pos.x+self.dir.x*self.speed
-    self.pos.y = self.pos.y+self.dir.y*self.speed
+    self.pos.x = (self.pos.x+self.dir.x*self.speed)%320
+    self.pos.y = (self.pos.y+self.dir.y*self.speed)%240
 
     -- Update the turn side
     if math.random() > 1-self.turnUpdateChance then

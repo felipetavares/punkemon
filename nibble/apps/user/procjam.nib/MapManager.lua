@@ -76,9 +76,6 @@ function generateLevel(size_x, size_y)
 	end
 	
 	createRooms(dungeon, size_x, size_y)
-	printDungeon(dungeon, size_x, size_y)
-	
-	dprint ('\n\nCLEANING EVERYTHING. \nNOT IMPLEMENTED YET')
     checkDoors(dungeon, size_x, size_y)
 	
 	dprint('\n\nFINAL DUNGEON')
