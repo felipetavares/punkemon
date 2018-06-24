@@ -1,6 +1,6 @@
 local Boid = {}
 
-function Boid:new(color, accent)
+function Boid:new(color, accent, animation)
     local instance = {
         -- Where is this boid off to?
         dir = {
@@ -18,7 +18,11 @@ function Boid:new(color, accent)
         contour = 1,
         height = 8,
         turnSide = -1,
-        turnUpdateChance = 0.3
+        turnUpdateChance = 0.3,
+        animated = (animation ~= nil) or false,
+        animation = animation or {},
+        animationPos = 1,
+        elapsedFrameTime = 0
     }
 
     local l = math.sqrt(instance.dir.x^2+instance.dir.y^2)
@@ -41,39 +45,53 @@ function Boid:drawAround(x, y)
 end
 
 function Boid:draw()
-    -- Draw shadows
-    for i, p in ipairs(self.snake) do
-        self:drawAround(p.x, p.y)
-    end
-
-    -- Draw fish
-    for i, p in ipairs(self.snake) do
-        if i == 3 then
-            putp(p.x, p.y, self.accent)
-        else
-            putp(p.x, p.y, self.color)
+    if self.animated then
+        spr(self.pos.x, self.pos.y,
+            self.animation[self.animationPos][1], self.animation[self.animationPos][2])
+    else
+        -- Draw shadows
+        for i, p in ipairs(self.snake) do
+            self:drawAround(p.x, p.y)
         end
 
-        local color = getp(p.x, p.y+self.height)
-        if (color ~= self.color and color ~= self.accent) then
-            putp(p.x, p.y+self.height, self.contour)
+        -- Draw fish
+        for i, p in ipairs(self.snake) do
+            if i == 3 then
+                putp(p.x, p.y, self.accent)
+            else
+                putp(p.x, p.y, self.color)
+            end
+
+            local color = getp(p.x, p.y+self.height)
+            if (color ~= self.color and color ~= self.accent) then
+                putp(p.x, p.y+self.height, self.contour)
+            end
         end
-    end
 
-    if #self.snake > self.length then
-        -- Remove the first snake position
-        table.remove(self.snake, 1)
-    end
+        if #self.snake > self.length then
+            -- Remove the first snake position
+            table.remove(self.snake, 1)
+        end
 
-    -- Add a new one
-    if #self.snake == 0 or
-       self.snake[#self.snake].x ~= math.floor(self.pos.x) or
-       self.snake[#self.snake].y ~= math.floor(self.pos.y) then
-        table.insert(self.snake, {x = math.floor(self.pos.x), y = math.floor(self.pos.y)})
+        -- Add a new one
+        if #self.snake == 0 or
+           self.snake[#self.snake].x ~= math.floor(self.pos.x) or
+           self.snake[#self.snake].y ~= math.floor(self.pos.y) then
+            table.insert(self.snake, {x = math.floor(self.pos.x), y = math.floor(self.pos.y)})
+        end
     end
 end
 
 function Boid:update(dt, heading, closeCenter, farCenter, overlapIntensity)
+    if self.animated then
+        if self.elapsedFrameTime > 0.1 then
+            self.animationPos = ((self.animationPos)%#self.animation)+1
+            self.elapsedFrameTime = 0
+        else
+            self.elapsedFrameTime += dt
+        end
+    end
+
     local intensity = 1
 
     -- Update heading

@@ -1,5 +1,8 @@
 require('AStar')
 
+local EnemyTank = require('EnemyTank')
+local EnemyBiped = require('EnemyBiped')
+
 local Decoration = require('Decoration')
 local Room = {}
 
@@ -21,14 +24,27 @@ function Room:new(tilemap, doormap, doors, w, h)
         doors = doors,
         decorations = {},
         characters = {},
-        paths = {}
+        paths = {},
     }
 
     lang.instanceof(instance, Room)
 
     instance:generateDecorations()
+    instance:generateCharacters()
 
     return instance
+end
+
+function Room:generateCharacters()
+    for i, path in ipairs(self.paths) do
+        if i ~= #self.paths then
+            if math.random() < 0.5 then
+                table.insert(self.characters, EnemyBiped:new(path))
+            else
+                table.insert(self.characters, EnemyTank:new(path))
+            end
+        end
+    end
 end
 
 function Room:generateDecorations()
@@ -37,15 +53,18 @@ function Room:generateDecorations()
         {x=6, y=13},
         {x=7, y=13},
         {x=8, y=13},
+        {x=9, y=13},
         {x=5, y=14},
         {x=6, y=14},
         {x=7, y=14},
+        {x=8, y=14},
+        {x=9, y=14},
     }
 
     local tiles = self.tilemap:tilemapWithTiles()
 
     for i=1,#self.doors do
-        for j=i,#self.doors do
+        for j=i+1,#self.doors do
             local doorA = self.doors[i]
             local doorB = self.doors[j]
 
@@ -57,6 +76,17 @@ function Room:generateDecorations()
                     self.tilemap:setPath(pathStep.x, pathStep.y, true)
                 end
             end
+        end
+    end
+
+    if #self.doors > 0 then
+        local door = self.doors[1]
+
+        local path = aStar(tiles[math.floor(self.w*self.h/2)], tiles[door.y*self.w+door.x+1], tiles, self.w, self.h)
+        table.insert(self.paths, path)
+
+        for _, pathStep in ipairs(path) do
+            self.tilemap:setPath(pathStep.x, pathStep.y, true)
         end
     end
 
@@ -128,6 +158,17 @@ function Room:draw()
     -- Draws decorations
     for _, decor in ipairs(self.decorations) do
         decor:draw()
+    end
+
+    -- Draws characters
+    for _, char in ipairs(self.characters) do
+        char:draw()
+    end
+end
+
+function Room:step()
+    for _, char in ipairs(self.characters) do
+        char:step()
     end
 end
 

@@ -15,7 +15,7 @@ local particleManager = ParticleManager:new()
 
 function init()
     -- Set palette
-    kernel.write(32, '\x1e\x1c\x2e\xff\x1d\x1b\x29\xff\x3b\x40\x7f\xff\x29\x43\x50\xff\x66\x30\x6d\xff\x8d\x39\x7c\xff\x3b\x52\x8d\xff\x30\x66\x6d\xff\xb6\x44\x75\xff\xdd\x80\x5d\xff\x43\xa5\xcd\xff\x46\xb4\x7e\xff\xdb\xbc\x4b\xff\xe2\xea\x5a\xff\x00\x00\x00\xff\xff\xff\xff\xff')
+    kernel.write(32, '\x1e\x1c\x2e\xff\x1d\x1b\x29\xff\x3b\x40\x7f\xff\x29\x43\x50\xff\x66\x30\x6d\xff\x8d\x39\x7c\xff\x3b\x52\x8d\xff\x30\x66\x6d\xff\xb6\x44\x75\xff\xdd\x80\x5d\xff\x43\xa5\xcd\xff\x46\xb4\x7e\xff\xdb\xbc\x4b\xff\xe2\xea\x5a\xff\xff\xff\xff\xff\xff\xff\xff\xff')
 
     cppal(0, 1)
     cppal(1, 2)
@@ -41,6 +41,11 @@ function init()
         local c = math.random(1, #colors)
         boidManager:add(Boid:new(colors[c][1], colors[c][2]))
     end
+
+    -- Jellyfish
+    --for i=1,10 do
+    --    boidManager:add(Boid:new(nil, nil, {{10, 0}, {11, 0}, {12, 0}, {13, 0}}))
+    --end
 	
 	local c = math.random(1, #colors)
 	local ps = ParticleSystem:new(10, {x = 10, y = 10}, colors[c][2], colors[c][1], { x = 1, y = 2})
@@ -48,7 +53,7 @@ function init()
 	ps:emit()
 	particleManager:add(ps)
 
-    start_recording('fishes.gif')
+    --start_recording('fishes.gif')
 end
 
 function draw()
@@ -65,4 +70,9 @@ end
 function update(dt)
     boidManager:update(dt)
 	particleManager:update(dt)
+
+    -- Next turn
+    if btp(RED) then
+        dungeon:step()
+    end
 end

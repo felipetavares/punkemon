@@ -9,7 +9,7 @@ function Dungeon:new()
     local instance = {
         current = 1,
         rooms = {},
-        w = 4,
+        w = 2,
         h = 4
     }
 
@@ -79,6 +79,10 @@ function Dungeon:draw()
             end
         end
     end
+end
+
+function Dungeon:step()
+    self.rooms[self.current]:step()
 end
 
 return Dungeon

@@ -1,0 +1,38 @@
+local Character = {}
+
+function Character:new()
+    local instance = {
+        x = 0,
+        y = 0,
+        path = {},
+        position = 1
+    }
+
+    lang.instanceof(instance, Character)
+
+    return instance
+end
+
+function Character:init(path)
+    local init = {x = 0, y = 0}
+    
+    if path and path[self.position] then
+        init = path[self.position]
+    end
+
+    self.x = init.x
+    self.y = init.y
+    self.path = path or {}
+end
+
+function Character:findDirection()
+    if self.path then
+        if self.path[self.position+1] then
+            local nextPosition = path[self.position+1]
+        end
+    end
+
+    return 0
+end
+
+return Character
