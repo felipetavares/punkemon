@@ -1,0 +1,50 @@
+Turno 0:
+	- Considerar o posicionamento na sala:
+		-> Caso o combate seja iniciado pelo inimigo:
+				-> Se o jogador for atacado pelas costas
+						O jogador não pode se defender nesse turno
+						O jogador não pode usar itens
+				-> Se o jogador for atacado pela frente
+						O inimigo tem ranged # Automaticamenteticamente o bot irá usar um golpe de status
+						O jogador tem ranged # É um ótimo turno para jogar ataques que deem status
+			
+		-> Caso o combate seja iniciado pelo jogador:
+			#Pode usar itens
+				-> Se o inimigo for atacado pelas costas
+						O inimigo não pode se defender nesse turno
+				-> Se o inimigo for atacado pela frente
+						O jogador tem ranged # É um ótimo turno pra jogar ataques que deem status no inimigo
+Turno 1 - N: # Loop
+
+	NÃO EXISTE MAIS RANGED
+	
+	Ambos escolhem os movimentos dessa rodada e quem tiver mais SPEED ataca primeiro.
+	Em caso de speed igual, o jogador ataca primeiro
+
+				IA DO INIMIGO:
+						-> Escolhe se irá usar o item carregado (se puder) ou irá atacar # Árvore de decisão
+						
+Definição do inimigo:
+	-> Definição dos Status & Tipo & Moveset # Basear-se em inimigos da rota 1 (Pallet -> Pewter)
+
+	-> Item randomico baseando-se no level da dungeon #(Item usável ou não)
+	
+	
+Definição do jogador:
+	-> Status & Moveset
+	-> Equipamento (dropado pelos inimigos)
+		-> Espada # Aumenta o ataque de certo tipo
+		-> Escudo # Aumenta a defesa de certo tipo
+		
+Base Stats:
+	-> Ataque
+	-> Defesa
+	-> Speed
+	
+Battle Stats:
+	-> HP
+	-> Status Atual
+	-> Ataque
+	-> Defesa
+	-> Speed
+	
