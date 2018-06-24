@@ -8,17 +8,17 @@
 		--		If there's another "2" room above it, then it also is guaranteed a top exit
 	-- 3 : A room that is guaranteed to have exits on the left, right and top
 
-	--- OOOOOOR WE COULD JUST USE AND ARRAY WITH LEFT, RIGHT, BOTTOM AND TOP BOOLEANS FOR EACH EXIT!
+	--- OOOOOOR WE COULD JUST USE AND ARRAY WITH D_LEFT, D_RIGHT, D_BOTTOM AND D_TOP BOOLEANS FOR EACH EXIT!
 
 -- Bit definitions
 EMPTY = 0
 
-TOP = (1<<0)
-LEFT = (1<<1)
-RIGHT = (1<<2)
-BOTTOM = (1<<3)
+D_TOP = (1<<0)
+D_LEFT = (1<<1)
+D_RIGHT = (1<<2)
+D_BOTTOM = (1<<3)
 
-local ALL = TOP+BOTTOM+LEFT+RIGHT
+local ALL = D_TOP+D_BOTTOM+D_LEFT+D_RIGHT
 
 -- This function returns true if the room
 -- at the given position exists
@@ -37,27 +37,27 @@ function checkDoors(dungeon, size_x, size_y)
         for column=0,size_x-1 do
             local index = row*size_x+column
 
-            if (dungeon[index]&TOP) ~= 0 then
+            if (dungeon[index]&D_TOP) ~= 0 then
                 if not tileExists(dungeon, size_x, size_y, column, row-1) then
-                    dungeon[index] = dungeon[index] & (~TOP)
+                    dungeon[index] = dungeon[index] & (~D_TOP)
                 end
             end
 
-            if (dungeon[index]&BOTTOM) ~= 0 then
+            if (dungeon[index]&D_BOTTOM) ~= 0 then
                 if not tileExists(dungeon, size_x, size_y, column, row+1) then
-                    dungeon[index] = dungeon[index] & (~BOTTOM)
+                    dungeon[index] = dungeon[index] & (~D_BOTTOM)
                 end
             end 
 
-            if (dungeon[index]&LEFT) ~= 0 then
+            if (dungeon[index]&D_LEFT) ~= 0 then
                 if not tileExists(dungeon, size_x, size_y, column-1, row) then
-                    dungeon[index] = dungeon[index] & (~LEFT)
+                    dungeon[index] = dungeon[index] & (~D_LEFT)
                 end
             end
 
-            if (dungeon[index]&RIGHT) ~= 0 then
+            if (dungeon[index]&D_RIGHT) ~= 0 then
                 if not tileExists(dungeon, size_x, size_y, column+1, row) then
-                    dungeon[index] = dungeon[index] & (~RIGHT)
+                    dungeon[index] = dungeon[index] & (~D_RIGHT)
                 end
             end
         end
@@ -89,9 +89,9 @@ function createRooms(dungeon, size_x, size_y)
 	dprint('Entrace:' .. entrance)
 
 	-- After put the first room, we decide if were should we go:
-    -- LEFT
-    -- RIGHT
-    -- BOTTOM
+    -- D_LEFT
+    -- D_RIGHT
+    -- D_BOTTOM
 	
 	direction = 1<<math.floor((math.random(1, 5)+1)/2)
 
@@ -101,7 +101,7 @@ function createRooms(dungeon, size_x, size_y)
 	local column = entrance
 	-- When a direction is decided, then we can start to create the rooms
 	while (true) do
-		if direction == LEFT then				                    -- left
+		if direction == D_LEFT then				                    -- left
 			if column - 1 >= 0 then
 				dungeon[row * size_x + column] = ALL
 				direction = chooseNewDirection(direction)
@@ -109,11 +109,11 @@ function createRooms(dungeon, size_x, size_y)
 				column -= 1
 			else													-- If is on the extreme left, go down and change direction
 				dungeon[row * size_x + column] = ALL
-                direction = RIGHT
+                direction = D_RIGHT
 
 				row += 1
 			end
-        elseif direction == RIGHT then			                    -- right
+        elseif direction == D_RIGHT then			                    -- right
 			if column < size_x - 1 then
 				dungeon[row * size_x + column] = ALL
 				direction = chooseNewDirection(direction)
@@ -121,7 +121,7 @@ function createRooms(dungeon, size_x, size_y)
 				column += 1
 			elseif column == size_x - 1 then						-- If is on the extreme right, go down and change direction
 				dungeon[row * size_x + column] = ALL
-				direction = LEFT
+				direction = D_LEFT
 
 				row += 1
 			end
@@ -129,7 +129,7 @@ function createRooms(dungeon, size_x, size_y)
 			if row + 1 < size_y then
 				dungeon[row * size_x + column] = ALL
 
-                direction = ({RIGHT, LEFT})[math.random(1, 2)]
+                direction = ({D_RIGHT, D_LEFT})[math.random(1, 2)]
 
 				row += 1
 			else
@@ -150,10 +150,10 @@ function printDungeon(dungeon, size_x, size_y)
 		for column = 0, size_x - 1 do
             local tile = dungeon[row * size_x + column]
 
-            local t = ({'_', 'T'})[(tile & TOP)+1]
-            local l = ({'_', 'L'})[((tile & LEFT)>>1)+1]
-            local r = ({'_', 'R'})[((tile & RIGHT)>>2)+1]
-            local d = ({'_', 'D'})[((tile & BOTTOM)>>3)+1]
+            local t = ({'_', 'T'})[(tile & D_TOP)+1]
+            local l = ({'_', 'L'})[((tile & D_LEFT)>>1)+1]
+            local r = ({'_', 'R'})[((tile & D_RIGHT)>>2)+1]
+            local d = ({'_', 'D'})[((tile & D_BOTTOM)>>3)+1]
 
 			s = s .. t .. d .. l .. r .. ' '
         end
@@ -166,7 +166,7 @@ function chooseNewDirection(currentDirection)
 	if math.random(5) ~= 1 then
 		return currentDirection
 	else
-		return BOTTOM
+		return D_BOTTOM
 	end
 
 end

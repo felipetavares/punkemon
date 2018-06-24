@@ -15,7 +15,11 @@ local dungeon_w, dungeon_h = 10, 30
 local tileset_w = 5
 local tileset_x, tileset_y = 5, 0
 
-function Room:new(tilemap, doormap, doors, w, h)
+local function cantor(x, y)
+    return 1/2*(x+y)*(x+y+1)+y
+end
+
+function Room:new(tilemap, doormap, doors, w, h, dungeon)
     local instance = {
         w = w or 0,
         h = h or 0,
@@ -25,6 +29,7 @@ function Room:new(tilemap, doormap, doors, w, h)
         decorations = {},
         characters = {},
         paths = {},
+        dungeon = dungeon or nil
     }
 
     lang.instanceof(instance, Room)
@@ -62,18 +67,20 @@ function Room:generateDecorations()
     }
 
     local tiles = self.tilemap:tilemapWithTiles()
+    local visited = {}
 
-    for i=1,#self.doors do
-        for j=i+1,#self.doors do
-            local doorA = self.doors[i]
-            local doorB = self.doors[j]
-
+    for i, doorA in pairs(self.doors) do
+        for j, doorB in pairs(self.doors) do
             if doorA ~= doorB then
-                local path = aStar(tiles[doorA.y*self.w+doorA.x+1], tiles[doorB.y*self.w+doorB.x+1], tiles, self.w, self.h)
-                table.insert(self.paths, path)
+                if not visited[i+j] then
+                    visited[i+j] = true
 
-                for i, pathStep in ipairs(path) do
-                    self.tilemap:setPath(pathStep.x, pathStep.y, true)
+                    local path = aStar(tiles[doorA.y*self.w+doorA.x+1], tiles[doorB.y*self.w+doorB.x+1], tiles, self.w, self.h)
+                    table.insert(self.paths, path)
+
+                    for i, pathStep in ipairs(path) do
+                        self.tilemap:setPath(pathStep.x, pathStep.y, true)
+                    end
                 end
             end
         end
@@ -81,8 +88,16 @@ function Room:generateDecorations()
 
     if #self.doors > 0 then
         local door = self.doors[1]
+        local floorTile = 0
 
-        local path = aStar(tiles[math.floor(self.w*self.h/2)], tiles[door.y*self.w+door.x+1], tiles, self.w, self.h)
+        for _, tile in ipairs(tiles) do
+            if tile.kind == 07 then
+                floorTile = tile
+                break
+            end
+        end
+
+        local path = aStar(floorTile, tiles[door.y*self.w+door.x+1], tiles, self.w, self.h)
         table.insert(self.paths, path)
 
         for _, pathStep in ipairs(path) do
@@ -138,6 +153,26 @@ function Room:minimumDecorationDistance(x, y)
     return distance
 end
 
+function Room:hasDecoration(x, y)
+    for _, decor in ipairs(self.decorations) do
+        if decor.x == x*16 and decor.y == y*16 then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Room:getCharacter(x, y)
+    for _, char in ipairs(self.characters) do
+        if char.x == x and char.y == y then
+            return char
+        end
+    end
+
+    return nil
+end
+
 function Room:draw()
     -- Draws tilemap
 	local x, y = 0,0
@@ -164,12 +199,20 @@ function Room:draw()
     for _, char in ipairs(self.characters) do
         char:draw()
     end
+
+    player:draw(self)
 end
 
 function Room:step()
     for _, char in ipairs(self.characters) do
         char:step()
     end
+
+    player:step(self)
+end
+
+function Room:update(dt)
+    player:update(self, dt)
 end
 
 return Room

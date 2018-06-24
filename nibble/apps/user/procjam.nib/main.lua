@@ -1,6 +1,6 @@
 -- Imports
-local Boid = require('Boid')
-local BoidManager = require('BoidManager')
+local Player = require('Player')
+player = Player:new()
 
 local Dungeon = require('Dungeon')
 
@@ -10,7 +10,6 @@ local ParticleManager = require('ParticleManager')
 
 -- Singletons
 local dungeon = Dungeon:new()
-local boidManager = BoidManager:new()
 local particleManager = ParticleManager:new()
 
 function init()
@@ -28,7 +27,6 @@ function init()
     -- function: time()
 	math.randomseed( time() )
 	
-    -- Creates fish
     local colors = {
         {8, 9},
         {12, 13},
@@ -36,17 +34,6 @@ function init()
         {6, 10},
         {4, 11}
     }
-    
-    for i=1,60 do
-        local c = math.random(1, #colors)
-        boidManager:add(Boid:new(colors[c][1], colors[c][2]))
-    end
-
-    -- Jellyfish
-    --for i=1,10 do
-    --    boidManager:add(Boid:new(nil, nil, {{10, 0}, {11, 0}, {12, 0}, {13, 0}}))
-    --end
-	
 	local c = math.random(1, #colors)
 	local ps = ParticleSystem:new(10, {x = 10, y = 10}, colors[c][2], colors[c][1], { x = 1, y = 2})
 	
@@ -59,20 +46,12 @@ end
 function draw()
     -- Draws dungeon
     dungeon:draw()
-
-    -- Draws fishes
-    boidManager:draw()
 	
 	-- Draw particles
 	particleManager:draw()
 end
 
 function update(dt)
-    boidManager:update(dt)
 	particleManager:update(dt)
-
-    -- Next turn
-    if btp(RED) then
-        dungeon:step()
-    end
+    dungeon:update(dt)
 end

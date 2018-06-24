@@ -87,7 +87,7 @@ function g_external_doors(builder, doormap, top_door, bottom_door, left_door, ri
     if top_door then
         local top_door = math.random(bounds.x+1, bounds.x+bounds.w-DOOR_SIZE-1)
 
-        table.insert(doorList, {x = top_door, y = bounds.y})
+        doorList[D_TOP] = {x = top_door, y = bounds.y, dx = -1, dy = 1}
 
         for i=0,DOOR_SIZE-1 do
             builder:set(top_door+i, bounds.y, FL)
@@ -98,7 +98,7 @@ function g_external_doors(builder, doormap, top_door, bottom_door, left_door, ri
     if bottom_door then
         local bottom_door = math.random(bounds.x+1, bounds.x+bounds.w-DOOR_SIZE-1)
 
-        table.insert(doorList, {x = bottom_door, y = bounds.y+bounds.h-1})
+        doorList[D_BOTTOM] = {x = bottom_door, y = bounds.y+bounds.h-1}
 
         for i=0,DOOR_SIZE-1 do
             builder:set(bottom_door+i, bounds.y+bounds.h-1, FL)
@@ -109,7 +109,7 @@ function g_external_doors(builder, doormap, top_door, bottom_door, left_door, ri
     if left_door then
         local left_door = math.random(bounds.y+1, bounds.y+bounds.h-DOOR_SIZE-1)
 
-        table.insert(doorList, {x = bounds.x, y = left_door})
+        doorList[D_LEFT] = {x = bounds.x, y = left_door}
 
         for i=0,DOOR_SIZE-1 do
             builder:set(bounds.x, left_door+i, FL)
@@ -120,7 +120,7 @@ function g_external_doors(builder, doormap, top_door, bottom_door, left_door, ri
     if right_door then
         local right_door = math.random(bounds.y+1, bounds.y+bounds.h-DOOR_SIZE-1)
 
-        table.insert(doorList, {x = bounds.x+bounds.w-1, y = right_door})
+        doorList[D_RIGHT] = {x = bounds.x+bounds.w-1, y = right_door}
 
         for i=0,DOOR_SIZE-1 do
             builder:set(bounds.x+bounds.w-1, right_door+i, FL)
