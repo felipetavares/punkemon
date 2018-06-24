@@ -8,17 +8,17 @@
 		--		If there's another "2" room above it, then it also is guaranteed a top exit
 	-- 3 : A room that is guaranteed to have exits on the left, right and top
 
-	--- OOOOOOR WE COULD JUST USE AND ARRAY WITH LEFT, RIGHT, DOWN AND TOP BOOLEANS FOR EACH EXIT!
+	--- OOOOOOR WE COULD JUST USE AND ARRAY WITH LEFT, RIGHT, BOTTOM AND TOP BOOLEANS FOR EACH EXIT!
 
 -- Bit definitions
-local EMPTY = 0
+EMPTY = 0
 
-local TOP = (1<<0)
-local LEFT = (1<<1)
-local RIGHT = (1<<2)
-local DOWN = (1<<3)
+TOP = (1<<0)
+LEFT = (1<<1)
+RIGHT = (1<<2)
+BOTTOM = (1<<3)
 
-local ALL = TOP+DOWN+LEFT+RIGHT
+local ALL = TOP+BOTTOM+LEFT+RIGHT
 
 -- This function returns true if the room
 -- at the given position exists
@@ -43,9 +43,9 @@ function checkDoors(dungeon, size_x, size_y)
                 end
             end
 
-            if (dungeon[index]&DOWN) ~= 0 then
+            if (dungeon[index]&BOTTOM) ~= 0 then
                 if not tileExists(dungeon, size_x, size_y, column, row+1) then
-                    dungeon[index] = dungeon[index] & (~DOWN)
+                    dungeon[index] = dungeon[index] & (~BOTTOM)
                 end
             end 
 
@@ -91,7 +91,7 @@ function createRooms(dungeon, size_x, size_y)
 	-- After put the first room, we decide if were should we go:
     -- LEFT
     -- RIGHT
-    -- DOWN
+    -- BOTTOM
 	
 	direction = 1<<math.floor((math.random(1, 5)+1)/2)
 
@@ -144,7 +144,6 @@ function createRooms(dungeon, size_x, size_y)
 	end
 end
 
-
 function printDungeon(dungeon, size_x, size_y)
 	local s = ''
 	for row = 0, size_y - 1 do
@@ -154,7 +153,7 @@ function printDungeon(dungeon, size_x, size_y)
             local t = ({'_', 'T'})[(tile & TOP)+1]
             local l = ({'_', 'L'})[((tile & LEFT)>>1)+1]
             local r = ({'_', 'R'})[((tile & RIGHT)>>2)+1]
-            local d = ({'_', 'D'})[((tile & DOWN)>>3)+1]
+            local d = ({'_', 'D'})[((tile & BOTTOM)>>3)+1]
 
 			s = s .. t .. d .. l .. r .. ' '
         end
@@ -167,7 +166,7 @@ function chooseNewDirection(currentDirection)
 	if math.random(5) ~= 1 then
 		return currentDirection
 	else
-		return DOWN
+		return BOTTOM
 	end
 
 end

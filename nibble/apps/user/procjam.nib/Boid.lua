@@ -8,7 +8,7 @@ function Boid:new(color, accent)
         },
         -- Where is this boid?
         pos = {
-            x = 300*math.random()+10, y = 240/2
+            x = 300*math.random()+10, y = 240/2+(math.random()-0.5)*240
         },
         -- Previous positions
         snake = {},
@@ -34,25 +34,19 @@ end
 function Boid:drawAround(x, y)
     local p
 
-    p = getp(x-1, y)
-    if (p ~= self.color and p ~= self.accent) then
-        putp(x-1, y, self.contour)
-    end
-    p = getp(x+1, y)
-    if (p ~= self.color and p ~= self.accent) then
-        putp(x+1, y, self.contour)
-    end
-    p = getp(x, y-1)
-    if (p ~= self.color and p ~= self.accent) then
-        putp(x, y-1, self.contour)
-    end
-    p = getp(x, y+1)
-    if (p ~= self.color and p ~= self.accent) then
-        putp(x, y+1, self.contour)
-    end
+    putp(x-1, y, self.contour)
+    putp(x+1, y, self.contour)
+    putp(x, y-1, self.contour)
+    putp(x, y+1, self.contour)
 end
 
 function Boid:draw()
+    -- Draw shadows
+    for i, p in ipairs(self.snake) do
+        self:drawAround(p.x, p.y)
+    end
+
+    -- Draw fish
     for i, p in ipairs(self.snake) do
         if i == 3 then
             putp(p.x, p.y, self.accent)
@@ -64,8 +58,6 @@ function Boid:draw()
         if (color ~= self.color and color ~= self.accent) then
             putp(p.x, p.y+self.height, self.contour)
         end
-
-        self:drawAround(p.x, p.y)
     end
 
     if #self.snake > self.length then

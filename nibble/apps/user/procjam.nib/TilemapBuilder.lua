@@ -240,6 +240,14 @@ function TilemapBuilder:set(x, y, kind)
     end
 end
 
+function TilemapBuilder:setPath(x, y, path)
+    local p = y*self.w+x+1
+
+    if p >= 1 and p <= #self.tiles then
+        self.tiles[p].path = path or false
+    end
+end
+
 function TilemapBuilder:get(x, y)
     local p = y*self.w+x+1
 
@@ -267,6 +275,19 @@ function TilemapBuilder:tilemap()
     for y=bounds.y,bounds.y+bounds.h-1 do
         for x=bounds.x,bounds.x+bounds.w-1 do
             table.insert(tilemap, self:get(x, y).kind)
+        end
+    end
+
+    return tilemap, bounds.w, bounds.h
+end
+
+function TilemapBuilder:tilemapWithTiles()
+    local bounds = self:bounds()
+    local tilemap = {}
+
+    for y=bounds.y,bounds.y+bounds.h-1 do
+        for x=bounds.x,bounds.x+bounds.w-1 do
+            table.insert(tilemap, self:get(x, y))
         end
     end
 

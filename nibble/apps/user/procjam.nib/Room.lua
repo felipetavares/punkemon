@@ -1,586 +1,134 @@
-require('GrammarLang')
+require('AStar')
 
-local TilemapBuilder = require('TilemapBuilder')
-local Tile = require('Tile')
+local Decoration = require('Decoration')
+local Room = {}
 
--- All functions here operate on an instance
--- of TilemapBuilder
+local tile_w, tile_h = 16, 16
+local tilemap_w, tilemap_h = 20, 14 
 
--- Non-Terminals
-local NO = 2000
-local WL = 1000
-local FL = 1001
+local room_w, room_h = 16, 16
+local dungeon_w, dungeon_h = 10, 30
 
--- Door size
-local DOOR_SIZE = 2
+local tileset_w = 5
+local tileset_x, tileset_y = 5, 0
 
-function g_hsplit(builder, p, fn)
-    builder:use(0, 0, p, 1)
-    fn(builder)
-    builder:restore()
+function Room:new(tilemap, doormap, doors, w, h)
+    local instance = {
+        w = w or 0,
+        h = h or 0,
+        tilemap = tilemap,
+        doormap = doormap,
+        doors = doors,
+        decorations = {},
+        characters = {},
+        paths = {}
+    }
 
-    builder:use(p, 0, 1-p, 1)
-    fn(builder)
-    builder:restore()
+    lang.instanceof(instance, Room)
+
+    instance:generateDecorations()
+
+    return instance
 end
 
-function g_vsplit(builder, p, fn)
-    builder:use(0, 0, 1, p)
-    fn(builder)
-    builder:restore()
+function Room:generateDecorations()
+    local decorations = {
+        {x=5, y=13},
+        {x=6, y=13},
+        {x=7, y=13},
+        {x=8, y=13},
+        {x=5, y=14},
+        {x=6, y=14},
+        {x=7, y=14},
+    }
 
-    builder:use(0, p, 1, 1-p)
-    fn(builder)
-    builder:restore()
-end
+    local tiles = self.tilemap:tilemapWithTiles()
 
-function g_room(builder, top_door, bottom_door, left_door, right_door)
-    builder:use(0, 0, 1, 1)
+    for i=1,#self.doors do
+        for j=i,#self.doors do
+            local doorA = self.doors[i]
+            local doorB = self.doors[j]
 
-    local bounds = builder:bounds()
+            if doorA ~= doorB then
+                local path = aStar(tiles[doorA.y*self.w+doorA.x+1], tiles[doorB.y*self.w+doorB.x+1], tiles, self.w, self.h)
+                table.insert(self.paths, path)
 
-    if bounds.w >= 12 and bounds.h >= 12 then
-        local split_position = math.floor(math.random()*3)/4+1/4;
-
-        if math.random() > 0.5 then
-            g_hsplit(builder, split_position, g_room)
-        else
-            g_vsplit(builder, split_position, g_room)
+                for i, pathStep in ipairs(path) do
+                    self.tilemap:setPath(pathStep.x, pathStep.y, true)
+                end
+            end
         end
+    end
+
+    for x=0,self.w-1 do
+        for y=0,self.h-1 do
+            local decoration = decorations[math.random(1, #decorations)]
+
+            --if self.doormap:get(x, y).kind ~= 01 and
+            --   self.doormap:get(x, y+1).kind ~= 01 and
+            --   self.tilemap:get(x, y).kind == 07 and
+            --   self.tilemap:get(x, y+1).kind == 07 and
+            --   self:minimumDecorationDistance(x*16, y*16) > math.random(32^2, 64^2) and
+            --   math.random() > 0.8 and self:decorationFits(x, y, decoration.w/16+1, decoration.h/16+1) then
+            --    table.insert(self.decorations, Decoration:new(x*16, y*16, decoration))
+            --end
+            --
+            if self:minimumDecorationDistance(x*16, y*16) > math.random(16^2, 24^2) and
+               self:decorationFits(x, y, 1, 1) and
+               math.random() > 0.9 then
+                table.insert(self.decorations, Decoration:new(x*16, y*16, decoration))
+            end
+        end
+    end
+end
+
+function Room:decorationFits(x, y, w, h)
+    if (self.tilemap:get(x, y).kind == 07 or 
+        self.tilemap:get(x, y).kind == 06) and 
+       not self.tilemap:get(x, y).path and
+       self.doormap:get(x, y).kind ~= 01 then
+        return true
     else
-        builder:topleft_half_borders(WL)
-
-        if bounds.y > 0 then
-            local top_door = math.random(bounds.x+1, bounds.x+bounds.w-2)
-
-            for i=0,DOOR_SIZE-1 do
-                builder:set(top_door+i, bounds.y, FL)
-            end
-        end
-
-        if bounds.x > 0 then
-            local left_door = math.random(bounds.y+1, bounds.y+bounds.h-2)
-
-            for i=0,DOOR_SIZE-1 do
-                builder:set(bounds.x, left_door+i, FL)
-            end
-        end
-    end
-
-    if bounds.w == 20 and bounds.h == 15 then
-        builder:bottomright_half_borders(WL)
-
-        g_external_doors(builder, top_door, bottom_door, left_door, right_door)
-
-        g_apply_grammar(builder)
-    end
-
-    builder:restore()
-
-    return builder
-end
-
-function g_external_doors(builder, top_door, bottom_door, left_door, right_door)
-    local bounds = builder:bounds()
-
-    if top_door then
-        local top_door = math.random(bounds.x+1, bounds.x+bounds.w-DOOR_SIZE-1)
-
-        for i=0,DOOR_SIZE-1 do
-            builder:set(top_door+i, bounds.y, FL)
-        end
-    end
-
-    if bottom_door then
-        local bottom_door = math.random(bounds.x+1, bounds.x+bounds.w-DOOR_SIZE-1)
-
-        for i=0,DOOR_SIZE-1 do
-            builder:set(bottom_door+i, bounds.y+bounds.h-1, FL)
-        end
-    end
-
-    if left_door then
-        local left_door = math.random(bounds.y+1, bounds.y+bounds.h-DOOR_SIZE-1)
-
-        for i=0,DOOR_SIZE-1 do
-            builder:set(bounds.x, left_door+i, FL)
-        end
-    end
-
-    if right_door then
-        local right_door = math.random(bounds.y+1, bounds.y+bounds.h-DOOR_SIZE-1)
-
-        for i=0,DOOR_SIZE-1 do
-            builder:set(bounds.x+bounds.w-1, right_door+i, FL)
-        end
+        return false
     end
 end
 
-function g_apply_grammar(builder)
-    local max_iterations = 1
+function Room:minimumDecorationDistance(x, y)
+    local distance = 9999
 
-    while max_iterations > 0 do
-        -- Operate in the entire builder that was passed to us
-        builder:use(0, 0, 1, 1)
+    for _, decor in ipairs(self.decorations) do
+        local dx, dy = x-decor.x, y-decor.y
+        local currentDistance = dx^2+dy^2
 
-        builder:each(3, 3, function(block)
-            if block:is({-1, NO, -1,
-                         FL, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 57, -1,
-                            -1, -1, -1})
-            end
+        if currentDistance < distance then
+            distance = currentDistance
+        end
+    end
 
-            if block:is({-1, NO, -1,
-                         WL, WL, FL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 58, -1,
-                            -1, -1, -1})
-            end
+    return distance
+end
 
-            if block:is({-1, FL, -1,
-                         FL, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 19, -1,
-                            -1, -1, -1})
-            end
+function Room:draw()
+    -- Draws tilemap
+	local x, y = 0,0
+	for _, tile in ipairs(self.tilemap:tilemap()) do
+        local tile_x = tile%tileset_w+tileset_x
+        local tile_y = tile/tileset_w+tileset_y
+		
+        spr(x, y, tile_x, tile_y)
 
-            if block:is({-1, WL, -1,
-                         FL, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 24, -1,
-                            -1, -1, -1})
-            end
+        x += tile_w
 
-            if block:is({-1, WL, -1,
-                         FL, WL, FL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 29, -1,
-                            -1, -1, -1})
-            end
+		if x >= tilemap_w*tile_w then
+            x = 0
+            y += tile_h
+		end
+    end
 
-            if block:is({-1, WL, -1,
-                         FL, WL, NO,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 57, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         WL, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 54, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         WL, WL, WL,
-                         -1, FL, WL}) then
-                block:into({-1, -1, -1,
-                            -1, 03, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         WL, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 02, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         WL, WL, NO,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 04, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         NO, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 00, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         FL, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 46, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         FL, WL, NO,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 09, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         FL, WL, NO,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 09, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         NO, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 05, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         NO, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 05, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 48, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, FL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 49, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         FL, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 47, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 59, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         WL, WL, NO,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 02, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         NO, WL, FL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 58, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         NO, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 50, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         FL, WL, NO,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 51, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         NO, WL, FL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 50, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         NO, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 00, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         WL, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 45, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         WL, WL, NO,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 04, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, WL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 11, -1,
-                            -1, -1, -1})
-            end
-            
-            if block:is({-1, WL, -1,
-                         WL, WL, NO,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 14, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         NO, WL, WL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 10, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, FL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 50, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         FL, WL, WL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 51, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         NO, WL, WL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 11, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         FL, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 53, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         WL, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 02, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         NO, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 02, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         FL, WL, NO,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 09, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         FL, WL, WL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 09, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, NO,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 11, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         NO, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 56, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         WL, WL, NO,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 02, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 52, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         WL, WL, FL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 45, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         WL, WL, WL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 12, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         NO, WL, FL,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 05, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         FL, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 57, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, WL, -1,
-                         WL, WL, FL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 58, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, NO, -1,
-                         FL, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 46, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         FL, WL, FL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 55, -1,
-                            -1, -1, -1})
-            end
-            
-            if block:is({-1, NO, -1,
-                         NO, WL, WL,
-                         -1, FL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 02, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         NO, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 56, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         FL, WL, NO,
-                         -1, NO, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 51, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         WL, WL, NO,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 60, -1,
-                            -1, -1, -1})
-            end
-
-            if block:is({-1, FL, -1,
-                         NO, WL, WL,
-                         -1, WL, -1}) then
-                block:into({-1, -1, -1,
-                            -1, 56, -1,
-                            -1, -1, -1})
-            end
-        end)
-
-        builder:each(1, 1, function (block)
-            if block:is({FL}) then
-                block:into({7})
-            end
-        end)
-
-        builder:each(1, 2, function (block)
-            if block:is({WL, FL}) then
-                block:into({-1, 6})
-            end
-        end)
-
-        builder:apply()
-        -- Operate in the previous context
-        builder:restore()
-
-        max_iterations -= 1
+    -- Draws decorations
+    for _, decor in ipairs(self.decorations) do
+        decor:draw()
     end
 end
+
+return Room
