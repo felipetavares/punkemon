@@ -19,7 +19,7 @@ Turno 1 - N: # Loop
 	NÃO EXISTE MAIS RANGED
 	
 	Ambos escolhem os movimentos dessa rodada e quem tiver mais SPEED ataca primeiro.
-	Em caso de speed igual, o jogador ataca primeiro
+	Em caso de speed igual, o jogador ataca primeiro -OK
 
 				IA DO INIMIGO:
 						-> Escolhe se irá usar o item carregado (se puder) ou irá atacar # Árvore de decisão
@@ -27,6 +27,19 @@ Turno 1 - N: # Loop
 Definição do inimigo:
 	-> Definição dos Status & Tipo & Moveset # Basear-se em inimigos da rota 1 (Pallet -> Pewter)
 
+	Ratata lvl 50: (253 pontos totais)
+		HP: 30 + 30
+		Attack: 56 + 25
+		Defense: 35 + 35
+		Speed: 72
+		
+	Pidgey level 50: (251 pontos totais) -> Pidgey parece ser 1 boa escolha para fazermos a rotação básica
+		HP: 40 + 40 -> 80
+		Attack: 45 + 35 -> 80
+		Defense: 40 + 35 -> 75
+		Speed: 56
+	
+	
 	-> Item randomico baseando-se no level da dungeon #(Item usável ou não)
 	
 	

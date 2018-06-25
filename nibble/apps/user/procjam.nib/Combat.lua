@@ -29,14 +29,32 @@ function Combat:update(dt)
     if btp(DOWN) then
 		playerChoice = Choice:new()
 		enemyChoice = self.enemyAI:decision()
-        self:nextTurn(playerChoice, enemyChoice)
+        self.nextTurn(playerChoice, enemyChoice)
 	end
+	
 end
 
 function Combat:nextTurn(playerChoice, enemyChoice)
 	dprint('Turn:' .. tostring(self.turn))
+	local first = playerChoice
+	local second = enemyChoice
+	if self.player.battleStats.speed < self.character.battleStats.speed then
+		first = enemyChoice		
+		second = playerChoice
+	end
+	self.executeChoice(first)
+	self.executeChoice(second)
 	self.turn += 1
 end 
+
+function Combat:executeChoice(choice)
+	if choice.attack ~= nil then
+		dprint('Attack')
+		choice.attack.effect(choice.target)
+	elseif choice.item ~= nil then
+		dprint('Item')
+	end
+end
 
 
 return Combat

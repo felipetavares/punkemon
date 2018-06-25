@@ -1,5 +1,5 @@
 local Item = require('Item')
-local Iventory = {}
+local Inventory = {}
 
 EQ_SWORD = 0
 EQ_SHIELD = 1
@@ -12,9 +12,11 @@ IT_ETHER = 7
 IT_MAX_ETHER = 8
 
 
-function Item:new()
+function Inventory:new()
     local instance = {
 		name = '',
+		
+		items = {
 		-- Equipment --
 		EQ_SWORD = {Item:new(), 
 					quantity = 0},
@@ -45,11 +47,21 @@ function Item:new()
 		
 		IT_MAX_ETHER = {Item:new(IT_MAX_ETHER, 0, 20), 
 					quantity = 0},
-    }
+					
+			},
+		}
 
-    lang.instanceof(instance, Item)
+    lang.instanceof(instance, Inventory)
 
     return instance
 end
 
-return Item
+function Inventory:addItem(item, quantity)
+	self.items[item] += quantity
+end
+
+function Inventory:removeItem(item, quantity)
+	self.items[item] -= quantity
+end
+
+return Inventory
