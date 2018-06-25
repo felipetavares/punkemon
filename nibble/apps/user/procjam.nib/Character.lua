@@ -1,3 +1,4 @@
+local Attack = require('Attack')
 local Character = {}
 
 function Character:new()
@@ -5,7 +6,27 @@ function Character:new()
         x = 0,
         y = 0,
         path = {},
-        position = 1
+        position = 1,
+		level = 1,
+		
+		baseStats = {
+			attack = 0,
+			defense = 0,
+			speed = 0,
+			element = NEUTRAL,
+			HP = 1
+		},
+		
+		battleStats = {
+			attack = 1,
+			defense = 1,
+			speed = 1,
+			HP = 1,
+			status  = 0,
+		},
+		
+		moveset = {
+		}
     }
 
     lang.instanceof(instance, Character)

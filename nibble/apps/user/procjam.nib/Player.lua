@@ -1,10 +1,17 @@
-local Player = {}
+local Character = require('Character')
+local Player = Character:new()
+
+local Inventory = require('Inventory')
 
 local Combat = require('Combat')
 
 function Player:new()
     local instance = {
-        x = 10, y = 7
+        x = 10, y = 7,
+		
+		equipment = { SWORD = nil, SHIELD = nil	},
+		
+		moveset = {}
     }
 
     lang.instanceof(instance, Player)

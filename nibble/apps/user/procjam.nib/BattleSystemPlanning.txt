@@ -31,20 +31,20 @@ Definição do inimigo:
 	
 	
 Definição do jogador:
-	-> Status & Moveset
-	-> Equipamento (dropado pelos inimigos)
-		-> Espada # Aumenta o ataque de certo tipo
-		-> Escudo # Aumenta a defesa de certo tipo
+	-> Status & Moveset -> ok
+	-> Equipamento (dropado pelos inimigos) -> ok
+		-> Espada # Aumenta o ataque de certo tipo -> e ai?
+		-> Escudo # Aumenta a defesa de certo tipo -> e ai?
 		
 Base Stats:
-	-> Ataque
-	-> Defesa
-	-> Speed
+	-> Ataque -> ok
+	-> Defesa -> ok
+	-> Speed -> ok
 	
 Battle Stats:
-	-> HP
-	-> Status Atual
-	-> Ataque
-	-> Defesa
-	-> Speed
+	-> HP	-> ok
+	-> Status Atual -> ok
+	-> Ataque -> ok
+	-> Defesa -> ok
+	-> Speed -> ok
 	
