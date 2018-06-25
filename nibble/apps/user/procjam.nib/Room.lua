@@ -86,8 +86,7 @@ function Room:generateDecorations()
         end
     end
 
-    if #self.doors > 0 then
-        local door = self.doors[1]
+    for i, door in pairs(self.doors) do
         local floorTile = 0
 
         for _, tile in ipairs(tiles) do
@@ -103,6 +102,8 @@ function Room:generateDecorations()
         for _, pathStep in ipairs(path) do
             self.tilemap:setPath(pathStep.x, pathStep.y, true)
         end
+
+        break
     end
 
     for x=0,self.w-1 do
