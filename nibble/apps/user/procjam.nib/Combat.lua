@@ -10,7 +10,7 @@ function Combat:new(player, character, battleStarter)
         player = player or nil,
         character = character or nil,
 		turn = 0,
-		battleStarter = PLAYER,
+		battleStarter = player,
 		
 		enemyAI = EnemyAI:new(character),
     }
@@ -29,7 +29,7 @@ function Combat:update(dt)
     if btp(DOWN) then
 		playerChoice = Choice:new()
 		enemyChoice = self.enemyAI:decision()
-        self.nextTurn(playerChoice, enemyChoice)
+        self:nextTurn(playerChoice, enemyChoice)
 	end
 	
 end
@@ -42,8 +42,8 @@ function Combat:nextTurn(playerChoice, enemyChoice)
 		first = enemyChoice		
 		second = playerChoice
 	end
-	self.executeChoice(first)
-	self.executeChoice(second)
+	self:executeChoice(first)
+	self:executeChoice(second)
 	self.turn += 1
 end 
 

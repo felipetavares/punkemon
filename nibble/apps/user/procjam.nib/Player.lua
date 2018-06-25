@@ -11,7 +11,8 @@ function Player:new()
 		
 		equipment = { SWORD = nil, SHIELD = nil	},
 		
-		moveset = {}
+		moveset = {},
+		oldX = x, oldY = y,
     }
 
     lang.instanceof(instance, Player)
@@ -41,6 +42,7 @@ function Player:checkAndMove(room, dx, dy)
        room.tilemap:get(x, y).kind == 06 or
        room.tilemap:get(x, y).kind == 2000 then
         if not room:hasDecoration(x, y) then
+			self.oldX , self.oldY = self.x , self.y
             self.x += dx
             self.y += dy
             room:step()
@@ -75,7 +77,7 @@ function Player:step(room)
         self.y = room.doors[D_TOP].y
     end
 
-    local enemy = room:getCharacter(self.x, self.y)
+    local enemy = room:getCharacter(self.x, self.y) or room:getCharacter(self.oldX, self.oldY)
 
     if enemy then
         local combat = Combat:new(self, enemy)

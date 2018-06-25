@@ -10,7 +10,6 @@ function Item:new(kind, hpRestoration, ppRestoration, attackEffect, defenseEffec
 		ppRestoration = ppRestoration,
 		attackEffect = attackEffect,
 		defenseEffect = defenseEffect,
-		
     }
 
     lang.instanceof(instance, Item)
