@@ -35,6 +35,17 @@ function Player:draw(room)
     spr(self.x*16, self.y*16, 10, 3)
 end
 
+function Player:battleDraw()
+	-- Draw sword
+	dprint('Draw sword')
+	
+	-- Draw sereia comedora de cu
+	pspr(10, 90, 320,240, 128,128)
+	
+	-- Draw shield
+	dprint('Draw shield')
+end
+
 function Player:checkAndMove(room, dx, dy)
     local x, y = self.x+dx, self.y+dy
 

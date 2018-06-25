@@ -31,6 +31,10 @@ function EnemyBiped:draw()
     end
 end
 
+function EnemyBiped:battleDraw()
+	pspr(144, 38, 464, 240, 128,128)
+end
+
 function EnemyBiped:step()
     self.position = (self.position%#self.path)+1
 

@@ -72,4 +72,8 @@ function Character:findDirection()
     return 0
 end
 
+function Character:battleDraw()
+	dprint('Opa coleguinha, precisa desenhar esse inimigo maneiro aqui')
+end
+
 return Character

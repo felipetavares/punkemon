@@ -18,7 +18,7 @@ Turno 1 - N: # Loop
 
 	NÃO EXISTE MAIS RANGED
 	
-	Ambos escolhem os movimentos dessa rodada e quem tiver mais SPEED ataca primeiro.
+	Ambos escolhem os movimentos dessa rodada e quem tiver mais SPEED ataca primeiro. - OK
 	Em caso de speed igual, o jogador ataca primeiro -OK
 
 				IA DO INIMIGO:
@@ -26,19 +26,31 @@ Turno 1 - N: # Loop
 						
 Definição do inimigo:
 	-> Definição dos Status & Tipo & Moveset # Basear-se em inimigos da rota 1 (Pallet -> Pewter)
-
-	Ratata lvl 50: (253 pontos totais)
-		HP: 30 + 30
-		Attack: 56 + 25
-		Defense: 35 + 35
-		Speed: 72
 		
 	Pidgey level 50: (251 pontos totais) -> Pidgey parece ser 1 boa escolha para fazermos a rotação básica
 		HP: 40 + 40 -> 80
 		Attack: 45 + 35 -> 80
 		Defense: 40 + 35 -> 75
 		Speed: 56
+		
+	Pidgeotto level 50: ( 350 pontos totais)
+		HP: 63 + 63
+		Attack: 60 + 50
+		Defense: 55 + 50
+		Speed : 71
+		
 	
+	Pidgeot level 50: ( Total 469)
+		HP: 83 + 83
+		Attack: 80 + 70
+		Defense: 75 + 70
+		Speed: 91
+		
+	Mega Pidgeot 50: ( Total 579)
+		HP: 83 + 83
+		Attack: 70 + 135
+		Defense: 80 + 80
+		Speed: 121
 	
 	-> Item randomico baseando-se no level da dungeon #(Item usável ou não)
 	
@@ -46,8 +58,8 @@ Definição do inimigo:
 Definição do jogador:
 	-> Status & Moveset -> ok
 	-> Equipamento (dropado pelos inimigos) -> ok
-		-> Espada # Aumenta o ataque de certo tipo -> e ai?
-		-> Escudo # Aumenta a defesa de certo tipo -> e ai?
+		-> Espada # Aumenta o ataque de certo tipo -> e ai? COMOFAZ?
+		-> Escudo # Aumenta a defesa de certo tipo -> e ai? COMOFAZ?
 		
 Base Stats:
 	-> Ataque -> ok
@@ -59,5 +71,13 @@ Battle Stats:
 	-> Status Atual -> ok
 	-> Ataque -> ok
 	-> Defesa -> ok
-	-> Speed -> ok
+	-> Speed -> 
+	
+Golpes básicos:
+
+	Growl -> Attack
+	Tail Whip -> Defense
+	Sand Attack -> Speed
+	Tackle -> Normal Attack 
+	
 	

@@ -43,11 +43,11 @@ end
 function Room:generateCharacters()
     for i, path in ipairs(self.paths) do
         if i ~= #self.paths then
-            if math.random() < 0.5 then
+           -- if math.random() < 0.5 then
                 table.insert(self.characters, EnemyBiped:new(path))
-            else
-                table.insert(self.characters, EnemyTank:new(path))
-            end
+            --else
+            --    table.insert(self.characters, EnemyTank:new(path))
+            --end
         end
     end
 end

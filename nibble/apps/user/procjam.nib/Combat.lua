@@ -21,7 +21,17 @@ function Combat:new(player, character, battleStarter)
 end
 
 function Combat:draw()
-    clr(1)
+	-- Draw background
+	pspr(0,0 , 320,0 , 320, 240)
+	-- Draw boneco
+	self.character:battleDraw()
+	
+	-- Draw sereia comedora de cu
+	self.player:battleDraw()
+	
+	-- Draw static UI
+	
+	-- Draw dynamic UI
 end
 
 function Combat:update(dt)

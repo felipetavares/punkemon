@@ -13,8 +13,8 @@ function Dungeon:new()
         combat = nil,
         current = 1,
         rooms = {},
-        w = 2,
-        h = 4,
+        w = 1,
+        h = 3,
         boidManager = BoidManager:new()
     }
 

@@ -38,4 +38,9 @@ function EnemyTank:step()
     self.y = self.path[self.position].y
 end
 
+function EnemyTank:battleDraw()
+	pspr(128, 48, 464, 240, 128,128)
+end
+
+
 return EnemyTank 
