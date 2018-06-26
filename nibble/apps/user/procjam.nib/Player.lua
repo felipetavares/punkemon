@@ -13,6 +13,9 @@ function Player:new()
 		
 		moveset = {},
 		oldX = x, oldY = y,
+
+        frame = 0,
+        elapsed = 0
     }
 
     lang.instanceof(instance, Player)
@@ -32,18 +35,18 @@ function Player:init(room)
 end
 
 function Player:draw(room)
-    spr(self.x*16, self.y*16, 10, 3)
+    spr(self.x*16, self.y*16, 10+self.frame, 3)
 end
 
 function Player:battleDraw()
 	-- Draw sword
-	dprint('Draw sword')
+	-- dprint('Draw sword')
 	
 	-- Draw sereia comedora de cu
-	pspr(10, 90, 320,240, 128,128)
+	pspr(10, 95, 320,240, 128,128)
 	
 	-- Draw shield
-	dprint('Draw shield')
+    pspr(116, 144, 0, 112, 48, 80)
 end
 
 function Player:checkAndMove(room, dx, dy)
@@ -98,6 +101,13 @@ function Player:step(room)
 end
 
 function Player:update(room, dt)
+    self.elapsed += dt
+
+    if self.elapsed > 0.1 then
+        self.elapsed = 0
+        self.frame = (self.frame+1)%5
+    end
+
     if btp(DOWN) then
         self:checkAndMove(room, 0, 1)
     elseif btp(UP) then

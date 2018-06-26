@@ -37,7 +37,7 @@ function init()
 	local c = math.random(1, #colors)
 	local ps = ParticleSystem:new(10, {x = 10, y = 10}, colors[c][2], colors[c][1], { x = 1, y = 2})
 	
-	ps:emit()
+    --ps:emit()
 	particleManager:add(ps)
 
     --start_recording('fishes.gif')
