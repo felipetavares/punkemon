@@ -37,9 +37,9 @@ function Dungeon:new()
     end
 
     -- Jellyfish
-    --for i=1,10 do
-    --    instance.boidManager:add(Boid:new(nil, nil, {{10, 0}, {11, 0}, {12, 0}, {13, 0}}))
-    --end
+    for i=1,5 do
+        instance.boidManager:add(Boid:new(nil, nil, {{10, 0}, {11, 0}, {12, 0}, {13, 0}}))
+    end
 
     return instance
 end

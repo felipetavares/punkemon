@@ -7,6 +7,7 @@ local Dungeon = require('Dungeon')
 local Particle = require('Particle')
 local ParticleSystem = require('ParticleSystem')
 local ParticleManager = require('ParticleManager')
+require ('ParticleFunctions')
 
 -- Singletons
 local dungeon = Dungeon:new()
@@ -27,23 +28,44 @@ function init()
     -- function: time()
 	math.randomseed( time() )
 	
-    local colors = {
-        {8, 9},
-        {12, 13},
-        {7, 11},
-        {6, 10},
-        {4, 11}
-    }
-	local c = math.random(1, #colors)
-	local ps = ParticleSystem:new(10, {x = 10, y = 10}, colors[c][2], colors[c][1], { x = 1, y = 2})
+	local bubbles = ParticleSystem:new(5,  {x = 128, y = 128}, 2, true, bubbleCreate, bubbleUpdate, bubbleDraw)
+	local tinyBubbles = ParticleSystem:new(5, {x = 64, y = 128}, 2, true, bubbleCreate, bubbleUpdate, tinyBubbleDraw)
 	
-    --ps:emit()
-	particleManager:add(ps)
-
+	bubbles:emit()
+	tinyBubbles:emit()
+		
+	particleManager:add(bubbles)
+	particleManager:add(tinyBubbles)
+	
+	--Heal Particles
+	local heal = ParticleSystem:new(40, {x = 148, y = 128}, 0, false, healCreate, healUpdate, healDraw)
+	local healBlink = ParticleSystem:new(15, {x = 148, y = 128}, 0, false, healCreate, healUpdate)
+    
+	heal:emitInsideRect(100,64)
+	healBlink:emitInsideRect(100,64)
+	
+	particleManager:add(heal)
+	particleManager:add(healBlink)
+	
+	-- Sand Attack Particles
+	local sandAttack =  ParticleSystem:new(40, {x = 148, y = 128}, 0, false, sandAttackCreate , sandAttackUpdate)
+	
+	sandAttack:emit()
+	
+	particleManager:add(sandAttack)
+	
+	-- Hit Particles
+	local hitAttack =  ParticleSystem:new(40, {x = 64, y = 128}, 0, false, hitCreate, hitUpdate, hitDraw)
+	
+	hitAttack:emit()
+	
+	particleManager:add(hitAttack)
+	
     --start_recording('fishes.gif')
 end
 
 function draw()
+	clr(1)
     -- Draws dungeon
     dungeon:draw()
 	

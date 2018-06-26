@@ -2,7 +2,7 @@ local Particle = {}
 
 function Particle:new(color, accent, position, speed)
     local instance = {
-		position = position,
+		position = position or { x = 0, y = 0},
 		color = color or 8, accent = accent or 9,
 		active = false,
 		speed = speed or { x = 0, y = 0},
@@ -13,25 +13,13 @@ function Particle:new(color, accent, position, speed)
     return instance
 end
 
-function Particle:draw()
-	if self.active then
-		putp(self.position.x, self.position.y, self.color)
-	end
-end
-
-function Particle:update(dt)
-	if self.active then
-		self.position.x = particle.position.x + self.speed.x * dt
-		self.position.y = particle.position.y + self.speed.y * dt
-	end
-end
-
 function Particle:dprint()
 	s = ''
 	s = s.. 'Position: '.. tostring(self.position) .. '\n'
 	s = s.. 'Color: ' .. self.color .. '\n'
 	s = s.. 'Accent: ' .. self.accent .. '\n'
-	s = s.. 'Active : ' ..  tostring(self.active) .. '\n'
+	s = s.. 'Active: ' ..  tostring(self.active) .. '\n'
+	s = s.. 'Speed : ' .. tostring(self.speed.x) .. ','.. tostring(self.speed.y) .. '\n'
 	dprint(s)
 end
 
