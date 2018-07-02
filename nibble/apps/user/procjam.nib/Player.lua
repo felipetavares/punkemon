@@ -5,6 +5,8 @@ local Inventory = require('Inventory')
 
 local Combat = require('Combat')
 
+local EnemyBiped = require('EnemyBiped')
+
 function Player:new()
     local instance = {
         x = 10, y = 7,
@@ -32,21 +34,26 @@ function Player:init(room)
             end
         end
     end
-end
-
+end 
 function Player:draw(room)
     spr(self.x*16, self.y*16, 10+self.frame, 3)
 end
 
+local t = 0
 function Player:battleDraw()
+    t += 1/30
+
+    local deltay = math.sin(t*2)*6
+    local deltax = math.cos(t*2)*3
+
 	-- Draw sword
-	-- dprint('Draw sword')
-	
+	pspr(100+deltax, 75+deltay, 0, 208, 48, 80)
+
 	-- Draw sereia comedora de cu
-	pspr(10, 95, 320,240, 128,128)
+	pspr(10+deltax, 75+deltay, 320,240, 128,128)
 	
 	-- Draw shield
-    pspr(116, 144, 0, 112, 48, 80)
+    pspr(112+deltax, 130+deltay, 0, 112, 48, 80)
 end
 
 function Player:checkAndMove(room, dx, dy)
@@ -92,6 +99,8 @@ function Player:step(room)
     end
 
     local enemy = room:getCharacter(self.x, self.y) or room:getCharacter(self.oldX, self.oldY)
+
+    enemy = EnemyBiped:new(nil)
 
     if enemy then
         local combat = Combat:new(self, enemy)

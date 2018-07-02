@@ -1,5 +1,7 @@
 local EnemyAI = require('EnemyAI')
 local Choice = require('Choice')
+local CombatMenu = require('CombatMenu')
+local Attack = require('Attack')
 local Combat = {}
 
 PLAYER_START = 0
@@ -11,6 +13,10 @@ function Combat:new(player, character, battleStarter)
         character = character or nil,
 		turn = 0,
 		battleStarter = player,
+        menu = CombatMenu:new({Attack:new('Tackle'),
+                               Attack:new('Sand'),
+                               Attack:new('Harden'),
+                               Attack:new('Growl')}, nil),
 		
 		enemyAI = EnemyAI:new(character),
     }
@@ -32,16 +38,30 @@ function Combat:draw()
 	-- Draw static UI
 	
 	-- Draw dynamic UI
+
+    -- Player stats
+    self:drawStats(206, 186, 1)
+    -- Enemy stats
+    self:drawStats(20, 16, 1)
+
+    self.menu:draw()
 end
 
 function Combat:update(dt)
 	-- Passeio pela UI --
-    if btp(DOWN) then
-		playerChoice = Choice:new()
+    --if btp(DOWN) then
+	--	playerChoice = Choice:new()
+	--	enemyChoice = self.enemyAI:decision()
+    --    self:nextTurn(playerChoice, enemyChoice)
+	--end
+    
+    if self.menu.selectedAttack then
+		playerChoice = Choice:new(self.menu.selectedAttack, nil)
 		enemyChoice = self.enemyAI:decision()
         self:nextTurn(playerChoice, enemyChoice)
-	end
+    end
 	
+    self.menu:update()
 end
 
 function Combat:nextTurn(playerChoice, enemyChoice)
@@ -66,5 +86,28 @@ function Combat:executeChoice(choice)
 	end
 end
 
+function Combat:drawStats(x, y, hp)
+    rectf(x, y+3, 96*hp, 10, 11)
+    rect(x+3, y+3, 96*hp-5, 9, 7)
+    rectf(x, y+11, 96*hp, 1, 7)
+
+    col(7, 1)
+
+    pspr(x+2, y+20, 49, 82, 5, 6)
+    print('Shield ' .. tostring(12), x+10, y+20-1)
+    pspr(x+2, y+28, 49, 90, 5, 6)
+    print('Sword ' .. tostring(6), x+10, y+28-1)
+    pspr(x+2, y+36, 57, 82, 5, 6)
+    print('Speed ' .. tostring(2), x+10, y+36-1)
+
+    col(7, 7)
+
+    spr(x, y, 0, 12)
+    for i=1,4 do
+        x += 16
+        spr(x, y, 1, 12)
+    end
+    spr(x+16, y, 2, 12)
+end
 
 return Combat

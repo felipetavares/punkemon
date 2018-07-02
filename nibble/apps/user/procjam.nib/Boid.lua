@@ -46,7 +46,7 @@ end
 
 function Boid:draw()
     if self.animated then
-        spr(self.pos.x, self.pos.y,
+        spr(self.pos.x-20, self.pos.y-20,
             self.animation[self.animationPos][1], self.animation[self.animationPos][2])
     else
         -- Draw shadows
@@ -120,8 +120,13 @@ function Boid:update(dt, heading, closeCenter, farCenter, overlapIntensity)
     self.pos.y = self.pos.y + dy*dt/4
     
     -- Move in the heading direction
-    self.pos.x = (self.pos.x+self.dir.x*self.speed)%320
-    self.pos.y = (self.pos.y+self.dir.y*self.speed)%240
+    if self.animated then
+        self.pos.x = (self.pos.x+self.dir.x*self.speed)%360
+        self.pos.y = (self.pos.y+self.dir.y*self.speed)%280
+    else
+        self.pos.x = (self.pos.x+self.dir.x*self.speed)%320
+        self.pos.y = (self.pos.y+self.dir.y*self.speed)%240
+    end
 
     -- Update the turn side
     if math.random() > 1-self.turnUpdateChance then

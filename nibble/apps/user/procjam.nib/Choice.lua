@@ -1,9 +1,9 @@
 local Choice = {}
 
-function Choice:new()
+function Choice:new(attack, item)
     local instance = {
-		attack = nil,
-		item = nil,
+		attack = attack or nil,
+		item = item or nil,
     }
 
     lang.instanceof(instance, Choice)

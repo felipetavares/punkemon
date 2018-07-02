@@ -1,4 +1,6 @@
 -- Imports
+require('Audio')
+
 local Player = require('Player')
 player = Player:new()
 
@@ -61,7 +63,7 @@ function init()
 	
 	particleManager:add(hitAttack)
 	
-    --start_recording('fishes.gif')
+    --start_recording('mermaids.gif')
 end
 
 function draw()

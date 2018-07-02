@@ -12,13 +12,15 @@ elementalMultiplier = {
 	SCOUT		= { PIERCING = 2,	TANK = 0.5, SCOUT = 1 	},
 }
 
-function Attack:new(power, accuracy, element, target, effect)
+function Attack:new(name, power, accuracy, element, pp, target, effect)
     local instance = {
-		power = 10 or power,
-		accuracy = 1 or accuracy,
-		element = NEUTRAL or element,
-		target = nil or target,
-		effect = nil or effect,
+        name = name or '',
+		power = power or 10,
+		accuracy = accuracy or 1,
+		element = element or NEUTRAL,
+		target = target or nil,
+		effect = effect or nil,
+        pp = pp or 5
     }
 
     lang.instanceof(instance, Attack)

@@ -32,7 +32,22 @@ function EnemyBiped:draw()
 end
 
 function EnemyBiped:battleDraw()
-	pspr(144, 38, 464, 240, 128,128)
+    local t = clock()
+
+    local deltay = math.sin(t*6)*4;
+    local deltax = math.sin(t*6)*4;
+
+    -- Draws body
+	pspr(190, 99, 448, 336, 48, 48)
+
+    -- Draws head 
+	pspr(190, 20+deltay/2+2, 448, 240, 48, 96)
+
+    -- Right arm
+    pspr(160+deltax/2, 90+deltay, 496, 304, 48, 64)
+
+    -- Left arm
+    pspr(210-deltax, 92+deltay, 496, 240, 64, 64)
 end
 
 function EnemyBiped:step()
