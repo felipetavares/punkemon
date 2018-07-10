@@ -8,15 +8,23 @@ PLAYER_START = 0
 ENEMY_START = 1
 
 function Combat:new(player, character, battleStarter)
+    dprint('ch', character)
+
+    -- TODO: Get attacks from the player
+    local tackle = Attack:new('Tackle', 10, 1, 1, 3, character, function () end)
+    local sand = Attack:new('Sand', 10, 1, 1, 5, character, function () end)
+    local harden = Attack:new('Harden', 10, 1, 1, 5, player, function () end)
+    local growl = Attack:new('Growl', 10, 1, 1, 5, character, function () end)
+
     local instance = {
         player = player or nil,
         character = character or nil,
 		turn = 0,
 		battleStarter = player,
-        menu = CombatMenu:new({Attack:new('Tackle'),
-                               Attack:new('Sand'),
-                               Attack:new('Harden'),
-                               Attack:new('Growl')}, nil),
+        menu = CombatMenu:new({tackle,
+                               sand,
+                               harden,
+                               growl}, nil),
 		
 		enemyAI = EnemyAI:new(character),
     }
@@ -48,17 +56,12 @@ function Combat:draw()
 end
 
 function Combat:update(dt)
-	-- Passeio pela UI --
-    --if btp(DOWN) then
-	--	playerChoice = Choice:new()
-	--	enemyChoice = self.enemyAI:decision()
-    --    self:nextTurn(playerChoice, enemyChoice)
-	--end
-    
     if self.menu.selectedAttack then
 		playerChoice = Choice:new(self.menu.selectedAttack, nil)
 		enemyChoice = self.enemyAI:decision()
         self:nextTurn(playerChoice, enemyChoice)
+
+        self.menu.selectedAttack = nil
     end
 	
     self.menu:update()
@@ -80,7 +83,8 @@ end
 function Combat:executeChoice(choice)
 	if choice.attack ~= nil then
 		dprint('Attack')
-		choice.attack.effect(choice.target)
+        dprint(choice.attack.target)
+		choice.attack.effect(choice.attack.target)
 	elseif choice.item ~= nil then
 		dprint('Item')
 	end

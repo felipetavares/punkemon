@@ -64,9 +64,17 @@ function CombatMenu:drawAttacks(x)
     local basex = -x+(320-MENU_OPEN_PIXELS)+16
     local basey = 160
     local ampx = 54
-    local ampy = 32
+    local ampy = 48
+
+    for i, _ in ipairs(self.attacks) do
+        col(9+i-1, (i == self.selected) and 12 or 2)
+    end
 
     pspr(basex, basey, 576, 336, 64, 64)
+    col(9, 9)
+    col(10, 10)
+    col(11, 11)
+    col(12, 12)
 
     local names = {}
 
@@ -89,7 +97,7 @@ function CombatMenu:drawAttacks(x)
 
     for i, attack in ipairs(self.attacks) do
         local x = basex+ampx/2+math.cos(i/4*math.pi*2-math.pi)*ampx/2
-        local y = basey+ampy/2+math.sin(i/4*math.pi*2-math.pi)*ampy/2+16
+        local y = basey+ampy/2+math.sin(i/4*math.pi*2-math.pi)*ampy/2+4
 
         x += offsets[i].x
         y += offsets[i].y
@@ -145,7 +153,7 @@ function CombatMenu:update()
 end
 
 function CombatMenu:drawBase(x)
-    pspr(-x, 160, 320, 400, 320, 80)
+    pspr(-x, 152, 320, 400, 320, 80)
 end
 
 function CombatMenu:drawButtons(x, attackb, itemsb)
