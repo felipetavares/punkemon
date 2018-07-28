@@ -215,7 +215,6 @@ end
 function Room:update(dt)
     for i=#self.characters,1,-1 do
         if self.characters[i].battleStats.HP <= 0 then
-            dprint('Removing...')
             self.characters[i] = nil
         end
     end

@@ -50,7 +50,7 @@ function Player:init(room)
 end 
 
 function Player:draw(room)
-    spr(self.x*16, self.y*16, 10+self.frame, 3)
+    pspr(self.x*16, self.y*16, (10+self.frame)*16, 3 * 16, 16, 16)
 end
 
 local t = 0
