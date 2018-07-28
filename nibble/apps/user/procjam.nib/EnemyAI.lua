@@ -1,11 +1,12 @@
 local Character = require('Character')
 local Choice = require('Choice')
+local Attack = require('Attack')
 
 EnemyAI = {}
 
 function EnemyAI:new(controlledCharacter)
     local instance = {
-		chara = controlledCharacter,
+    chara = controlledCharacter,
     }
 
     lang.instanceof(instance, EnemyAI)
@@ -13,10 +14,21 @@ function EnemyAI:new(controlledCharacter)
     return instance
 end
 
-function EnemyAI:decision()
-	--> Escolhe se irá usar o item carregado (se puder) ou irá atacar # Árvore de decisão
+function EnemyAI:decision(player)
+  --> Escolhe se irá usar o item carregado (se puder) ou irá atacar
+  shield = player.equipment.shield
+
+  function classifier(attack)
+    local multiplayer = 1
+
+    if shield then
+      multiplayer = 
+    end
+  end
+
+  function compare(a,b)
+  end
 	return Choice:new()
 end
-
 
 return EnemyAI

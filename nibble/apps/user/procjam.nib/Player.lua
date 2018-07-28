@@ -18,10 +18,12 @@ function Player:new()
 		oldX = x, oldY = y,
 
         frame = 0,
-        elapsed = 0
+        elapsed = 0,
+
+        direction = D_RIGHT
     }
 
-    lang.instanceof(instance, lang.copy(Player))
+    lang.instanceof(instance, Player)
 
     local tackle = Attack:new('Tackle', 10, 1, 1, 3, nil, function (e)
         e.battleStats.HP = e.battleStats.HP-1
@@ -50,7 +52,12 @@ function Player:init(room)
 end 
 
 function Player:draw(room)
-    pspr(self.x*16, self.y*16, (10+self.frame)*16, 3 * 16, 16, 16)
+    if self.direction == D_LEFT then
+        spr(self.x*16, self.y*16, 11+self.frame, 4)
+    else
+        spr(self.x*16, self.y*16, 11+self.frame, 5)
+    end
+    
 end
 
 local t = 0
@@ -137,8 +144,10 @@ function Player:update(room, dt)
         self:checkAndMove(room, 0, -1)
     elseif btp(LEFT) then
         self:checkAndMove(room, -1, 0)
+        self.direction = D_LEFT
     elseif btp(RIGHT) then
         self:checkAndMove(room, 1, 0)
+        self.direction = D_RIGHT
     end
 end
 
