@@ -21,7 +21,7 @@ function Player:new()
         elapsed = 0
     }
 
-    lang.instanceof(instance, Player)
+    lang.instanceof(instance, lang.copy(Player))
 
     local tackle = Attack:new('Tackle', 10, 1, 1, 3, nil, function (e)
         e.battleStats.HP = e.battleStats.HP-1

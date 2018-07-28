@@ -5,7 +5,7 @@ function EnemyTank:new(path)
     local instance = {
     }
 
-    lang.instanceof(instance, EnemyTank)
+    lang.instanceof(instance, lang.copy(EnemyTank))
 
     instance:init(path)
 
