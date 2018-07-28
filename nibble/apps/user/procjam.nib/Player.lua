@@ -4,6 +4,7 @@ local Player = Character:new()
 local Inventory = require('Inventory')
 
 local Combat = require('Combat')
+local Attack = require('Attack')
 
 local EnemyBiped = require('EnemyBiped')
 
@@ -22,6 +23,18 @@ function Player:new()
 
     lang.instanceof(instance, Player)
 
+    local tackle = Attack:new('Tackle', 10, 1, 1, 3, nil, function (e)
+        e.battleStats.HP = e.battleStats.HP-1
+    end)
+    local sand = Attack:new('Sand', 10, 1, 1, 5, nil, function () end)
+    local harden = Attack:new('Harden', 10, 1, 1, 5, nil, function () end)
+    local growl = Attack:new('Growl', 10, 1, 1, 5, nil, function () end)
+
+    table.insert(instance.moveset, tackle)
+    table.insert(instance.moveset, sand)
+    table.insert(instance.moveset, harden)
+    table.insert(instance.moveset, growl)
+
     return instance
 end
 
@@ -35,6 +48,7 @@ function Player:init(room)
         end
     end
 end 
+
 function Player:draw(room)
     spr(self.x*16, self.y*16, 10+self.frame, 3)
 end
@@ -100,7 +114,7 @@ function Player:step(room)
 
     local enemy = room:getCharacter(self.x, self.y) or room:getCharacter(self.oldX, self.oldY)
 
-    enemy = EnemyBiped:new(nil)
+    --enemy = EnemyBiped:new(nil)
 
     if enemy then
         local combat = Combat:new(self, enemy)

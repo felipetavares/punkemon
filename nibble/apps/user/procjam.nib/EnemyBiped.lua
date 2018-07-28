@@ -3,13 +3,22 @@ local EnemyBiped = Character:new()
 
 function EnemyBiped:new(path)
     local instance = {
+        tick = false
     }
 
-    lang.instanceof(instance, EnemyBiped)
+    lang.instanceof(instance, lang.copy(EnemyBiped))
 
     instance:init(path)
 
     return instance
+end
+
+function EnemyBiped:init(path)
+    Character.init(self, path)
+
+    self.baseStats.HP = 5
+
+    self.battleStats.HP = self.baseStats.HP
 end
 
 function EnemyBiped:draw()
@@ -51,7 +60,12 @@ function EnemyBiped:battleDraw()
 end
 
 function EnemyBiped:step()
-    self.position = (self.position%#self.path)+1
+    if self.tick then
+        self.position = (self.position%#self.path)+1
+        self.tick = false
+    else
+        self.tick = true
+    end
 
     self.x = self.path[self.position].x
     self.y = self.path[self.position].y

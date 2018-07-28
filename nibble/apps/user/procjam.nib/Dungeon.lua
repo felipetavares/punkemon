@@ -13,7 +13,7 @@ function Dungeon:new()
         combat = nil,
         current = 1,
         rooms = {},
-        w = 1,
+        w = 3,
         h = 3,
         boidManager = BoidManager:new()
     }
@@ -100,6 +100,25 @@ function Dungeon:move(dx, dy)
     return self.rooms[self.current]
 end
 
+function Dungeon:drawMap()
+    local room_h = 12
+    local room_w = 12
+
+    for y=0,self.h-1 do
+        for x=0,self.w-1 do
+            local room = self.rooms[y*self.w+x+1]
+
+            if room ~= false then
+                if room == self.rooms[self.current] then
+                    rectf(x*room_w, y*room_h+1, room_w+1, room_h+1, 12)
+                else
+                    rect(x*room_w+1, y*room_h+1, room_w, room_h, 12)
+                end
+            end
+        end
+    end
+end
+
 function Dungeon:draw()
     if self.combat then
         self.combat:draw()
@@ -108,6 +127,8 @@ function Dungeon:draw()
         -- Draws fishes
         self.boidManager:draw()
     end
+
+    self:drawMap()
 
 --    if btp(DOWN) and self.current < #self.rooms then
 --        for i=self.current+1,#self.rooms do
