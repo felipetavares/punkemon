@@ -16,8 +16,6 @@ local function setMovesetTarget(moveset, target)
 end
 
 function Combat:new(player, character, battleStarter)
-    dprint(player.moveset)
-
     local instance = {
         player = player or nil,
         character = character or nil,
@@ -57,7 +55,7 @@ end
 function Combat:update(dt)
     if self.menu.selectedAttack then
 		playerChoice = Choice:new(self.menu.selectedAttack, nil)
-		enemyChoice = self.enemyAI:decision()
+		enemyChoice = self.enemyAI:decision(self.player)
         self:nextTurn(playerChoice, enemyChoice)
 
         self.menu.selectedAttack = nil

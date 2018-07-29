@@ -82,6 +82,8 @@ function Room:generateDecorations()
                         self.tilemap:setPath(pathStep.x, pathStep.y, true)
                     end
                 end
+
+                coroutine.yield()
             end
         end
     end
@@ -94,6 +96,8 @@ function Room:generateDecorations()
                 floorTile = tile
                 break
             end
+
+            coroutine.yield()
         end
 
         local path = aStar(floorTile, tiles[door.y*self.w+door.x+1], tiles, self.w, self.h)
@@ -125,6 +129,8 @@ function Room:generateDecorations()
                 table.insert(self.decorations, Decoration:new(x*16, y*16, decoration))
             end
         end
+
+        coroutine.yield()
     end
 end
 

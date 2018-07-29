@@ -15,8 +15,9 @@ function EnemyAI:new(controlledCharacter)
 end
 
 function EnemyAI:decision(player)
-    --> Escolhe se irá usar o item carregado (se puder) ou irá atacar
-    local shield = player.equipment.shield
+    --> Still needs to classify status bellow attack.
+    --> Are status always items?
+    local shield = player.equipment.SHIELD
 
     function classifier(attack)
         local multiplayer = 1
@@ -32,15 +33,26 @@ function EnemyAI:decision(player)
         return classifier(a) < classifier(b)
     end
 
-    local MAGIC_NUMBER = 1
+    local tackle = Attack:new('Tackle', 1, 1, Attack.TECH, 3, player, function (e)
+        e.battleStats.HP = e.battleStats.HP-1
+    end)
 
-    local index = math.floor(1/(player.battleStats.HP*self.battleStats.HP)*MAGIC_NUMBER)
-
-    local attacks = {}
+    local attacks = {tackle}
 
     table.sort(attacks, compare)  
 
-    return Choice:new(attacks[index], nil)
+    local normalized_p_hp = player.battleStats.HP/player.baseStats.HP
+    local normalized_e_hp = self.chara.battleStats.HP/self.chara.baseStats.HP
+
+    local index = 0
+    
+    if normalized_p_hp ~= 0 and normalized_e_hp ~= 0 then
+        math.floor(1/(normalized_p_hp*normalized_e_hp)*#attacks)
+    end
+
+    dprint(attacks[index+1])
+
+    return Choice:new(attacks[index+1], nil)
 end
 
 return EnemyAI

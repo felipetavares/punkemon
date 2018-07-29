@@ -12,8 +12,14 @@ local ParticleManager = require('ParticleManager')
 require ('ParticleFunctions')
 
 -- Singletons
-local dungeon = Dungeon:new()
+local dungeon = nil
 local particleManager = ParticleManager:new()
+
+function background_init()
+    dungeon = Dungeon:new()
+end
+
+local bg_init = coroutine.create(background_init)
 
 function init()
     -- Set palette
@@ -66,16 +72,81 @@ function init()
     --start_recording('mermaids.gif')
 end
 
+local completed = 0
+local time = 0
+local dumb_messages = {
+    "Creating evil Gods",
+    "Gods are having sex",
+    "Dinossaurs are evolving into chicken",
+    "Mermaids are ruling",
+    "Fishes are swiming",
+    "Killing crabs",
+    "Breaking rocks",
+    "Adding rum",
+    "Raining a bit",
+    "Sleeping",
+    "Crabs are fighting back",
+    "Crabs have taken over",
+    "Satan is being summoned",
+    "Mermaids are shining",
+    "Spreading glitter all around",
+    "Drawing whales",
+}
+
 function draw()
 	clr(1)
-    -- Draws dungeon
-    dungeon:draw()
-	
-	-- Draw particles
-	particleManager:draw()
+
+    if not dungeon then
+        _, percent = coroutine.resume(bg_init)
+
+        if percent then
+            completed = percent
+
+            local i = math.random(1, #dumb_messages)
+            bottom_msg = "" .. dumb_messages[i] .. ""
+
+            if #dumb_messages > 1 then
+                table.remove(dumb_messages, i)
+            end
+        end
+
+        for i=1,8 do
+            local x = math.cos(time*3*i/8)*20
+            local y = math.sin(time*3*i/8)*20
+
+            circf(x+160, y+120, 3, i+4)
+        end
+
+        local str = tostring(math.floor(completed*100)) .. '%'
+        print(str, 160-4*#str, 120-4)
+
+        local top_msg = "Eroding deep sea caves..."
+        print(top_msg, 160-4*#top_msg, 60)
+
+        if bottom_msg then
+            local bottom_intro = "Presently:"
+            print(bottom_intro, 160-4*#bottom_intro, 170)
+
+            col(14, 13)
+            print(string.upper(bottom_msg), 160-4*#bottom_msg, 190)
+            col(14, 14)
+        end
+    else
+        dprint(dungeon)
+
+        -- Draws dungeon
+        dungeon:draw()
+        
+        -- Draw particles
+        particleManager:draw()
+    end
 end
 
 function update(dt)
-	particleManager:update(dt)
-    dungeon:update(dt)
+    time += dt
+
+    if dungeon then
+        particleManager:update(dt)
+        dungeon:update(dt)
+    end
 end

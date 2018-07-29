@@ -131,6 +131,10 @@ function TilemapBuilder:each(w, h, fn)
 
             table.insert(self.results, copy)
         end
+
+        if y%2 == 0 then
+            coroutine.yield()
+        end
     end
 end
 

@@ -13,7 +13,7 @@ function Dungeon:new()
         combat = nil,
         current = 1,
         rooms = {},
-        w = 3,
+        w = 6,
         h = 3,
         boidManager = BoidManager:new()
     }
@@ -67,6 +67,8 @@ function Dungeon:generate()
                 table.insert(self.rooms, room)
 
                 dprint('Room ' .. tostring(column) .. ',' .. tostring(row) .. ' generated')
+
+                coroutine.yield((row*self.w+column)/(self.w*self.h))
             else
                 table.insert(self.rooms, false)
             end

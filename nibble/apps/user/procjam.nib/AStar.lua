@@ -58,6 +58,8 @@ local function generatePath(tmpPath, current)
 end
 
 function aStar(start, finish, tilemap, w, h)
+    coroutine.yield()
+
     -- Node hash tables
     local visited = {}
     local frontier = {}

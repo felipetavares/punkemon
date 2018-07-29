@@ -25,12 +25,12 @@ function Player:new()
 
     lang.instanceof(instance, Player)
 
-    local tackle = Attack:new('Tackle', 10, 1, 1, 3, nil, function (e)
+    local tackle = Attack:new('Tackle', 10, 1, Attack.TECH, 3, nil, function (e)
         e.battleStats.HP = e.battleStats.HP-1
     end)
-    local sand = Attack:new('Sand', 10, 1, 1, 5, nil, function () end)
-    local harden = Attack:new('Harden', 10, 1, 1, 5, nil, function () end)
-    local growl = Attack:new('Growl', 10, 1, 1, 5, nil, function () end)
+    local sand = Attack:new('Sand', 10, 1, Attack.TECH, 5, nil, function () end)
+    local harden = Attack:new('Harden', 10, 1, Attack.TECH, 5, nil, function () end)
+    local growl = Attack:new('Growl', 10, 1, Attack.TECH, 5, nil, function () end)
 
     table.insert(instance.moveset, tackle)
     table.insert(instance.moveset, sand)
@@ -49,6 +49,10 @@ function Player:init(room)
             end
         end
     end
+
+    self.baseStats.HP = 5
+
+    self.battleStats.HP = self.baseStats.HP
 end 
 
 function Player:draw(room)
