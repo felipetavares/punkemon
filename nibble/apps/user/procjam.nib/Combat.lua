@@ -3,6 +3,7 @@ local Choice = require('Choice')
 local CombatMenu = require('CombatMenu')
 local Attack = require('Attack')
 local Combat = {}
+local Types = require("Attack")
 
 PLAYER_START = 0
 ENEMY_START = 1
@@ -27,7 +28,6 @@ function Combat:new(player, character, battleStarter)
     }
 
     lang.instanceof(instance, Combat)
-
     return instance
 end
 
@@ -84,7 +84,6 @@ end
 function Combat:executeChoice(choice)
 	if choice.attack ~= nil then
 		dprint('Attack')
-        dprint(choice.attack.target)
 		choice.attack.effect(choice.attack.target)
 	elseif choice.item ~= nil then
 		dprint('Item')
@@ -92,6 +91,7 @@ function Combat:executeChoice(choice)
 end
 
 function Combat:drawStats(x, y, character)
+    
     local hp = character.battleStats.HP/character.baseStats.HP
     local attack = character.battleStats.attack
     local defense = character.battleStats.defense

@@ -7,6 +7,7 @@ local Combat = require('Combat')
 local Attack = require('Attack')
 
 local EnemyBiped = require('EnemyBiped')
+local Types = require("Attack")
 
 function Player:new()
     local instance = {
@@ -20,7 +21,11 @@ function Player:new()
         frame = 0,
         elapsed = 0,
 
-        direction = D_RIGHT
+        direction = D_RIGHT,
+        name = 'Player',
+
+        baseStats = {},
+        battleStats = {}
     }
 
     lang.instanceof(instance, Player)
@@ -41,6 +46,18 @@ function Player:new()
 end
 
 function Player:init(room)
+
+    self.baseStats = {
+        HP = 80,
+        attack = 75,
+        defense = 80,
+        speed = 56,
+        element = Types.TECH,
+    }
+
+    self.battleStats = lang.copy(self.baseStats)
+    dprint('ola bonitos')
+
     for x=0,room.w do
         for y=0,room.h do
             if room.tilemap:get(x, y).kind == 07 then
@@ -50,9 +67,6 @@ function Player:init(room)
         end
     end
 
-    self.baseStats.HP = 5
-
-    self.battleStats.HP = self.baseStats.HP
 end 
 
 function Player:draw(room)

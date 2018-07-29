@@ -1,5 +1,6 @@
 local Attack = require('Attack')
 local Character = {}
+local EnemyDescription = require('EnemyDescription')
 
 function Character:new()
     local instance = {
@@ -7,26 +8,14 @@ function Character:new()
         y = 0,
         path = {},
         position = 1,
-		level = 1,
+        level = 1,
+        name = 'Basic',
 		
-		baseStats = {
-			attack = 0,
-			defense = 0,
-			speed = 0,
-			element = NEUTRAL,
-			HP = 1
-		},
+		baseStats = {},
 		
-		battleStats = {
-			attack = 1,
-			defense = 1,
-			speed = 1,
-			HP = 1,
-			status  = 0,
-		},
+		battleStats = {},
 		
-		moveset = {
-		}
+		moveset = {}
     }
 
     lang.instanceof(instance, Character)
@@ -44,6 +33,15 @@ function Character:init(path)
     self.x = init.x
     self.y = init.y
     self.path = path or {}
+
+    -- Load the character stats
+    self.baseStats   = lang.copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
+    self.battleStats = lang.copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
+
+    self.moveset     = lang.copy(EnemyDescription.moveset[self.name .. tostring(self.level)])
+
+    dprint(self.name)
+
 end
 
 function Character:findDirection()
@@ -74,6 +72,16 @@ end
 
 function Character:battleDraw()
 	dprint('Opa coleguinha, precisa desenhar esse inimigo maneiro aqui')
+end
+
+function Character:print()
+    s = ''
+
+    s = s .. tostring(self.x) .. ',' .. tostring(self.y) .. '\n'
+    s = s .. tostring(self.baseStats) .. '\n'
+    s = s .. tostring(self.battleStats) .. '\n'
+    s = s .. tostring(self.moveset) .. '\n'
+    dprint(s)
 end
 
 return Character

@@ -19,7 +19,7 @@ local function cantor(x, y)
     return 1/2*(x+y)*(x+y+1)+y
 end
 
-function Room:new(tilemap, doormap, doors, w, h, dungeon)
+function Room:new(tilemap, doormap, doors, w, h, dungeon, stage)
     local instance = {
         w = w or 0,
         h = h or 0,
@@ -29,7 +29,8 @@ function Room:new(tilemap, doormap, doors, w, h, dungeon)
         decorations = {},
         characters = {},
         paths = {},
-        dungeon = dungeon or nil
+        dungeon = dungeon or nil,
+        stage = stage or 1,
     }
 
     lang.instanceof(instance, Room)
@@ -44,7 +45,7 @@ function Room:generateCharacters()
     for i, path in ipairs(self.paths) do
         if i ~= #self.paths then
            -- if math.random() < 0.5 then
-                table.insert(self.characters, EnemyBiped:new(path))
+                table.insert(self.characters, EnemyBiped:new(path, self.stage))
             --else
             --    table.insert(self.characters, EnemyTank:new(path))
             --end

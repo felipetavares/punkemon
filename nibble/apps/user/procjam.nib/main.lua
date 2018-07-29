@@ -10,9 +10,10 @@ local Particle = require('Particle')
 local ParticleSystem = require('ParticleSystem')
 local ParticleManager = require('ParticleManager')
 require ('ParticleFunctions')
+coroutine.yield = function() end
 
 -- Singletons
-local dungeon = nil
+local dungeon = Dungeon:new()
 local particleManager = ParticleManager:new()
 
 function background_init()
@@ -117,8 +118,8 @@ function draw()
             circf(x+160, y+120, 3, i+4)
         end
 
-        local str = tostring(math.floor(completed*100)) .. '%'
-        print(str, 160-4*#str, 120-4)
+        --local str = tostring(math.floor(completed*100)) .. '%'
+        --print(str, 160-4*#str, 120-4)
 
         local top_msg = "Eroding deep sea caves..."
         print(top_msg, 160-4*#top_msg, 60)
@@ -132,7 +133,6 @@ function draw()
             col(14, 14)
         end
     else
-        dprint(dungeon)
 
         -- Draws dungeon
         dungeon:draw()
