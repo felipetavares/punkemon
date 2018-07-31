@@ -10,6 +10,7 @@ local Particle = require('Particle')
 local ParticleSystem = require('ParticleSystem')
 local ParticleManager = require('ParticleManager')
 require ('ParticleFunctions')
+coroutine.yield = function() end
 
 local TitleScreen = require('TitleScreen')
 
@@ -129,8 +130,8 @@ function draw()
             end
         end
 
-        local str = tostring(math.floor(completed*100)) .. '%'
-        print(str, 160-4*#str, 120-4)
+        --local str = tostring(math.floor(completed*100)) .. '%'
+        --print(str, 160-4*#str, 120-4)
 
         local top_msg = "Eroding deep sea caves..."
         print(top_msg, 160-4*#top_msg, 60)

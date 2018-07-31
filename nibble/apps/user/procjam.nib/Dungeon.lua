@@ -13,8 +13,8 @@ function Dungeon:new()
         combat = nil,
         current = 1,
         rooms = {},
-        w = 2,
-        h = 2,
+        w = 3,
+        h = 3,
         boidManager = BoidManager:new(),
         finished = false
     }
@@ -63,13 +63,14 @@ function Dungeon:generate()
                                                                           (tile & D_LEFT) ~= 0,
                                                                           (tile & D_RIGHT) ~= 0)
 
-                local room = Room:new(tilemapBuilder, doormap, doors, w, h, self)
+                local room = Room:new(tilemapBuilder, doormap, doors, w, h, self, stage)
 
                 table.insert(self.rooms, room)
 
                 dprint('Room ' .. tostring(column) .. ',' .. tostring(row) .. ' generated')
 
-                coroutine.yield((row*self.w+column)/(self.w*self.h))
+                coroutine.yield(0)
+                --coroutine.yield((row*self.w+column)/(self.w*self.h))
             else
                 table.insert(self.rooms, false)
             end
@@ -79,7 +80,7 @@ function Dungeon:generate()
     for k, v in ipairs(self.rooms) do
         if v ~= false then
             self.current = k
-
+            dprint('olá não tao bonitos')
             player:init(self.rooms[self.current])
             break
         end

@@ -80,4 +80,3 @@ Golpes básicos:
 	Sand Attack -> Speed
 	Tackle -> Normal Attack 
 	
-	

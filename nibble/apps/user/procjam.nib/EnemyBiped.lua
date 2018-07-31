@@ -1,9 +1,13 @@
 local Character = require('Character')
 local EnemyBiped = Character:new()
+local EnemyDescription = require('EnemyDescription')
 
-function EnemyBiped:new(path)
+function EnemyBiped:new(path, level)
     local instance = {
-        tick = false
+        tick = false,
+
+        name = "Biped",
+        level = level,
     }
 
     lang.instanceof(instance, lang.copy(EnemyBiped))
