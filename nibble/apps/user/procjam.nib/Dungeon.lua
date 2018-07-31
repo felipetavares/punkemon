@@ -13,9 +13,10 @@ function Dungeon:new()
         combat = nil,
         current = 1,
         rooms = {},
-        w = 6,
-        h = 3,
-        boidManager = BoidManager:new()
+        w = 2,
+        h = 2,
+        boidManager = BoidManager:new(),
+        finished = false
     }
 
     lang.instanceof(instance, Dungeon)
@@ -131,24 +132,6 @@ function Dungeon:draw()
     end
 
     self:drawMap()
-
---    if btp(DOWN) and self.current < #self.rooms then
---        for i=self.current+1,#self.rooms do
---            if self.rooms[i] ~= false then
---                self.current = i
---                break
---            end
---        end
---    end
---
---    if btp(UP) and self.current > 1 then
---        for i=self.current-1,1,-1 do
---            if self.rooms[i] ~= false then
---                self.current = i
---                break
---            end
---        end
---    end
 end
 
 function Dungeon:update(dt)
@@ -161,6 +144,10 @@ function Dungeon:update(dt)
     else
         self.rooms[self.current]:update(dt)
         self.boidManager:update(dt)
+    end
+
+    if player.battleStats.HP <= 0 then
+        self.finished = true
     end
 end
 

@@ -11,9 +11,18 @@ local ParticleSystem = require('ParticleSystem')
 local ParticleManager = require('ParticleManager')
 require ('ParticleFunctions')
 
+local TitleScreen = require('TitleScreen')
+
 -- Singletons
 local dungeon = nil
 local particleManager = ParticleManager:new()
+
+-- Scene management
+-- 'title'
+-- 'loading'
+-- 'game'
+-- 'death'
+local scene = 'title'
 
 function background_init()
     dungeon = Dungeon:new()
@@ -30,6 +39,7 @@ function init()
 	
     -- Color 0 is transparent
     mask(0)
+    mask(3*16)
 
 	-- Getting a seed from the OS
     -- Strange non-standard nibble
@@ -37,9 +47,7 @@ function init()
 	math.randomseed( time() )
 	
 	local bubbles = ParticleSystem:new(5,  {x = 128, y = 128}, 2, true, bubbleCreate, bubbleUpdate, bubbleDraw)
-	local tinyBubbles = ParticleSystem:new(5, {x = 64, y = 128}, 2, true, bubbleCreate, bubbleUpdate, tinyBubbleDraw)
-	
-	bubbles:emit()
+	local tinyBubbles = ParticleSystem:new(5, {x = 64, y = 128}, 2, true, bubbleCreate, bubbleUpdate, tinyBubbleDraw) bubbles:emit()
 	tinyBubbles:emit()
 		
 	particleManager:add(bubbles)
@@ -94,9 +102,11 @@ local dumb_messages = {
 }
 
 function draw()
-	clr(1)
+    if scene == 'title' then
+        TitleScreen.draw_title_screen()
+    elseif scene == 'loading' then
+        clr(1)
 
-    if not dungeon then
         _, percent = coroutine.resume(bg_init)
 
         if percent then
@@ -111,10 +121,12 @@ function draw()
         end
 
         for i=1,8 do
-            local x = math.cos(time*3*i/8)*20
-            local y = math.sin(time*3*i/8)*20
+            local x = math.cos(i/4*math.pi)*20
+            local y = math.sin(i/4*math.pi)*20
 
-            circf(x+160, y+120, 3, i+4)
+            if math.floor(time*8)%8 == i then
+                circf(x+160, y+120, 3, i+4)
+            end
         end
 
         local str = tostring(math.floor(completed*100)) .. '%'
@@ -131,22 +143,55 @@ function draw()
             print(string.upper(bottom_msg), 160-4*#bottom_msg, 190)
             col(14, 14)
         end
-    else
-        dprint(dungeon)
 
+        if dungeon then
+            scene = 'game'
+        end
+    elseif scene == 'game' then
         -- Draws dungeon
         dungeon:draw()
         
         -- Draw particles
         particleManager:draw()
+
+        if dungeon.finished then
+            scene = 'death'
+        end
+    elseif scene == 'death' then
+        clr(1)
+
+        local startMessage = 'Press \09 to continue'
+        
+        if math.floor(clock()*8)%2 == 0 then
+            col(7, 1)
+            print(startMessage, 160-4*#startMessage, 210)
+            col(7, 7)
+        end
+
+        if btp(RED) then
+            scene = 'title'
+        end
     end
 end
 
 function update(dt)
     time += dt
 
-    if dungeon then
+    if scene == 'title' then
+        TitleScreen.update_title_screen(dt)
+
+        if TitleScreen.done then
+            scene = 'loading'
+            TitleScreen.done = false
+            completed = 0
+            bg_init = coroutine.create(background_init)
+            dungeon = nil
+            player = Player:new()
+        end
+    elseif scene == 'loading' then
+    elseif scene == 'game' then
         particleManager:update(dt)
         dungeon:update(dt)
+    elseif scene == 'death' then
     end
 end

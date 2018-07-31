@@ -84,7 +84,6 @@ end
 function Combat:executeChoice(choice)
 	if choice.attack ~= nil then
 		dprint('Attack')
-        dprint(choice.attack.target)
 		choice.attack.effect(choice.attack.target)
 	elseif choice.item ~= nil then
 		dprint('Item')

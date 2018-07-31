@@ -50,8 +50,6 @@ function EnemyAI:decision(player)
         math.floor(1/(normalized_p_hp*normalized_e_hp)*#attacks)
     end
 
-    dprint(attacks[index+1])
-
     return Choice:new(attacks[index+1], nil)
 end
 
