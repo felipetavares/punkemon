@@ -132,17 +132,19 @@ function g_external_doors(builder, doormap, top_door, bottom_door, left_door, ri
 end
 
 function g_apply_grammar(builder)
+    local output = builder:copy()
+
     local max_iterations = 1
 
     while max_iterations > 0 do
         -- Operate in the entire builder that was passed to us
         builder:use(0, 0, 1, 1)
 
-        builder:each(3, 3, function(block)
+        builder:each(3, 3, function(block, out_block)
             if block:is({-1, NO, -1,
                          FL, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 57, -1,
                             -1, -1, -1})
             end
@@ -150,7 +152,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          WL, WL, FL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 58, -1,
                             -1, -1, -1})
             end
@@ -158,7 +160,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          FL, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 19, -1,
                             -1, -1, -1})
             end
@@ -166,7 +168,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 24, -1,
                             -1, -1, -1})
             end
@@ -174,7 +176,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, FL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 29, -1,
                             -1, -1, -1})
             end
@@ -182,7 +184,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, NO,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 57, -1,
                             -1, -1, -1})
             end
@@ -190,7 +192,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          WL, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 54, -1,
                             -1, -1, -1})
             end
@@ -198,7 +200,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          WL, WL, WL,
                          -1, FL, WL}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 03, -1,
                             -1, -1, -1})
             end
@@ -206,7 +208,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          WL, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 02, -1,
                             -1, -1, -1})
             end
@@ -214,7 +216,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          WL, WL, NO,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 04, -1,
                             -1, -1, -1})
             end
@@ -222,7 +224,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          NO, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 00, -1,
                             -1, -1, -1})
             end
@@ -230,7 +232,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 46, -1,
                             -1, -1, -1})
             end
@@ -238,7 +240,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, NO,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 09, -1,
                             -1, -1, -1})
             end
@@ -246,7 +248,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          FL, WL, NO,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 09, -1,
                             -1, -1, -1})
             end
@@ -254,7 +256,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          NO, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 05, -1,
                             -1, -1, -1})
             end
@@ -262,7 +264,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          NO, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 05, -1,
                             -1, -1, -1})
             end
@@ -270,7 +272,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 48, -1,
                             -1, -1, -1})
             end
@@ -278,7 +280,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, FL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 49, -1,
                             -1, -1, -1})
             end
@@ -286,7 +288,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          FL, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 47, -1,
                             -1, -1, -1})
             end
@@ -294,7 +296,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 59, -1,
                             -1, -1, -1})
             end
@@ -302,7 +304,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          WL, WL, NO,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 02, -1,
                             -1, -1, -1})
             end
@@ -310,7 +312,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          NO, WL, FL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 58, -1,
                             -1, -1, -1})
             end
@@ -318,7 +320,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          NO, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 50, -1,
                             -1, -1, -1})
             end
@@ -326,7 +328,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          FL, WL, NO,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 51, -1,
                             -1, -1, -1})
             end
@@ -334,7 +336,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          NO, WL, FL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 50, -1,
                             -1, -1, -1})
             end
@@ -342,7 +344,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          NO, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 00, -1,
                             -1, -1, -1})
             end
@@ -350,7 +352,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 45, -1,
                             -1, -1, -1})
             end
@@ -358,7 +360,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, NO,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 04, -1,
                             -1, -1, -1})
             end
@@ -366,7 +368,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, WL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 11, -1,
                             -1, -1, -1})
             end
@@ -374,7 +376,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, NO,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 14, -1,
                             -1, -1, -1})
             end
@@ -382,7 +384,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          NO, WL, WL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 10, -1,
                             -1, -1, -1})
             end
@@ -390,7 +392,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, FL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 50, -1,
                             -1, -1, -1})
             end
@@ -398,7 +400,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          FL, WL, WL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 51, -1,
                             -1, -1, -1})
             end
@@ -406,7 +408,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          NO, WL, WL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 11, -1,
                             -1, -1, -1})
             end
@@ -414,7 +416,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          FL, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 53, -1,
                             -1, -1, -1})
             end
@@ -422,7 +424,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 02, -1,
                             -1, -1, -1})
             end
@@ -430,7 +432,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          NO, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 02, -1,
                             -1, -1, -1})
             end
@@ -438,7 +440,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, NO,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 09, -1,
                             -1, -1, -1})
             end
@@ -446,7 +448,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, WL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 09, -1,
                             -1, -1, -1})
             end
@@ -454,7 +456,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, NO,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 11, -1,
                             -1, -1, -1})
             end
@@ -462,7 +464,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          NO, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 56, -1,
                             -1, -1, -1})
             end
@@ -470,7 +472,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, NO,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 02, -1,
                             -1, -1, -1})
             end
@@ -478,7 +480,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 52, -1,
                             -1, -1, -1})
             end
@@ -486,7 +488,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          WL, WL, FL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 45, -1,
                             -1, -1, -1})
             end
@@ -494,7 +496,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, WL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 12, -1,
                             -1, -1, -1})
             end
@@ -502,7 +504,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          NO, WL, FL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 05, -1,
                             -1, -1, -1})
             end
@@ -510,7 +512,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          FL, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 57, -1,
                             -1, -1, -1})
             end
@@ -518,7 +520,7 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, FL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 58, -1,
                             -1, -1, -1})
             end
@@ -526,7 +528,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          FL, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 46, -1,
                             -1, -1, -1})
             end
@@ -534,7 +536,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          FL, WL, FL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 55, -1,
                             -1, -1, -1})
             end
@@ -542,7 +544,7 @@ function g_apply_grammar(builder)
             if block:is({-1, NO, -1,
                          NO, WL, WL,
                          -1, FL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 02, -1,
                             -1, -1, -1})
             end
@@ -550,7 +552,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          NO, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 56, -1,
                             -1, -1, -1})
             end
@@ -558,7 +560,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          FL, WL, NO,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 51, -1,
                             -1, -1, -1})
             end
@@ -566,7 +568,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          WL, WL, NO,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 60, -1,
                             -1, -1, -1})
             end
@@ -574,7 +576,7 @@ function g_apply_grammar(builder)
             if block:is({-1, FL, -1,
                          NO, WL, WL,
                          -1, WL, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 56, -1,
                             -1, -1, -1})
             end
@@ -582,28 +584,29 @@ function g_apply_grammar(builder)
             if block:is({-1, WL, -1,
                          WL, WL, FL,
                          -1, NO, -1}) then
-                block:into({-1, -1, -1,
+                out_block:into({-1, -1, -1,
                             -1, 05, -1,
                             -1, -1, -1})
             end
-        end)
+        end, output)
 
-        builder:each(1, 1, function (block)
+        builder:each(1, 1, function (block, out_block)
             if block:is({FL}) then
-                block:into({7})
+                out_block:into({7})
             end
-        end)
+        end, output)
 
-        builder:each(1, 2, function (block)
+        builder:each(1, 2, function (block, out_block)
             if block:is({WL, FL}) then
-                block:into({-1, 6})
+                out_block:into({-1, 6})
             end
-        end)
+        end, output)
 
-        builder:apply()
         -- Operate in the previous context
         builder:restore()
 
         max_iterations -= 1
     end
+
+    builder:from(output)
 end

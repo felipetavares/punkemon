@@ -37,6 +37,12 @@ function TilemapBuilder:copy()
     return copy 
 end
 
+function TilemapBuilder:from(tilemap)
+    self.tiles = tilemap.tiles
+    
+    return self
+end
+
 function TilemapBuilder:bounds()
     local bounds = self.stack[#self.stack];
 
@@ -119,20 +125,21 @@ function TilemapBuilder:apply()
     self.results = {}
 end
 
-function TilemapBuilder:each(w, h, fn)
+function TilemapBuilder:each(w, h, fn, output)
     local bounds = self:bounds()
 
     for y=bounds.y-1,bounds.y+bounds.h-h+1 do
         for x=bounds.x-1,bounds.x+bounds.w-w+1 do
-            local copy = self:copy()
-            copy:use_exact(x, y, w, h)
+            self:use_exact(x, y, w, h)
+            output:use_exact(x, y, w, h)
 
-            fn(copy)
+            fn(self, output)
 
-            table.insert(self.results, copy)
+            output:restore()
+            self:restore()
         end
 
-        if y%2 == 0 then
+        if y%4 == 0 then
             coroutine.yield()
         end
     end

@@ -25,8 +25,8 @@ function EnemyBiped:init(path)
     self.battleStats.HP = self.baseStats.HP
 end
 
-function EnemyBiped:draw()
-    spr(self.x*16, self.y*16, 10, 2)
+function EnemyBiped:draw(camera)
+    camera:spr(self.x*16, self.y*16, 10, 2)
 
     local direction = self:findDirection()
 
@@ -40,7 +40,7 @@ function EnemyBiped:draw()
 
         local arrow = arrows[direction]
 
-        spr(self.x*16+arrow.dx, self.y*16+arrow.dy, arrow.x, arrow.y)
+        camera:spr(self.x*16+arrow.dx, self.y*16+arrow.dy, arrow.x, arrow.y)
     end
 end
 

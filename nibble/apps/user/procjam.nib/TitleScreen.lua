@@ -1,3 +1,6 @@
+local Camera = require('Camera')
+local Easing = require('Easing')
+
 local current_color = 2
 local colors = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 
@@ -9,22 +12,26 @@ local mod = {
     done = false 
 }
 
+local camera = Camera:new()
+
 for i=1,6 do
     table.insert(clouds, {
         x = math.random(0, 320),
         y = math.random(0, 120),
         v = -math.random(30, 50),
-        w = math.random(50, 100)
+        w = 100
     })
 end
 
 function mod.draw_title_screen ()
-    pspr(0, 0, 640, 0, 320, 240)
+    clr(1)
+
+    camera:pspr(0, 0, 640, 0, 320, 240)
 
     -- Draw movin clouds
 
     for _, cloud in ipairs(clouds) do
-        pspr(cloud.x, cloud.y, 800, 352, 112, 32)
+        camera:pspr(cloud.x, cloud.y, 800, 352, 112, 32)
     end
 
     -- Set current position of the wave
@@ -33,7 +40,7 @@ function mod.draw_title_screen ()
             if color == current_color then
                 col(color, 11)
             else
-                col(color, 7)
+                col(color, 0)
             end
         end
     end
@@ -47,7 +54,7 @@ function mod.draw_title_screen ()
     end
 
     -- Draw waves
-    pspr(0, 0, 960, 0, 320, 240)
+    camera:pspr(0, 0, 960, 0, 320, 240)
 
     -- Restore colors
     for i=0,15 do
@@ -55,18 +62,18 @@ function mod.draw_title_screen ()
     end
 
     -- Draw clouds
-    pspr(0, 0, 960, 240, 320, 240)
+    camera:pspr(0, 0, 960, 240, 320, 240)
 
     -- Draw logos
-    pspr(86, math.sin(t*2+2)*8+4+60, 160, 240, 144, 112)
-    pspr(100, math.sin(t*2)*8+70, 672, 336, 112, 80)
-    pspr(32, math.cos(t*2-1)*8+4, 672, 240, 256, 96)
+    camera:pspr(96, math.sin(t*2+2)*8+4+60, 160, 240, 144, 112)
+    camera:pspr(110, math.sin(t*2)*8+70, 672, 336, 112, 80)
+    camera:pspr(32, math.cos(t*2-1)*8+4, 672, 240, 256, 96)
 
     local startMessage = 'Press \09 to start'
     
     if math.floor(t)%2 == 0 then
         col(7, 1)
-        print(startMessage, 160-4*#startMessage, 200)
+        camera:print(startMessage, 160-4*#startMessage, 200)
         col(7, 7)
     end
 
@@ -84,6 +91,12 @@ function mod.update_title_screen(dt)
         if cloud.x < -cloud.w then
             cloud.x = 320
         end
+    end
+
+    camera:update()
+
+    if btp(BLUE) then
+        camera:translate(math.random()*200-100, math.random()*200-100, 0.3, Easing.InOutCubic)
     end
 end
 

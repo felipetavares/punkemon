@@ -12,8 +12,8 @@ function EnemyTank:new(path)
     return instance
 end
 
-function EnemyTank:draw()
-    spr(self.x*16, self.y*16, 10, 1)
+function EnemyTank:draw(camera)
+    camera:spr(self.x*16, self.y*16, 10, 1)
 
     local direction = self:findDirection()
 
@@ -27,7 +27,7 @@ function EnemyTank:draw()
 
         local arrow = arrows[direction]
 
-        spr(self.x*16+arrow.dx, self.y*16+arrow.dy, arrow.x, arrow.y)
+        camera:spr(self.x*16+arrow.dx, self.y*16+arrow.dy, arrow.x, arrow.y)
     end
 end
 

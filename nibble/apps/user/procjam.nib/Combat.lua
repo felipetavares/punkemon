@@ -91,7 +91,6 @@ function Combat:executeChoice(choice)
 end
 
 function Combat:drawStats(x, y, character)
-    
     local hp = character.battleStats.HP/character.baseStats.HP
     local attack = character.battleStats.attack
     local defense = character.battleStats.defense

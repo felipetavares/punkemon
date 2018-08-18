@@ -19,8 +19,10 @@ local function cantor(x, y)
     return 1/2*(x+y)*(x+y+1)+y
 end
 
-function Room:new(tilemap, doormap, doors, w, h, dungeon, stage)
+function Room:new(tilemap, doormap, doors, w, h, x, y, dungeon, stage)
     local instance = {
+        x = x or 0,
+        y = y or 0,
         w = w or 0,
         h = h or 0,
         tilemap = tilemap,
@@ -83,8 +85,6 @@ function Room:generateDecorations()
                         self.tilemap:setPath(pathStep.x, pathStep.y, true)
                     end
                 end
-
-                coroutine.yield()
             end
         end
     end
@@ -97,8 +97,6 @@ function Room:generateDecorations()
                 floorTile = tile
                 break
             end
-
-            coroutine.yield()
         end
 
         local path = aStar(floorTile, tiles[door.y*self.w+door.x+1], tiles, self.w, self.h)
@@ -130,8 +128,6 @@ function Room:generateDecorations()
                 table.insert(self.decorations, Decoration:new(x*16, y*16, decoration))
             end
         end
-
-        coroutine.yield()
     end
 end
 
@@ -181,14 +177,16 @@ function Room:getCharacter(x, y)
     return nil
 end
 
-function Room:draw()
+function Room:draw(camera)
+    camera:push_position(self.x, self.y)
+
     -- Draws tilemap
 	local x, y = 0,0
 	for _, tile in ipairs(self.tilemap:tilemap()) do
         local tile_x = tile%tileset_w+tileset_x
         local tile_y = tile/tileset_w+tileset_y
 		
-        spr(x, y, tile_x, tile_y)
+        camera:spr(x, y, tile_x, tile_y)
 
         x += tile_w
 
@@ -200,15 +198,17 @@ function Room:draw()
 
     -- Draws decorations
     for _, decor in ipairs(self.decorations) do
-        decor:draw()
+        decor:draw(camera)
     end
 
     -- Draws characters
     for _, char in ipairs(self.characters) do
-        char:draw()
+        char:draw(camera)
     end
 
-    player:draw(self)
+    player:draw(self, camera)
+
+    camera:pop_position()
 end
 
 function Room:step()

@@ -5,6 +5,8 @@ local Room = require('Room')
 local TilemapBuilder = require('TilemapBuilder')
 local Boid = require('Boid')
 local BoidManager = require('BoidManager')
+local Camera = require('Camera')
+local Easing = require('Easing')
 
 local Dungeon = {}
 
@@ -14,9 +16,10 @@ function Dungeon:new()
         current = 1,
         rooms = {},
         w = 3,
-        h = 3,
+        h = 9,
         boidManager = BoidManager:new(),
-        finished = false
+        finished = false,
+        camera = Camera:new()
     }
 
     lang.instanceof(instance, Dungeon)
@@ -46,6 +49,8 @@ function Dungeon:new()
 end
 
 function Dungeon:generate()
+    coroutine.yield()
+
 	local dungeon = generateLevel(self.w, self.h)
 
 	for row = 0, self.h - 1 do
@@ -63,14 +68,14 @@ function Dungeon:generate()
                                                                           (tile & D_LEFT) ~= 0,
                                                                           (tile & D_RIGHT) ~= 0)
 
-                local room = Room:new(tilemapBuilder, doormap, doors, w, h, self, stage)
+                local x, y = column*320, row*240
+                local room = Room:new(tilemapBuilder, doormap, doors, w, h, x, y, self, stage)
 
                 table.insert(self.rooms, room)
 
                 dprint('Room ' .. tostring(column) .. ',' .. tostring(row) .. ' generated')
 
-                coroutine.yield(0)
-                --coroutine.yield((row*self.w+column)/(self.w*self.h))
+                coroutine.yield((row*self.w+column)/(self.w*self.h))
             else
                 table.insert(self.rooms, false)
             end
@@ -80,7 +85,9 @@ function Dungeon:generate()
     for k, v in ipairs(self.rooms) do
         if v ~= false then
             self.current = k
-            dprint('olá não tao bonitos')
+            local room = self.rooms[self.current]
+            self.camera:translate(room.x, room.y,
+                                  1, Easing.InOutCubic)
             player:init(self.rooms[self.current])
             break
         end
@@ -95,10 +102,13 @@ function Dungeon:move(dx, dy)
     local room = self.rooms[self.current+dx+dy*self.w]
 
     if room then
-        local prev = self.current
+        prev = self.current
         self.current = self.current+dy*self.w+dx
 
         dprint('Changing from room ' .. tostring(prev) .. ' to ' .. tostring(self.current))
+
+        self.camera:translate(room.x, room.y,
+                              0.3, Easing.InOutCubic)
     end
 
     return self.rooms[self.current]
@@ -127,12 +137,28 @@ function Dungeon:draw()
     if self.combat then
         self.combat:draw()
     else
-        self.rooms[self.current]:draw()
-        -- Draws fishes
-        self.boidManager:draw()
+        if btd(RED) then
+            clr(1)
+            self:drawMap()
+        else
+            clr(1)
+
+            local x, y = math.floor(self.camera.x/320+0.5), math.floor(self.camera.y/240+0.5)
+
+            for dx=-1,1 do
+                for dy=-1,1 do
+                    local room = self.rooms[(dy+y)*self.w+x+dx+1]
+                    if room then
+                        room:draw(self.camera)
+                    end
+                end
+            end
+
+            -- Draws fishes
+            self.boidManager:draw(self.camera)
+        end
     end
 
-    self:drawMap()
 end
 
 function Dungeon:update(dt)
@@ -145,6 +171,7 @@ function Dungeon:update(dt)
     else
         self.rooms[self.current]:update(dt)
         self.boidManager:update(dt)
+        self.camera:update(dt)
     end
 
     if player.battleStats.HP <= 0 then

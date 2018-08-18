@@ -10,9 +10,9 @@ function BoidManager:new()
     return instance
 end
 
-function BoidManager:draw()
+function BoidManager:draw(camera)
     for _, boid in ipairs(self.boids) do
-        boid:draw()
+        boid:draw(camera)
     end
 end
 

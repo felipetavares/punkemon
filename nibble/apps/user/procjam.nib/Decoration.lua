@@ -12,8 +12,8 @@ function Decoration:new(x, y, spr)
     return instance
 end
 
-function Decoration:draw()
-    spr(self.x, self.y, self.spr.x, self.spr.y)
+function Decoration:draw(camera)
+    camera:spr(self.x, self.y, self.spr.x, self.spr.y)
 end
 
 return Decoration

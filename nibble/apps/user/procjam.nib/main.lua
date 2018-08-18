@@ -10,7 +10,6 @@ local Particle = require('Particle')
 local ParticleSystem = require('ParticleSystem')
 local ParticleManager = require('ParticleManager')
 require ('ParticleFunctions')
-coroutine.yield = function() end
 
 local TitleScreen = require('TitleScreen')
 
@@ -78,7 +77,7 @@ function init()
 	
 	particleManager:add(hitAttack)
 	
-    --start_recording('mermaids.gif')
+    --start_recording('camera.gif')
 end
 
 local completed = 0
@@ -122,16 +121,15 @@ function draw()
         end
 
         for i=1,8 do
-            local x = math.cos(i/4*math.pi)*20
-            local y = math.sin(i/4*math.pi)*20
+            local t = time*i
+            local x = math.cos(t)*20
+            local y = math.sin(t)*20
 
-            if math.floor(time*8)%8 == i then
-                circf(x+160, y+120, 3, i+4)
-            end
+            circf(x+160, y+120, 3, i+4)
         end
 
-        --local str = tostring(math.floor(completed*100)) .. '%'
-        --print(str, 160-4*#str, 120-4)
+        local str = tostring(math.floor(completed*100)) .. '%'
+        print(str, 160-4*#str, 120-4)
 
         local top_msg = "Eroding deep sea caves..."
         print(top_msg, 160-4*#top_msg, 60)

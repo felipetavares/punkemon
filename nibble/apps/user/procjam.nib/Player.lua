@@ -69,11 +69,11 @@ function Player:init(room)
 
 end 
 
-function Player:draw(room)
+function Player:draw(room, camera)
     if self.direction == D_LEFT then
-        spr(self.x*16, self.y*16, 11+self.frame, 4)
+        camera:spr(self.x*16, self.y*16, 11+self.frame, 4)
     else
-        spr(self.x*16, self.y*16, 11+self.frame, 5)
+        camera:spr(self.x*16, self.y*16, 11+self.frame, 5)
     end
     
 end
