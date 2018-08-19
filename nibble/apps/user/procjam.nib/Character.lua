@@ -92,6 +92,14 @@ function Character:hit(p, attack)
     self:hitParticles(p)
 end
 
+function Character:hitDamage( moveId)
+	move = self.moveset[moveId]
+	damage = move.power * self.battleStats.attack / target.battleStats.defense * (0.85 + math.random * 0.15)
+    
+	damage = damage * Attack.elementalMultiplier[move.element][target.basicStats]
+	return damage
+end
+
 function Character:hitParticles(p)
     local hitAttack =  ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
     hitAttack:emit()
