@@ -16,7 +16,7 @@ function Dungeon:new()
         current = 1,
         rooms = {},
         w = 3,
-        h = 9,
+        h = 3,
         boidManager = BoidManager:new(),
         finished = false,
         camera = Camera:new()

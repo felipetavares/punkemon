@@ -1,3 +1,5 @@
+local  IV = require('InterpolatedVector')
+
 local CombatMenu = {}
 
 local ATTACK_MENU_OPENING = 0
@@ -11,20 +13,29 @@ local ITEMS_MENU_CLOSING = 5
 local MENU_OPEN_PIXELS = 140
 local MENU_CLOSED_PIXELS = 320
 
+local MENU_OPEN_STATS = {x = 140, y = 160 , t = 0}
+local MENU_CLOSED_STATS = {x = 320, y = 160, t = 2.5}
+
+
 function CombatMenu:new(attacks, items)
     local instance = {
+        attacks = attacks or nil,
         attacks = attacks or nil,
         items = items or nil,
 
         state = ATTACK_MENU_OPENING,
-
-        interpolation = MENU_CLOSED_PIXELS,
         selected = 1,
         
         selectedAttack = nil,
-        selectedItem = nil
+        selectedItem = nil,
+		
+		base  = IV:new()
     }
-
+	
+	instance.base.x = MENU_CLOSED_STATS.x
+	instance.base.y = MENU_CLOSED_STATS.y
+	instance.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, 10)
+	
     lang.instanceof(instance, CombatMenu)
 
     return instance
@@ -35,28 +46,31 @@ function CombatMenu:draw()
         self:drawBase(MENU_OPEN_PIXELS)
         self:drawButtons(MENU_OPEN_PIXELS, true, false)
         self:drawAttacks(MENU_OPEN_PIXELS)
+		
     elseif self.state == ATTACK_MENU_OPENING then
-        self:drawBase(self.interpolation)
-        self:drawButtons(self.interpolation, true, false)
-        self:drawAttacks(self.interpolation)
+        self:drawBase(self.base.x)
+        self:drawButtons(self.base.x, true, false)
+        self:drawAttacks(self.base.x)
 
-        if self.interpolation > MENU_OPEN_PIXELS then
-            self.interpolation = self.interpolation - 20
-        else
-            self.state = ATTACK_MENU_OPEN
-        end
+        		
+		if self.base.x >= MENU_OPEN_PIXELS then
+			self.state = ATTACK_MENU_OPEN
+		end
+		
+    		
     elseif self.state == ITEMS_MENU_OPEN then
         self:drawBase(MENU_OPEN_PIXELS)
         self:drawButtons(MENU_OPEN_PIXELS, false, true)
+		
     elseif self.state == ITEMS_MENU_OPENING then
-        self:drawBase(self.interpolation)
-        self:drawButtons(self.interpolation, false, true)
+        self:drawBase(self.base.x)
+        self:drawButtons(self.base.x, false, true)
 
-        if self.interpolation > MENU_OPEN_PIXELS then
-            self.interpolation = self.interpolation - 20
-        else
-            self.state = ITEMS_MENU_OPEN
-        end
+		
+		if self.base.x >= MENU_OPEN_PIXELS then
+			self.state = ITEMS_MENU_OPEN
+		end
+		
     end
 end
 
@@ -116,11 +130,13 @@ function CombatMenu:drawAttacks(x)
     end
 end
 
-function CombatMenu:update()
+function CombatMenu:update(dt)
     if btp(WHITE) then
         self.state = ATTACK_MENU_OPENING
+		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, 2.5)
     elseif btp(BLACK) then
         self.state = ITEMS_MENU_OPENING
+		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, 2.5)
     end
 
     if self.state == ATTACK_MENU_OPEN then
@@ -150,6 +166,8 @@ function CombatMenu:update()
             end
         end
     end
+	
+	self.base:update(dt)
 end
 
 function CombatMenu:drawBase(x)

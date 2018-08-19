@@ -70,7 +70,7 @@ function Combat:update(dt)
         self.finished = true       
     end
 	
-    self.menu:update()
+    self.menu:update(dt)
     self.particleManager:update(dt)
 end
 
