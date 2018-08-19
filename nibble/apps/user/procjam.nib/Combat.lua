@@ -90,7 +90,7 @@ end
 function Combat:executeChoice(choice)
 	if choice.attack ~= nil then
 		dprint('Attack')
-		choice.attack.effect(choice.attack.target, self.particleManager)
+        choice.attack.target:hit(self.particleManager, choice.attack)
 	elseif choice.item ~= nil then
 		dprint('Item')
 	end

@@ -87,8 +87,8 @@ function Character:print()
     dprint(s)
 end
 
-function Character:hit(p)
-    self:hitDamage()
+function Character:hit(p, attack)
+    self:hitDamage(attack)
     self:hitParticles(p)
 end
 
@@ -98,7 +98,7 @@ function Character:hitParticles(p)
     p:add(hitAttack)
 end
 
-function Character:hitDamage()
+function Character:hitDamage(attack)
     self.battleStats.HP = self.battleStats.HP-1
 end
 

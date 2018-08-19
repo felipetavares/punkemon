@@ -30,9 +30,7 @@ function Player:new()
 
     lang.instanceof(instance, Player)
 
-    local tackle = Attack:new('Tackle', 10, 1, Attack.TECH, 3, nil, function (e, p)
-        e:hit(p)
-    end)
+    local tackle = Attack:new('Tackle', 10, 1, Attack.TECH, 3, nil, function () end)
     local sand = Attack:new('Sand', 10, 1, Attack.TECH, 5, nil, function () end)
     local harden = Attack:new('Harden', 10, 1, Attack.TECH, 5, nil, function () end)
     local growl = Attack:new('Growl', 10, 1, Attack.TECH, 5, nil, function () end)
