@@ -1,5 +1,5 @@
 local Types = require("Attack")
-
+local AtDesc = require(AttackDescription)
 local enemyDesc = {}
 
 enemyDesc.basicStats = {
@@ -102,6 +102,10 @@ enemyDesc.basicStats = {
 
 enemyDesc.moveset = {
     ['Biped1'] = {
+		AtDesc.Attacks['Tackle'],
+		AtDesc.Attacks['Sand'],
+		AtDesc.Attacks['Harden'],
+		AtDesc.Attacks['Growl']
     },
 
     ['Biped2'] = {
