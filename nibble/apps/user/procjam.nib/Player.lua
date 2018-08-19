@@ -12,6 +12,8 @@ local Types = require("Attack")
 local ParticleSystem = require('ParticleSystem')
 require ('ParticleFunctions')
 
+local Attacks = require('AttackDescription')
+
 function Player:new()
     local instance = {
         x = 10, y = 7,
@@ -33,20 +35,19 @@ function Player:new()
 
     lang.instanceof(instance, Player)
 
-    local tackle = Attack:new('Slash', 10, 1, Attack.TECH, 3, nil, function () end)
-    local sand = Attack:new('Bubbles', 0, 1, Attack.TECH, 5, nil, function () end)
-    local harden = Attack:new('Harden', 0, 1, Attack.TECH, 5, nil, function () end)
-    local growl = Attack:new('Diva', 0, 1, Attack.TECH, 5, nil, function () end)
-
-    table.insert(instance.moveset, tackle)
-    table.insert(instance.moveset, harden)
-    table.insert(instance.moveset, sand)
-    table.insert(instance.moveset, growl)
+    table.insert(instance.moveset, Attack:new(Attacks.Slash))
+    table.insert(instance.moveset, Attack:new(Attacks.Scales))
+    table.insert(instance.moveset, Attack:new(Attacks.Bubbles))
+    table.insert(instance.moveset, Attack:new(Attacks.Diva))
 
     return instance
 end
 
-function Player:init(room, particleManager)
+function Player:getCombatCenter()
+    return 100, 140
+end
+
+function Player:init(room)
     self.baseStats = {
         HP = 80,
         attack = 75,
@@ -57,9 +58,6 @@ function Player:init(room, particleManager)
 
     self.battleStats = lang.copy(self.baseStats)
 
-    self.psystem = ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
-    particleManager:add(self.psystem)
-
     for x=0,room.w do
         for y=0,room.h do
             if room.tilemap:get(x, y).kind == 07 then
@@ -69,6 +67,14 @@ function Player:init(room, particleManager)
         end
     end
 end 
+
+function Player:hitEffect()
+    self.ps:emitLine(2, 2, -50, -60)
+
+    Delayed.exec(0.1, function()
+        self.ps:emitLine(-2, 2, 50, -60)
+    end)
+end
 
 function Player:draw(room, camera)
     if self.direction == D_LEFT then

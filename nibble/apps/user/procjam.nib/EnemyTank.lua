@@ -1,8 +1,17 @@
 local Character = require('Character')
 local EnemyTank = Character:new()
 
-function EnemyTank:new(path)
+local EnemyDescription = require('EnemyDescription')
+
+local ParticleSystem = require('ParticleSystem')
+require ('ParticleFunctions')
+
+function EnemyTank:new(path, level)
     local instance = {
+        tick = false,
+
+        name = "SeaWitch",
+        level = level,
     }
 
     lang.instanceof(instance, lang.copy(EnemyTank))
@@ -10,6 +19,10 @@ function EnemyTank:new(path)
     instance:init(path)
 
     return instance
+end
+
+function EnemyTank:init(path)
+    Character.init(self, path)
 end
 
 function EnemyTank:draw(camera)

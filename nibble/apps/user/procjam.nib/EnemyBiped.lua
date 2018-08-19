@@ -2,10 +2,7 @@ local Character = require('Character')
 local EnemyBiped = Character:new()
 local EnemyDescription = require('EnemyDescription')
 
-local ParticleSystem = require('ParticleSystem')
-require ('ParticleFunctions')
-
-function EnemyBiped:new(path, level, particleManager)
+function EnemyBiped:new(path, level)
     local instance = {
         tick = false,
 
@@ -15,20 +12,17 @@ function EnemyBiped:new(path, level, particleManager)
 
     lang.instanceof(instance, lang.copy(EnemyBiped))
 
-    instance:init(path, particleManager)
+    instance:init(path)
 
     return instance
 end
 
-function EnemyBiped:init(path, particleManager)
-    Character.init(self, path, particleManager)
+function EnemyBiped:getCombatCenter()
+    return 200, 120
+end
 
-    self.psystem = ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
-    particleManager:add(self.psystem)
-
-    self.baseStats.HP = 5
-
-    self.battleStats.HP = self.baseStats.HP
+function EnemyBiped:init(path)
+    Character.init(self, path)
 end
 
 function EnemyBiped:draw(camera)
@@ -46,7 +40,23 @@ function EnemyBiped:draw(camera)
 
         local arrow = arrows[direction]
 
-        camera:spr(self.x*16+arrow.dx, self.y*16+arrow.dy, arrow.x, arrow.y)
+        local c = (math.floor(clock()*12) % 6) + 2
+
+        for i=2,8 do
+            if i == c then
+                col(c, 13)
+            else
+                col(i, 12)
+            end
+        end
+
+        local offset = (math.sin(clock()*3)+1)*0.25+0.5
+
+        camera:spr(self.x*16+arrow.dx*offset, self.y*16+arrow.dy*offset, arrow.x, arrow.y)
+
+        for i=2,8 do
+            col(i, i)
+        end
     end
 end
 

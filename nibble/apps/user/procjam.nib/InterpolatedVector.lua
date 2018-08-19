@@ -1,16 +1,9 @@
--- Camera System
--- Exposes the same drawing API
--- as niblib but allows for transformations
-
 local Easing = require('Easing')
 
 local InterpolatedVector = {}
 
 function InterpolatedVector:new()
     local instance = {
-        -- Stack of positions
-        stack = {},
-
         x = 0,
         y = 0,
 

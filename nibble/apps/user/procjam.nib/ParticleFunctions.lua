@@ -8,21 +8,61 @@ local colors = {
 	{4, 11} -- Roxo
 }
 
+-- Slash
+function slashCreate()	
+	p = Particle:new(15, 0, nil, 
+                        {x = 0, y = 0})
+
+    function p:init (i, n)
+        self.size = 0 
+        self.life = (n-i+1)*math.pi*2/n
+    end
+
+    return p
+end
+
+function slashUpdate(p, dt)
+    p.life += dt*30
+
+    p.size = math.abs(math.sin(p.life/2)*4)
+
+    if p.life > math.pi*2 then
+        p.active = false
+    end
+end
+
+function slashDraw(p)
+    circf(p.position.x, p.position.y, p.size, p.color)
+end
+
 -- Bubbles
 function bubbleCreate()	
-	return Particle:new(6,10, nil, 
+    local p = Particle:new(6,10, nil, 
 				{x = (math.random() -0.5) * 5, y = math.random() * 2 + 6})
+
+    function p:init (i, n)
+        p.life = 2 
+    end
+
+    return p
 end
 
 function bubbleUpdate(p, dt)
+    if dt < 1 then
+        p.life -= dt
+    end
+
 	p.position.y = p.position.y - p.speed.y * dt
 	p.position.x = p.position.x + ( p.speed.x * math.sin(time()) ) * dt 
+
+    if p.life <= 0 then
+        p.active = false
+    end
 end
 
 function bubbleDraw(particle)
 	pspr(particle.position.x, particle.position.y, 0,80, 8, 16)
 end
-
 
 function tinyBubbleDraw(particle)
     putp(particle.position.x, particle.position.y, particle.color)
@@ -66,17 +106,18 @@ end
 
 -- Hits
 function hitCreate()
+	speed = {x = (math.random() - 0.5) * 400,
+			y = (math.random() - 0.5) * 400}
 	
-	speed = {x = (math.random() - 0.5) * 50,
-			y = (math.random() - 0.5) * 50}
+	p =  Particle:new(15, nil, nil,  speed)
 	
-	p =  Particle:new(colors[2][1], nil, nil,  speed)
-	
-	p.tail = Particle:new(colors[2][1], nil, nil,
+	p.tail = Particle:new(15, nil, nil,
 		{x = speed.x - 5 , y = speed.y - 5})
 	
-	p.lifeTime = math.random() * 0.5
-	p.emissionTime = clock()
+    function p:init (i, n)
+        self.lifeTime = math.random() * 0.1
+        self.emissionTime = clock()
+    end
 						
 	return p
 end

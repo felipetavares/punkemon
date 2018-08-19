@@ -17,18 +17,22 @@ Attack.elementalMultiplier = {
 	MAGE		= { TECH = 2,	NAT = 0.5,  MAGE = 1 	},
 }
 
-function Attack:new(name, power, accuracy, element, pp, target, effect)
+function Attack:new(desc)
     local instance = {
-        name = name or '',
-		power = power or 10,
-		accuracy = accuracy or 1,
-		element = element or NEUTRAL,
-		target = target or nil,
-		effect = effect or nil,
-        pp = pp or 5
+        name = desc.name or '',
+		power = desc.power or 10,
+		accuracy = desc.accuracy or 1,
+		element = desc.element or NEUTRAL,
+		target = desc.target or nil,
+		effect = desc.effect or nil,
+        pp = desc.pp or 5,
+        visualCreation = desc.visualCreation or function() end,
+        visual = desc.visual or function() end
     }
 
     lang.instanceof(instance, Attack)
+
+    instance:visualCreation()
 
     return instance
 end

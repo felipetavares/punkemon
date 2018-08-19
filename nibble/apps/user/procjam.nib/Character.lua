@@ -26,7 +26,7 @@ function Character:new()
     return instance
 end
 
-function Character:init(path, particleManager)
+function Character:init(path)
     local init = {x = 0, y = 0}
     
     if path and path[self.position] then
@@ -41,7 +41,17 @@ function Character:init(path, particleManager)
     self.baseStats   = lang.copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
     self.battleStats = lang.copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
 
-    self.moveset     = lang.copy(EnemyDescription.moveset[self.name .. tostring(self.level)])
+    self.moveset     = self:buildAttacks(EnemyDescription.moveset[self.name .. tostring(self.level)])
+end
+
+function Character:buildAttacks(desc)
+    local attacks = {}
+
+    for _, d in ipairs(desc) do
+        table.insert(attacks, Attack:new(d))
+    end
+
+    return attacks
 end
 
 function Character:findDirection()
@@ -85,13 +95,9 @@ function Character:print()
 end
 
 function Character:hit(move)
-    self:hitDamage(move)
-
-    self:hitParticles()
-end
-
-function Character:hitParticles()
-    self.psystem:emit()
+    Delayed.exec(0.0, function()
+        self:hitDamage(move)
+    end)
 end
 
 function Character:hitDamage(move)
@@ -102,6 +108,14 @@ function Character:hitDamage(move)
     dprint('Damage:', math.floor(damage))
 
     self.battleStats.HP = self.battleStats.HP-math.floor(damage+0.5)
+
+    if self.battleStats.HP < 0 then
+        self.battleStats.HP = 0
+    end
+end
+
+function Character:getCombatCenter()
+    return 0, 0
 end
 
 return Character

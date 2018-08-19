@@ -1,3 +1,7 @@
+Delayed = require('Delayed')
+ParticleManager = require('ParticleManager')
+particleManager = ParticleManager:new()
+
 -- Imports
 require('Audio')
 
@@ -40,38 +44,7 @@ function init()
     -- function: time()
 	math.randomseed( time() )
 	
-	--local bubbles = ParticleSystem:new(5,  {x = 128, y = 128}, 2, true, bubbleCreate, bubbleUpdate, bubbleDraw)
-	--local tinyBubbles = ParticleSystem:new(5, {x = 64, y = 128}, 2, true, bubbleCreate, bubbleUpdate, tinyBubbleDraw) bubbles:emit()
-	--tinyBubbles:emit()
-	--	
-	--particleManager:add(bubbles)
-	--particleManager:add(tinyBubbles)
-	--
-	----Heal Particles
-	--local heal = ParticleSystem:new(40, {x = 148, y = 128}, 0, false, healCreate, healUpdate, healDraw)
-	--local healBlink = ParticleSystem:new(15, {x = 148, y = 128}, 0, false, healCreate, healUpdate)
-    --
-	--heal:emitInsideRect(100,64)
-	--healBlink:emitInsideRect(100,64)
-	--
-	--particleManager:add(heal)
-	--particleManager:add(healBlink)
-	--
-	---- Sand Attack Particles
-	--local sandAttack =  ParticleSystem:new(40, {x = 148, y = 128}, 0, false, sandAttackCreate , sandAttackUpdate)
-	--
-	--sandAttack:emit()
-	--
-	--particleManager:add(sandAttack)
-	--
-	---- Hit Particles
-	--local hitAttack =  ParticleSystem:new(40, {x = 64, y = 128}, 0, false, hitCreate, hitUpdate, hitDraw)
-	--
-	--hitAttack:emit()
-	--
-	--particleManager:add(hitAttack)
-	
-    --start_recording('camera.gif')
+    --start_recording('combat.gif')
 end
 
 local completed = 0
@@ -162,6 +135,9 @@ function draw()
             scene = 'title'
         end
     end
+
+    -- Draw particles
+    particleManager:draw()
 end
 
 function update(dt)
@@ -183,4 +159,7 @@ function update(dt)
         dungeon:update(dt)
     elseif scene == 'death' then
     end
+
+    particleManager:update(dt)
+    Delayed.update()
 end

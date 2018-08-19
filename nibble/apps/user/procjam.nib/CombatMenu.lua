@@ -1,21 +1,15 @@
-local  IV = require('InterpolatedVector')
+local IV = require('InterpolatedVector')
+local Easing = require('Easing')
 
 local CombatMenu = {}
 
-local ATTACK_MENU_OPENING = 0
-local ATTACK_MENU_OPEN = 1
-local ATTACK_MENU_CLOSING = 2
+local Modes = {
+    ATTACKS=0,
+    ITEMS=1
+}
 
-local ITEMS_MENU_OPENING = 3
-local ITEMS_MENU_OPEN = 4
-local ITEMS_MENU_CLOSING = 5
-
-local MENU_OPEN_PIXELS = 140
-local MENU_CLOSED_PIXELS = 320
-
-local MENU_OPEN_STATS = {x = 140, y = 160 , t = 0}
-local MENU_CLOSED_STATS = {x = 320, y = 160, t = 2.5}
-
+local MENU_OPEN_STATS = {x = 140, y = 160 , t = 0.3}
+local MENU_CLOSED_STATS = {x = 320, y = 160, t = 0.3}
 
 function CombatMenu:new(attacks, items)
     local instance = {
@@ -23,59 +17,43 @@ function CombatMenu:new(attacks, items)
         attacks = attacks or nil,
         items = items or nil,
 
-        state = ATTACK_MENU_OPENING,
         selected = 1,
         
         selectedAttack = nil,
         selectedItem = nil,
 		
-		base  = IV:new()
+		base  = IV:new(),
+
+        mode = Modes.ATTACKS
     }
 	
-	instance.base.x = MENU_CLOSED_STATS.x
-	instance.base.y = MENU_CLOSED_STATS.y
-	instance.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, 10)
 	
     lang.instanceof(instance, CombatMenu)
+
+    instance:open()
 
     return instance
 end
 
+function CombatMenu:open()
+    self.base.x = MENU_CLOSED_STATS.x
+	self.base.y = MENU_CLOSED_STATS.y
+	self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
+end
+
 function CombatMenu:draw()
-    if self.state == ATTACK_MENU_OPEN then
-        self:drawBase(MENU_OPEN_PIXELS)
-        self:drawButtons(MENU_OPEN_PIXELS, true, false)
-        self:drawAttacks(MENU_OPEN_PIXELS)
-		
-    elseif self.state == ATTACK_MENU_OPENING then
+    if self.mode == Modes.ATTACKS then
         self:drawBase(self.base.x)
         self:drawButtons(self.base.x, true, false)
         self:drawAttacks(self.base.x)
-
-        		
-		if self.base.x >= MENU_OPEN_PIXELS then
-			self.state = ATTACK_MENU_OPEN
-		end
-		
-    		
-    elseif self.state == ITEMS_MENU_OPEN then
-        self:drawBase(MENU_OPEN_PIXELS)
-        self:drawButtons(MENU_OPEN_PIXELS, false, true)
-		
-    elseif self.state == ITEMS_MENU_OPENING then
+    elseif self.mode == Modes.ITEMS then
         self:drawBase(self.base.x)
         self:drawButtons(self.base.x, false, true)
-
-		
-		if self.base.x >= MENU_OPEN_PIXELS then
-			self.state = ITEMS_MENU_OPEN
-		end
-		
     end
 end
 
 function CombatMenu:drawAttacks(x)
-    local basex = -x+(320-MENU_OPEN_PIXELS)+16
+    local basex = -x+(320-MENU_OPEN_STATS.x)+16
     local basey = 160
     local ampx = 54
     local ampy = 48
@@ -132,35 +110,39 @@ end
 
 function CombatMenu:update(dt)
     if btp(WHITE) then
-        self.state = ATTACK_MENU_OPENING
-		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, 2.5)
+        self.mode = Modes.ATTACKS 
+		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
     elseif btp(BLACK) then
-        self.state = ITEMS_MENU_OPENING
-		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, 2.5)
+        self.mode = Modes.ITEMS
+		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
     end
 
-    if self.state == ATTACK_MENU_OPEN then
+    if self.base.x == MENU_OPEN_STATS.x then
         if btp(DOWN) then
             if self.selected == 3 then
                 self.selectedAttack = self.attacks[self.selected]
+                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
             else
                 self.selected = 3
             end
         elseif btp(UP) then
             if self.selected == 1 then
                 self.selectedAttack = self.attacks[self.selected]
+                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
             else
                 self.selected = 1
             end
         elseif btp(LEFT) then
             if self.selected == 4 then
                 self.selectedAttack = self.attacks[self.selected]
+                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
             else
                 self.selected = 4
             end
         elseif btp(RIGHT) then
             if self.selected == 2 then
                 self.selectedAttack = self.attacks[self.selected]
+                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
             else
                 self.selected = 2
             end

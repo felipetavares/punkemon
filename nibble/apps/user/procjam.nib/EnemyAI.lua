@@ -33,22 +33,26 @@ function EnemyAI:decision(player)
         return classifier(a) < classifier(b)
     end
 
-    local tackle = Attack:new('Tackle', 1, 1, Attack.TECH, 3, player, function (e)
-        e.battleStats.HP = e.battleStats.HP-1
-    end)
-
-    local attacks = {tackle}
+    local attacks = self.chara.moveset
 
     table.sort(attacks, compare)  
+
+    dprint('Sorted attacks:')
+
+    for i, atk in ipairs(attacks) do
+        dprint(i, atk.name)
+    end
 
     local normalized_p_hp = player.battleStats.HP/player.baseStats.HP
     local normalized_e_hp = self.chara.battleStats.HP/self.chara.baseStats.HP
 
     local index = 0
-    
+
     if normalized_p_hp ~= 0 and normalized_e_hp ~= 0 then
-        math.floor(1/(normalized_p_hp*normalized_e_hp)*#attacks)
+        index = math.min(math.floor(math.min(normalized_p_hp/normalized_e_hp, 1.5)/1.5*#attacks), #attacks-1)
     end
+
+    dprint('Choosing ', index+1, attacks[index+1])
 
     return Choice:new(attacks[index+1], nil)
 end

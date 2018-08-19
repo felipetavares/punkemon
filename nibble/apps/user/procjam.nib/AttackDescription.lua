@@ -1,47 +1,107 @@
 local Types = require("Attack")
+local Attack = require('Attack')
 
-local attackDesc = {}
+local ParticleSystem = require('ParticleSystem')
+require ('ParticleFunctions')
 
-attackDesc.Attacks = {
-    ['Tackle'] = {
-		name = 'Tackle',
-		power = 10,
+local attackDesc = {
+    ['Slash'] = {
+		name = 'Slash',
+		power = 25,
 		accuracy = 1,
 		element = Types.TECH,
 		pp = 3,
 		target = nil,
-		effect = function() end
+		effect = function() end,
+        visualCreation = function(self)
+            self.ps = ParticleSystem:new(40, {x = 0, y = 0}, 0, false, slashCreate, slashUpdate, slashDraw)
+            particleManager:add(self.ps)
+        end,
+        visual = function (self)
+            self.ps.position.x, self.ps.position.y = self.target:getCombatCenter()
+            self.ps:emitLine(2, 2, -50, -60)
+
+            Delayed.exec(0.1, function()
+                self.ps:emitLine(-2, 2, 50, -60)
+            end)
+        end
     },
-	
-	['Sand'] = {
-		name = 'Sand',
-		power = 10,
+    ['Bubbles'] = {
+		name = 'Bubbles',
+		power = 8,
+		accuracy = 1,
+		element = Types.NAT,
+		pp = 3,
+		target = nil,
+		effect = function() end,
+        visualCreation = function(self)
+            self.ps = ParticleSystem:new(10, {x = 0, y = 0}, 1, false, bubbleCreate, bubbleUpdate, bubbleDraw)
+            particleManager:add(self.ps)
+        end,
+        visual = function (self)
+            self.ps.position.x, self.ps.position.y = self.target:getCombatCenter()
+
+            self.ps:emit()
+        end
+    },
+    ['Scales'] = {
+		name = 'Scales',
+		power = 8,
+		accuracy = 1,
+		element = Types.NAT,
+		pp = 3,
+		target = nil,
+		effect = function() end,
+        visualCreation = function(self)
+            self.ps = ParticleSystem:new(10, {x = 0, y = 0}, 1, false, bubbleCreate, bubbleUpdate, bubbleDraw)
+            particleManager:add(self.ps)
+        end,
+        visual = function (self)
+            self.ps.position.x, self.ps.position.y = self.target:getCombatCenter()
+
+            self.ps:emit()
+        end
+    },
+    ['Diva'] = {
+		name = 'Diva',
+		power = 8,
+		accuracy = 1,
+		element = Types.NAT,
+		pp = 3,
+		target = nil,
+		effect = function() end,
+        visualCreation = function(self)
+            self.ps = ParticleSystem:new(10, {x = 0, y = 0}, 1, false, bubbleCreate, bubbleUpdate, bubbleDraw)
+            particleManager:add(self.ps)
+        end,
+        visual = function (self)
+            self.ps.position.x, self.ps.position.y = self.target:getCombatCenter()
+
+            self.ps:emit()
+        end
+    },
+    ['Punch'] = {
+		name = 'Punch',
+		power = 12,
 		accuracy = 1,
 		element = Types.TECH,
-		pp = 5,
+		pp = 3,
 		target = nil,
-		effect = function() end
-    },
-	
-	['Harden'] = {
-		name = 'Tackle',
-		power = 10,
-		accuracy = 1,
-		element = Types.TECH,
-		pp = 3
-		target = nil,
-		effect = function() end
-    },
-	
-	['Tackle'] = {
-		name = 'Tackle',
-		power = 10,
-		accuracy = 1,
-		element = Types.TECH,
-		pp = 3
-		target = nil,
-		effect = function() end
+		effect = function() end,
+        visualCreation = function(self)
+            self.ps = ParticleSystem:new(60, {x = 0, y = 0}, 0, false, hitCreate, hitUpdate, hitDraw)
+            particleManager:add(self.ps)
+        end,
+        visual = function (self)
+            self.ps.position.x, self.ps.position.y = self.target:getCombatCenter()
+            
+            for i=0,5 do
+                Delayed.exec(i*0.1, function()
+                    self.ps:emit((math.random()-0.5)*40, (math.random()-0.5)*80)
+                end)
+            end
+        end
     },
 }
-	
+
 return attackDesc

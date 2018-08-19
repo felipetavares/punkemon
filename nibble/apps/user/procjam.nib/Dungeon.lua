@@ -18,10 +18,12 @@ function Dungeon:new()
         rooms = {},
         w = 3,
         h = 3,
+        level = 1,
         boidManager = BoidManager:new(),
         finished = false,
         camera = Camera:new(),
-        particleManager = ParticleManager:new()
+
+        welcome_message = 'Cave ' .. tostring(1)
     }
     lang.instanceof(instance, Dungeon)
 
@@ -45,6 +47,10 @@ function Dungeon:new()
     for i=1,5 do
         instance.boidManager:add(Boid:new(nil, nil, {{10, 0}, {11, 0}, {12, 0}, {13, 0}}))
     end
+
+    Delayed.exec(3, function()
+        instance.welcome_message = ''
+    end)
 
     return instance
 end
@@ -87,12 +93,15 @@ function Dungeon:generate()
         if v ~= false then
             self.current = k
             local room = self.rooms[self.current]
-            self.camera.y = -320
-            self.camera.x = room.x
+            self.camera:translate(room.x, -480,
+                                  0, Easing.InOutCubic)
 
-            self.camera:translate(room.x, room.y,
-                                  1, Easing.InOutCubic)
-            player:init(self.rooms[self.current], self.particleManager)
+            Delayed.exec(1, function()
+                self.camera:translate(room.x, room.y,
+                                      1, Easing.InOutCubic)
+            end)
+
+            player:init(self.rooms[self.current])
             break
         end
     end
@@ -122,15 +131,22 @@ function Dungeon:drawMap()
     local room_h = 12
     local room_w = 12
 
+    local ox = 160-room_w*self.w/2
+    local oy = 120-room_h*self.h/2
+
+    local title_str = 'The Purple Caves'
+
+    print(title_str, 160-#title_str*4, oy-room_h*self.h)
+
     for y=0,self.h-1 do
         for x=0,self.w-1 do
             local room = self.rooms[y*self.w+x+1]
 
             if room ~= false then
                 if room == self.rooms[self.current] then
-                    rectf(x*room_w, y*room_h+1, room_w+1, room_h+1, 12)
+                    rectf(ox+x*room_w, oy+y*room_h+1, room_w+1, room_h+1, 12)
                 else
-                    rect(x*room_w+1, y*room_h+1, room_w, room_h, 12)
+                    rect(ox+x*room_w+1, oy+y*room_h+1, room_w, room_h, 12)
                 end
             end
         end
@@ -164,8 +180,7 @@ function Dungeon:draw()
         end
     end
 
-    -- Draw particles
-    self.particleManager:draw()
+    print(self.welcome_message, 160-#self.welcome_message*4, 120-4)
 end
 
 function Dungeon:update(dt)
@@ -184,8 +199,6 @@ function Dungeon:update(dt)
     if player.battleStats.HP <= 0 then
         self.finished = true
     end
-
-    self.particleManager:update(dt)
 end
 
 return Dungeon
