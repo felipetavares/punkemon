@@ -30,8 +30,8 @@ function Player:new()
 
     lang.instanceof(instance, Player)
 
-    local tackle = Attack:new('Tackle', 10, 1, Attack.TECH, 3, nil, function (e)
-        e.battleStats.HP = e.battleStats.HP-1
+    local tackle = Attack:new('Tackle', 10, 1, Attack.TECH, 3, nil, function (e, p)
+        e:hit(p)
     end)
     local sand = Attack:new('Sand', 10, 1, Attack.TECH, 5, nil, function () end)
     local harden = Attack:new('Harden', 10, 1, Attack.TECH, 5, nil, function () end)
@@ -46,7 +46,6 @@ function Player:new()
 end
 
 function Player:init(room)
-
     self.baseStats = {
         HP = 80,
         attack = 75,

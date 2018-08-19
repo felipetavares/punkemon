@@ -2,6 +2,9 @@ local Attack = require('Attack')
 local Character = {}
 local EnemyDescription = require('EnemyDescription')
 
+local ParticleSystem = require('ParticleSystem')
+require ('ParticleFunctions')
+
 function Character:new()
     local instance = {
         x = 0,
@@ -82,6 +85,21 @@ function Character:print()
     s = s .. tostring(self.battleStats) .. '\n'
     s = s .. tostring(self.moveset) .. '\n'
     dprint(s)
+end
+
+function Character:hit(p)
+    self:hitDamage()
+    self:hitParticles(p)
+end
+
+function Character:hitParticles(p)
+    local hitAttack =  ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
+    hitAttack:emit()
+    p:add(hitAttack)
+end
+
+function Character:hitDamage()
+    self.battleStats.HP = self.battleStats.HP-1
 end
 
 return Character

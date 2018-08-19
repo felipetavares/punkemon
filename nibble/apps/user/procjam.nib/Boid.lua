@@ -46,25 +46,25 @@ end
 
 function Boid:draw(camera)
     if self.animated then
-        camera:spr(self.pos.x-20, self.pos.y-20,
+        spr(self.pos.x-20, self.pos.y-20,
             self.animation[self.animationPos][1], self.animation[self.animationPos][2])
     else
         -- Draw shadows
         for i, p in ipairs(self.snake) do
-            self:drawAround(p.x-camera.x, p.y-camera.y)
+            self:drawAround(p.x, p.y)
         end
 
         -- Draw fish
         for i, p in ipairs(self.snake) do
             if i == 3 then
-                putp(p.x-camera.x, p.y-camera.y, self.accent)
+                putp(p.x, p.y, self.accent)
             else
-                putp(p.x-camera.x, p.y-camera.y, self.color)
+                putp(p.x, p.y, self.color)
             end
 
-            local color = getp(p.x-camera.x, p.y+self.height-camera.y)
+            local color = getp(p.x, p.y+self.height)
             if (color ~= self.color and color ~= self.accent) then
-                putp(p.x-camera.x, p.y+self.height-camera.y, self.contour)
+                putp(p.x, p.y+self.height, self.contour)
             end
         end
 

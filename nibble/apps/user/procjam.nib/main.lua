@@ -6,16 +6,10 @@ player = Player:new()
 
 local Dungeon = require('Dungeon')
 
-local Particle = require('Particle')
-local ParticleSystem = require('ParticleSystem')
-local ParticleManager = require('ParticleManager')
-require ('ParticleFunctions')
-
 local TitleScreen = require('TitleScreen')
 
 -- Singletons
 local dungeon = nil
-local particleManager = ParticleManager:new()
 
 -- Scene management
 -- 'title'
@@ -46,36 +40,36 @@ function init()
     -- function: time()
 	math.randomseed( time() )
 	
-	local bubbles = ParticleSystem:new(5,  {x = 128, y = 128}, 2, true, bubbleCreate, bubbleUpdate, bubbleDraw)
-	local tinyBubbles = ParticleSystem:new(5, {x = 64, y = 128}, 2, true, bubbleCreate, bubbleUpdate, tinyBubbleDraw) bubbles:emit()
-	tinyBubbles:emit()
-		
-	particleManager:add(bubbles)
-	particleManager:add(tinyBubbles)
-	
-	--Heal Particles
-	local heal = ParticleSystem:new(40, {x = 148, y = 128}, 0, false, healCreate, healUpdate, healDraw)
-	local healBlink = ParticleSystem:new(15, {x = 148, y = 128}, 0, false, healCreate, healUpdate)
-    
-	heal:emitInsideRect(100,64)
-	healBlink:emitInsideRect(100,64)
-	
-	particleManager:add(heal)
-	particleManager:add(healBlink)
-	
-	-- Sand Attack Particles
-	local sandAttack =  ParticleSystem:new(40, {x = 148, y = 128}, 0, false, sandAttackCreate , sandAttackUpdate)
-	
-	sandAttack:emit()
-	
-	particleManager:add(sandAttack)
-	
-	-- Hit Particles
-	local hitAttack =  ParticleSystem:new(40, {x = 64, y = 128}, 0, false, hitCreate, hitUpdate, hitDraw)
-	
-	hitAttack:emit()
-	
-	particleManager:add(hitAttack)
+	--local bubbles = ParticleSystem:new(5,  {x = 128, y = 128}, 2, true, bubbleCreate, bubbleUpdate, bubbleDraw)
+	--local tinyBubbles = ParticleSystem:new(5, {x = 64, y = 128}, 2, true, bubbleCreate, bubbleUpdate, tinyBubbleDraw) bubbles:emit()
+	--tinyBubbles:emit()
+	--	
+	--particleManager:add(bubbles)
+	--particleManager:add(tinyBubbles)
+	--
+	----Heal Particles
+	--local heal = ParticleSystem:new(40, {x = 148, y = 128}, 0, false, healCreate, healUpdate, healDraw)
+	--local healBlink = ParticleSystem:new(15, {x = 148, y = 128}, 0, false, healCreate, healUpdate)
+    --
+	--heal:emitInsideRect(100,64)
+	--healBlink:emitInsideRect(100,64)
+	--
+	--particleManager:add(heal)
+	--particleManager:add(healBlink)
+	--
+	---- Sand Attack Particles
+	--local sandAttack =  ParticleSystem:new(40, {x = 148, y = 128}, 0, false, sandAttackCreate , sandAttackUpdate)
+	--
+	--sandAttack:emit()
+	--
+	--particleManager:add(sandAttack)
+	--
+	---- Hit Particles
+	--local hitAttack =  ParticleSystem:new(40, {x = 64, y = 128}, 0, false, hitCreate, hitUpdate, hitDraw)
+	--
+	--hitAttack:emit()
+	--
+	--particleManager:add(hitAttack)
 	
     --start_recording('camera.gif')
 end
@@ -149,9 +143,6 @@ function draw()
     elseif scene == 'game' then
         -- Draws dungeon
         dungeon:draw()
-        
-        -- Draw particles
-        particleManager:draw()
 
         if dungeon.finished then
             scene = 'death'
@@ -189,7 +180,6 @@ function update(dt)
         end
     elseif scene == 'loading' then
     elseif scene == 'game' then
-        particleManager:update(dt)
         dungeon:update(dt)
     elseif scene == 'death' then
     end

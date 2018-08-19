@@ -94,10 +94,6 @@ function mod.update_title_screen(dt)
     end
 
     camera:update()
-
-    if btp(BLUE) then
-        camera:translate(math.random()*200-100, math.random()*200-100, 0.3, Easing.InOutCubic)
-    end
 end
 
 return mod

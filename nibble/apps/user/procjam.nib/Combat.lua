@@ -2,8 +2,10 @@ local EnemyAI = require('EnemyAI')
 local Choice = require('Choice')
 local CombatMenu = require('CombatMenu')
 local Attack = require('Attack')
-local Combat = {}
 local Types = require("Attack")
+local ParticleManager = require('ParticleManager')
+
+local Combat = {}
 
 PLAYER_START = 0
 ENEMY_START = 1
@@ -23,7 +25,7 @@ function Combat:new(player, character, battleStarter)
 		turn = 0,
 		battleStarter = player,
         menu = CombatMenu:new(setMovesetTarget(player.moveset, character), nil),
-		
+        particleManager = ParticleManager:new(),
 		enemyAI = EnemyAI:new(character),
     }
 
@@ -50,6 +52,9 @@ function Combat:draw()
     self:drawStats(20, 16, self.character)
 
     self.menu:draw()
+
+    -- Draw particles
+    self.particleManager:draw()
 end
 
 function Combat:update(dt)
@@ -66,6 +71,7 @@ function Combat:update(dt)
     end
 	
     self.menu:update()
+    self.particleManager:update(dt)
 end
 
 function Combat:nextTurn(playerChoice, enemyChoice)
@@ -84,7 +90,7 @@ end
 function Combat:executeChoice(choice)
 	if choice.attack ~= nil then
 		dprint('Attack')
-		choice.attack.effect(choice.attack.target)
+		choice.attack.effect(choice.attack.target, self.particleManager)
 	elseif choice.item ~= nil then
 		dprint('Item')
 	end
