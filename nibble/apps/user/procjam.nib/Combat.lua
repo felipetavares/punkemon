@@ -3,7 +3,6 @@ local Choice = require('Choice')
 local CombatMenu = require('CombatMenu')
 local Attack = require('Attack')
 local Types = require("Attack")
-local ParticleManager = require('ParticleManager')
 
 local Combat = {}
 
@@ -25,7 +24,6 @@ function Combat:new(player, character, battleStarter)
 		turn = 0,
 		battleStarter = player,
         menu = CombatMenu:new(setMovesetTarget(player.moveset, character), nil),
-        particleManager = ParticleManager:new(),
 		enemyAI = EnemyAI:new(character),
     }
 
@@ -90,7 +88,7 @@ end
 function Combat:executeChoice(choice)
 	if choice.attack ~= nil then
 		dprint('Attack')
-        choice.attack.target:hit(self.particleManager, choice.attack)
+        choice.attack.target:hit(choice.attack)
 	elseif choice.item ~= nil then
 		dprint('Item')
 	end

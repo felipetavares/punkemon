@@ -7,6 +7,7 @@ local Boid = require('Boid')
 local BoidManager = require('BoidManager')
 local Camera = require('Camera')
 local Easing = require('Easing')
+local ParticleManager = require('ParticleManager')
 
 local Dungeon = {}
 
@@ -19,9 +20,9 @@ function Dungeon:new()
         h = 9,
         boidManager = BoidManager:new(),
         finished = false,
-        camera = Camera:new()
+        camera = Camera:new(),
+        particleManager = ParticleManager:new()
     }
-
     lang.instanceof(instance, Dungeon)
 
     instance:generate()

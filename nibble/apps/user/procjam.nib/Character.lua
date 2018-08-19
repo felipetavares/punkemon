@@ -26,7 +26,7 @@ function Character:new()
     return instance
 end
 
-function Character:init(path)
+function Character:init(path, particleManager)
     local init = {x = 0, y = 0}
     
     if path and path[self.position] then
@@ -43,8 +43,8 @@ function Character:init(path)
 
     self.moveset     = lang.copy(EnemyDescription.moveset[self.name .. tostring(self.level)])
 
-    dprint(self.name)
-
+    self.psystem = ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
+    particleManager:add(self.psystem)
 end
 
 function Character:findDirection()
@@ -87,15 +87,13 @@ function Character:print()
     dprint(s)
 end
 
-function Character:hit(p, attack)
+function Character:hit(attack)
     self:hitDamage(attack)
-    self:hitParticles(p)
+    self:hitParticles()
 end
 
-function Character:hitParticles(p)
-    local hitAttack =  ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
-    hitAttack:emit()
-    p:add(hitAttack)
+function Character:hitParticles()
+    self.psystem:emit()
 end
 
 function Character:hitDamage(attack)
