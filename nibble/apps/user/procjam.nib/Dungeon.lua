@@ -17,7 +17,7 @@ function Dungeon:new()
         current = 1,
         rooms = {},
         w = 3,
-        h = 9,
+        h = 3,
         boidManager = BoidManager:new(),
         finished = false,
         camera = Camera:new(),
@@ -87,6 +87,9 @@ function Dungeon:generate()
         if v ~= false then
             self.current = k
             local room = self.rooms[self.current]
+            self.camera.y = -320
+            self.camera.x = room.x
+
             self.camera:translate(room.x, room.y,
                                   1, Easing.InOutCubic)
             player:init(self.rooms[self.current], self.particleManager)

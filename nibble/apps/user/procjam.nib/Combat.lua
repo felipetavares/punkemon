@@ -102,7 +102,7 @@ function Combat:drawStats(x, y, character)
     rect(x+3, y+3, math.floor(93*hp)-2, 9, 7)
     rectf(x, y+11, math.floor(93*hp), 1, 7)
 
-    print(hp_str, x+46-#hp_str*4, y+3)
+    print(hp_str, x+47-#hp_str*4, y+4)
 
     col(7, 1)
 
