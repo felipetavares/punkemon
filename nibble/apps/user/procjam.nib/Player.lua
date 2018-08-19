@@ -9,6 +9,9 @@ local Attack = require('Attack')
 local EnemyBiped = require('EnemyBiped')
 local Types = require("Attack")
 
+local ParticleSystem = require('ParticleSystem')
+require ('ParticleFunctions')
+
 function Player:new()
     local instance = {
         x = 10, y = 7,
@@ -30,20 +33,20 @@ function Player:new()
 
     lang.instanceof(instance, Player)
 
-    local tackle = Attack:new('Tackle', 10, 1, Attack.TECH, 3, nil, function () end)
-    local sand = Attack:new('Sand', 10, 1, Attack.TECH, 5, nil, function () end)
-    local harden = Attack:new('Harden', 10, 1, Attack.TECH, 5, nil, function () end)
-    local growl = Attack:new('Growl', 10, 1, Attack.TECH, 5, nil, function () end)
+    local tackle = Attack:new('Slash', 10, 1, Attack.TECH, 3, nil, function () end)
+    local sand = Attack:new('Bubbles', 0, 1, Attack.TECH, 5, nil, function () end)
+    local harden = Attack:new('Harden', 0, 1, Attack.TECH, 5, nil, function () end)
+    local growl = Attack:new('Diva', 0, 1, Attack.TECH, 5, nil, function () end)
 
     table.insert(instance.moveset, tackle)
-    table.insert(instance.moveset, sand)
     table.insert(instance.moveset, harden)
+    table.insert(instance.moveset, sand)
     table.insert(instance.moveset, growl)
 
     return instance
 end
 
-function Player:init(room)
+function Player:init(room, particleManager)
     self.baseStats = {
         HP = 80,
         attack = 75,
@@ -53,7 +56,9 @@ function Player:init(room)
     }
 
     self.battleStats = lang.copy(self.baseStats)
-    dprint('ola bonitos')
+
+    self.psystem = ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
+    particleManager:add(self.psystem)
 
     for x=0,room.w do
         for y=0,room.h do
@@ -63,7 +68,6 @@ function Player:init(room)
             end
         end
     end
-
 end 
 
 function Player:draw(room, camera)
@@ -72,7 +76,6 @@ function Player:draw(room, camera)
     else
         camera:spr(self.x*16, self.y*16, 11+self.frame, 5)
     end
-    
 end
 
 local t = 0

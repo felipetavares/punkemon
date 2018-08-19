@@ -89,7 +89,7 @@ function Dungeon:generate()
             local room = self.rooms[self.current]
             self.camera:translate(room.x, room.y,
                                   1, Easing.InOutCubic)
-            player:init(self.rooms[self.current])
+            player:init(self.rooms[self.current], self.particleManager)
             break
         end
     end
@@ -157,9 +157,12 @@ function Dungeon:draw()
 
             -- Draws fishes
             self.boidManager:draw(self.camera)
+
         end
     end
 
+    -- Draw particles
+    self.particleManager:draw()
 end
 
 function Dungeon:update(dt)
@@ -178,6 +181,8 @@ function Dungeon:update(dt)
     if player.battleStats.HP <= 0 then
         self.finished = true
     end
+
+    self.particleManager:update(dt)
 end
 
 return Dungeon

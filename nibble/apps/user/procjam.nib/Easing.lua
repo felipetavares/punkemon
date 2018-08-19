@@ -16,9 +16,7 @@ local function clamp(x)
 end
 
 function Easing.Linear(x)
-    x = clamp(x)
-
-    return x
+    return clamp(x)
 end
 
 function Easing.InCubic(x)

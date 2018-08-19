@@ -1,11 +1,16 @@
 local Attack = {}
 
-NEUTRAL = 0
-TECH = 1
-NAT  = 2
-MAGE = 3
+NEUTRAL = 'NEUTRAL'
+TECH = 'TECH'
+NAT  = 'NAT'
+MAGE = 'MAGE'
 
-elementalMultiplier = {
+Attack.NEUTRAL = NEUTRAL
+Attack.TECH = TECH
+Attack.NAT = NAT
+Attack.MAGE = MAGE
+
+Attack.elementalMultiplier = {
 	NEUTRAL 	= { TECH = 1, 	NAT = 1, 	MAGE = 1,   },
 	TECH 	    = { TECH = 1, 	NAT = 2, 	MAGE = 0.5  },
 	NAT	    	= { TECH = 0.5, NAT = 1, 	MAGE = 2	},

@@ -2,7 +2,10 @@ local Character = require('Character')
 local EnemyBiped = Character:new()
 local EnemyDescription = require('EnemyDescription')
 
-function EnemyBiped:new(path, level)
+local ParticleSystem = require('ParticleSystem')
+require ('ParticleFunctions')
+
+function EnemyBiped:new(path, level, particleManager)
     local instance = {
         tick = false,
 
@@ -12,13 +15,16 @@ function EnemyBiped:new(path, level)
 
     lang.instanceof(instance, lang.copy(EnemyBiped))
 
-    instance:init(path)
+    instance:init(path, particleManager)
 
     return instance
 end
 
-function EnemyBiped:init(path)
-    Character.init(self, path)
+function EnemyBiped:init(path, particleManager)
+    Character.init(self, path, particleManager)
+
+    self.psystem = ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
+    particleManager:add(self.psystem)
 
     self.baseStats.HP = 5
 

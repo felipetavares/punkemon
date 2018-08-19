@@ -42,9 +42,6 @@ function Character:init(path, particleManager)
     self.battleStats = lang.copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
 
     self.moveset     = lang.copy(EnemyDescription.moveset[self.name .. tostring(self.level)])
-
-    self.psystem = ParticleSystem:new(100, {x = 200, y = 120}, 0, false, hitCreate, hitUpdate, hitDraw)
-    particleManager:add(self.psystem)
 end
 
 function Character:findDirection()
@@ -87,8 +84,9 @@ function Character:print()
     dprint(s)
 end
 
-function Character:hit(attack)
-    self:hitDamage(attack)
+function Character:hit(move)
+    self:hitDamage(move)
+
     self:hitParticles()
 end
 
@@ -96,8 +94,14 @@ function Character:hitParticles()
     self.psystem:emit()
 end
 
-function Character:hitDamage(attack)
-    self.battleStats.HP = self.battleStats.HP-1
+function Character:hitDamage(move)
+	damage = move.power * self.battleStats.attack / move.target.battleStats.defense * (0.85 + math.random() * 0.15)
+    
+	damage = damage * Attack.elementalMultiplier[move.element][move.target.baseStats.element]
+
+    dprint('Damage:', math.floor(damage))
+
+    self.battleStats.HP = self.battleStats.HP-math.floor(damage+0.5)
 end
 
 return Character

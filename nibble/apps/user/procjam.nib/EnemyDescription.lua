@@ -7,7 +7,7 @@ enemyDesc.basicStats = {
         attack = 0,
         defense = 0,
         speed = 0,
-        element = NEUTRAL,
+        element = Types.NEUTRAL,
         HP = 1
     },
 
@@ -15,7 +15,7 @@ enemyDesc.basicStats = {
         attack = 0,
         defense = 0,
         speed = 0,
-        element = NEUTRAL,
+        element = Types.NEUTRAL,
         HP = 1
     },
 
@@ -23,7 +23,7 @@ enemyDesc.basicStats = {
         attack = 0,
         defense = 0,
         speed = 0,
-        element = NEUTRAL,
+        element = Types.NEUTRAL,
         HP = 1
     },
 

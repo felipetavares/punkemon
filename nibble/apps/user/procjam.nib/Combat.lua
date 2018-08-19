@@ -50,9 +50,6 @@ function Combat:draw()
     self:drawStats(20, 16, self.character)
 
     self.menu:draw()
-
-    -- Draw particles
-    self.particleManager:draw()
 end
 
 function Combat:update(dt)
@@ -69,7 +66,6 @@ function Combat:update(dt)
     end
 	
     self.menu:update()
-    self.particleManager:update(dt)
 end
 
 function Combat:nextTurn(playerChoice, enemyChoice)
@@ -96,6 +92,7 @@ end
 
 function Combat:drawStats(x, y, character)
     local hp = character.battleStats.HP/character.baseStats.HP
+    local hp_str = tostring(character.battleStats.HP) .. '/' .. tostring(character.baseStats.HP)
     local attack = character.battleStats.attack
     local defense = character.battleStats.defense
     local speed = character.battleStats.speed
@@ -104,6 +101,8 @@ function Combat:drawStats(x, y, character)
     rectf(x, y+3, math.floor(93*hp), 10, 11)
     rect(x+3, y+3, math.floor(93*hp)-2, 9, 7)
     rectf(x, y+11, math.floor(93*hp), 1, 7)
+
+    print(hp_str, x+46-#hp_str*4, y+3)
 
     col(7, 1)
 
