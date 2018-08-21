@@ -11,23 +11,27 @@ local Combat = {}
 PLAYER_START = 0
 ENEMY_START = 1
 
-local function setMovesetTarget(moveset, target)
+local function setMovesetTarget(moveset, self, enemy)
     for _, move in ipairs(moveset) do
-        move.target = target
+        if move.targetDescription == 'self' then
+            move.target = self
+        else
+            move.target = enemy
+        end
     end
 
     return moveset 
 end
 
 function Combat:new(player, character, battleStarter)
-    character.moveset = setMovesetTarget(character.moveset, player)
+    character.moveset = setMovesetTarget(character.moveset, character, player)
 
     local instance = {
         player = player or nil,
         character = character or nil,
 		turn = 0,
 		battleStarter = player,
-        menu = CombatMenu:new(setMovesetTarget(player.moveset, character), nil),
+        menu = CombatMenu:new(setMovesetTarget(player.moveset, player, character), nil),
 		enemyAI = EnemyAI:new(character),
         notifications = NotificationManager:new()
     }
@@ -55,6 +59,9 @@ function Combat:draw()
     self:drawStats(20, 16, self.character)
 
     self.menu:draw()
+
+    -- Draw particles
+    particleManager:draw()
 
     self.notifications:draw()
 end
@@ -104,7 +111,7 @@ function Combat:nextTurn(playerChoice, enemyChoice)
                 self.menu:open()
             
                 Delayed.exec(0.3, function()
-                    if self.character.battleStats.HP <= 0 then
+                    if self.character.battleStats.HP <= 0 or self.escape then
                         self.finished = true       
                     end
                 end)
@@ -115,10 +122,17 @@ end
 
 function Combat:executeChoice(choice)
 	if choice.attack ~= nil then
-		dprint('Attack')
-        choice.attack.target:hit(choice.attack)
-        choice.attack:visual()
-        self.notifications:add(Notification:new(choice.attack.name..'!', 0.3))
+        if choice.attack == true then
+            self.notifications:add(Notification:new('Running Away!', 0.6))
+            self.escape = true
+        else
+            dprint('Attack')
+            choice.attack:use()
+            choice.attack:effect()
+            choice.attack.target:hit(choice.attack)
+            choice.attack:visual()
+            self.notifications:add(Notification:new(choice.attack.name..'!', 0.3))
+        end
 	elseif choice.item ~= nil then
 		dprint('Item')
 	end

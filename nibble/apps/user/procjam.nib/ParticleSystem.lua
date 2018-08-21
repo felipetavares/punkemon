@@ -39,7 +39,7 @@ function ParticleSystem:new(nParticles, position, emissionTime, loop, fnCreatePa
 		loop = loop
     }
 	
-	for p = 0, nParticles do
+	for p = 0, nParticles-1 do
 		local particle = instance.fnCreateParticle()
 		table.insert(instance.particles, particle)
 	end
@@ -80,12 +80,11 @@ function ParticleSystem:emit(x, y)
 	self.active = true
 	self.startEmission = time()
     for i, p in ipairs(self.particles) do
+        p.position.x, p.position.y = x+self.position.x, y+self.position.y
+		p.active = true
         if p.init then
             p:init(i, self.nParticles)
         end
-
-        p.position.x, p.position.y = x+self.position.x, y+self.position.y
-		p.active = true
 		self.fnUpdate(p, self.emissionTime * i)
 	end
 end
@@ -97,12 +96,11 @@ function ParticleSystem:emitLine(dx, dy, x, y)
 	self.active = true
 	self.startEmission = time()
     for i, p in ipairs(self.particles) do
+		p.position.x, p.position.y = x + self.position.x + dx * i , y + self.position.y + dy * i
+		p.active = true
         if p.init then
             p:init(i, self.nParticles)
         end
-
-		p.position.x, p.position.y = x + self.position.x + dx * i , y + self.position.y + dy * i
-		p.active = true
 		self.fnUpdate(p, self.emissionTime * i)
 	end
 end
@@ -112,12 +110,11 @@ function ParticleSystem:emitInsideRect(dx , dy)
 	self.startEmission = time()
 	i = 0
     for _, p in ipairs(self.particles) do
+		p.position.x, p.position.y = self.position.x + dx * math.random() , self.position.y + dy * math.random()
+		p.active = true
         if p.init then
             p:init(i, self.nParticles)
         end
-
-		p.position.x, p.position.y = self.position.x + dx * math.random() , self.position.y + dy * math.random()
-		p.active = true
 		self.fnUpdate(p, self.emissionTime * i)
 		i += 1
 	end

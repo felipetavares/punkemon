@@ -11,7 +11,7 @@ local attackDesc = {
 		accuracy = 1,
 		element = Types.TECH,
 		pp = 3,
-		target = nil,
+		target = 'enemy',
 		effect = function() end,
         visualCreation = function(self)
             self.ps = ParticleSystem:new(40, {x = 0, y = 0}, 0, false, slashCreate, slashUpdate, slashDraw)
@@ -28,14 +28,16 @@ local attackDesc = {
     },
     ['Bubbles'] = {
 		name = 'Bubbles',
-		power = 8,
+		power = 0,
 		accuracy = 1,
 		element = Types.NAT,
 		pp = 3,
-		target = nil,
-		effect = function() end,
+		target = 'enemy',
+		effect = function(self)
+            self.changeStat(self.target.battleStats, 'attack', -10)
+        end,
         visualCreation = function(self)
-            self.ps = ParticleSystem:new(10, {x = 0, y = 0}, 1, false, bubbleCreate, bubbleUpdate, bubbleDraw)
+            self.ps = ParticleSystem:new(10, {x = 0, y = 0}, 0.3, false, bubbleCreate, bubbleUpdate, bubbleDraw)
             particleManager:add(self.ps)
         end,
         visual = function (self)
@@ -46,38 +48,42 @@ local attackDesc = {
     },
     ['Scales'] = {
 		name = 'Scales',
-		power = 8,
+		power = 0,
 		accuracy = 1,
 		element = Types.NAT,
 		pp = 3,
-		target = nil,
-		effect = function() end,
+		target = 'self',
+		effect = function(self)
+            self.changeStat(self.target.battleStats, 'defense', 10)
+        end,
         visualCreation = function(self)
-            self.ps = ParticleSystem:new(10, {x = 0, y = 0}, 1, false, bubbleCreate, bubbleUpdate, bubbleDraw)
+            self.ps = ParticleSystem:new(64, {x = 0, y = 0}, 0, false, trisCreate, trisUpdate, trisDraw)
             particleManager:add(self.ps)
         end,
         visual = function (self)
             self.ps.position.x, self.ps.position.y = self.target:getCombatCenter()
 
-            self.ps:emit()
+            self.ps:emit(-20, -40)
         end
     },
     ['Diva'] = {
 		name = 'Diva',
-		power = 8,
+		power = 0,
 		accuracy = 1,
 		element = Types.NAT,
 		pp = 3,
-		target = nil,
-		effect = function() end,
+		target = 'self',
+		effect = function(self)
+            self.changeStat(self.target.battleStats, 'speed', 10)
+        end,
         visualCreation = function(self)
-            self.ps = ParticleSystem:new(10, {x = 0, y = 0}, 1, false, bubbleCreate, bubbleUpdate, bubbleDraw)
+            self.ps = ParticleSystem:new(50, {x = 0, y = 0}, 0, false, sparklesCreate, sparklesUpdate, sparklesDraw)
             particleManager:add(self.ps)
         end,
         visual = function (self)
             self.ps.position.x, self.ps.position.y = self.target:getCombatCenter()
 
-            self.ps:emit()
+            self.ps:emitLine(1, 0, -25, 20)
         end
     },
     ['Punch'] = {
@@ -86,7 +92,7 @@ local attackDesc = {
 		accuracy = 1,
 		element = Types.TECH,
 		pp = 3,
-		target = nil,
+		target = 'enemy',
 		effect = function() end,
         visualCreation = function(self)
             self.ps = ParticleSystem:new(60, {x = 0, y = 0}, 0, false, hitCreate, hitUpdate, hitDraw)

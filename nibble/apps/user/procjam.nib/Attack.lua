@@ -23,7 +23,8 @@ function Attack:new(desc)
 		power = desc.power or 10,
 		accuracy = desc.accuracy or 1,
 		element = desc.element or NEUTRAL,
-		target = desc.target or nil,
+		targetDescription = desc.target or nil,
+        target = nil,
 		effect = desc.effect or nil,
         pp = desc.pp or 5,
         visualCreation = desc.visualCreation or function() end,
@@ -35,6 +36,22 @@ function Attack:new(desc)
     instance:visualCreation()
 
     return instance
+end
+
+function Attack.changeStat(table, member, delta)
+    if table[member] + delta >= 0 then
+        table[member] += delta
+    end
+end
+
+function Attack:use()
+    if self.pp > 0 then
+        self.pp -= 1
+    end
+end
+
+function Attack:loaded()
+    return self.pp > 0
 end
 
 return Attack

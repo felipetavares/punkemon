@@ -135,9 +135,6 @@ function draw()
             scene = 'title'
         end
     end
-
-    -- Draw particles
-    particleManager:draw()
 end
 
 function update(dt)

@@ -26,8 +26,7 @@ function CombatMenu:new(attacks, items)
 
         mode = Modes.ATTACKS
     }
-	
-	
+
     lang.instanceof(instance, CombatMenu)
 
     instance:open()
@@ -94,14 +93,23 @@ function CombatMenu:drawAttacks(x)
         x += offsets[i].x
         y += offsets[i].y
 
-        if i == self.selected then
-            col(14, 13)
+        if attack:loaded() then
+            if i == self.selected then
+                col(14, 13)
+            else
+                col(14, 12)
+                col(7, 9)
+            end
         else
             col(14, 12)
             col(7, 9)
         end
 
         print(names[i], x, y)
+
+        if not attack:loaded() then
+            line(x, y+3, x+#names[i]*8, y+3, 13)
+        end
 
         col(14, 14)
         col(7, 7)
@@ -118,42 +126,35 @@ function CombatMenu:update(dt)
     end
 
     if self.base.x == MENU_OPEN_STATS.x then
-        if btp(DOWN) then
-            if self.selected == 3 then
-                self.selectedAttack = self.attacks[self.selected]
-                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
-            else
-                self.selected = 3
-            end
-        elseif btp(UP) then
-            if self.selected == 1 then
-                self.selectedAttack = self.attacks[self.selected]
-                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
-            else
-                self.selected = 1
-            end
-        elseif btp(LEFT) then
-            if self.selected == 4 then
-                self.selectedAttack = self.attacks[self.selected]
-                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
-            else
-                self.selected = 4
-            end
-        elseif btp(RIGHT) then
-            if self.selected == 2 then
-                self.selectedAttack = self.attacks[self.selected]
-                self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
-            else
-                self.selected = 2
+        local buttons = {UP, RIGHT, DOWN, LEFT}
+
+        for i, button in ipairs(buttons) do
+            if btp(button) then
+                if self.attacks[i] and self.attacks[i]:loaded() then
+                    if self.selected == i then
+                        self.selectedAttack = self.attacks[self.selected]
+                        self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
+                    else
+                        self.selected = i
+                    end
+                end
             end
         end
+
+        if btp(RED) then
+            self.selectedAttack = true
+            self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
+        end
     end
-	
+
 	self.base:update(dt)
 end
 
 function CombatMenu:drawBase(x)
     pspr(-x, 152, 320, 400, 320, 80)
+
+    print('\9', 240, 4+math.sin(clock()*8)*2)
+    print('Escape!', 248+8, 4)
 end
 
 function CombatMenu:drawButtons(x, attackb, itemsb)

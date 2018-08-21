@@ -9,16 +9,17 @@ function Notification:new(text, time)
         width = #text*8+16,
         height = 16,
         time = time or 1,
-        position = IV:new()
+        position = IV:new(),
+        depth = 120
     }
 
     lang.instanceof(instance, Notification)
 
-    instance.position.x, instance.position.y = 320, 0
-    instance.position:set(160-instance.width/2, 0, 0.1, Easing.InOutCubic)
+    instance.position.x, instance.position.y = 320, instance.depth
+    instance.position:set(160-instance.width/2, instance.depth, 0.1, Easing.InOutCubic)
     
     Delayed.exec(instance.time, function()
-        instance.position:set(-instance.width, 0, 0.1, Easing.InOutCubic)
+        instance.position:set(-instance.width, instance.depth, 0.1, Easing.InOutCubic)
 
         Delayed.exec(0.4, function()
             instance.finished = true

@@ -33,7 +33,13 @@ function EnemyAI:decision(player)
         return classifier(a) < classifier(b)
     end
 
-    local attacks = self.chara.moveset
+    local attacks = {}
+    
+    for _, move in ipairs(self.chara.moveset) do
+        if move:loaded() then
+            table.insert(attacks, move)
+        end
+    end
 
     table.sort(attacks, compare)  
 
