@@ -17,7 +17,7 @@ end
 function EnemyAI:decision(player)
     --> Still needs to classify status bellow attack.
     --> Are status always items?
-    local shield = player.equipment.SHIELD
+    local shield = player.equipment.shield
 
     function classifier(attack)
         local multiplayer = 1

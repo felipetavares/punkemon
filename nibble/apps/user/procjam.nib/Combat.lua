@@ -31,7 +31,7 @@ function Combat:new(player, character, battleStarter)
         character = character or nil,
 		turn = 0,
 		battleStarter = player,
-        menu = CombatMenu:new(setMovesetTarget(player.moveset, player, character), nil),
+        menu = CombatMenu:new(setMovesetTarget(player.moveset, player, character), player.inventories),
 		enemyAI = EnemyAI:new(character),
         notifications = NotificationManager:new()
     }
@@ -73,6 +73,12 @@ function Combat:update(dt)
         self:nextTurn(playerChoice, enemyChoice)
 
         self.menu.selectedAttack = nil
+    elseif self.menu.selectedItem then
+        playerChoice = Choice:new(nil, self.menu.selectedItem, self.player)
+        enemyChoice = self.enemyAI:decision(self.player)
+        self:nextTurn(playerChoice, enemyChoice)
+
+        self.menu.selectedItem = nil
     end
 
     self.menu:update(dt)
@@ -134,7 +140,8 @@ function Combat:executeChoice(choice)
             self.notifications:add(Notification:new(choice.attack.name..'!', 0.3))
         end
 	elseif choice.item ~= nil then
-		dprint('Item')
+        self.notifications:add(Notification:new(choice.item.name, 0.3))
+        choice.item:use(choice.target)
 	end
 end
 

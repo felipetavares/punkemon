@@ -2,6 +2,7 @@ local Character = require('Character')
 local Player = Character:new()
 
 local Inventory = require('Inventory')
+local Item = require('Item')
 
 local Combat = require('Combat')
 local Attack = require('Attack')
@@ -18,7 +19,8 @@ function Player:new()
     local instance = {
         x = 10, y = 7,
 		
-		equipment = { SWORD = nil, SHIELD = nil	},
+        equipment = {shield = nil, sword = nil},
+	    inventories = {Inventory:new('Pouch')},
 		
 		moveset = {},
 		oldX = x, oldY = y,
@@ -39,6 +41,11 @@ function Player:new()
     table.insert(instance.moveset, Attack:new(Attacks.Scales))
     table.insert(instance.moveset, Attack:new(Attacks.Bubbles))
     table.insert(instance.moveset, Attack:new(Attacks.Diva))
+
+    for i=1,6 do
+        instance.inventories[1]:addItem(Item:new('Oyster', nil, math.floor(30*math.random())))
+        instance.inventories[1]:addItem(Item:new('Magic Shit', nil, 0, math.floor(5*math.random())))
+    end
 
     return instance
 end
@@ -162,16 +169,30 @@ function Player:update(room, dt)
         self.frame = (self.frame+1)%5
     end
 
-    if btp(DOWN) then
+    if btd(DOWN) and self:moveAllowed() then
         self:checkAndMove(room, 0, 1)
-    elseif btp(UP) then
+    elseif btd(UP) and self:moveAllowed() then
         self:checkAndMove(room, 0, -1)
-    elseif btp(LEFT) then
+    elseif btd(LEFT) and self:moveAllowed() then
         self:checkAndMove(room, -1, 0)
         self.direction = D_LEFT
-    elseif btp(RIGHT) then
+    elseif btd(RIGHT) and self:moveAllowed() then
         self:checkAndMove(room, 1, 0)
         self.direction = D_RIGHT
+    end
+end
+
+function Player:moveAllowed()
+    if not self.lastMovedTime then
+        self.lastMovedTime = clock()
+        return true
+    end
+
+    if clock()-self.lastMovedTime > 0.1 then
+        self.lastMovedTime = clock()
+        return true
+    else
+        return false
     end
 end
 
