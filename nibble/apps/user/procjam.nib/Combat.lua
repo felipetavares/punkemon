@@ -118,7 +118,11 @@ function Combat:nextTurn(playerChoice, enemyChoice)
             
                 Delayed.exec(0.3, function()
                     if self.character.battleStats.HP <= 0 or self.escape then
-                        self.finished = true       
+                        self.finished = true
+
+                        self.player.battleStats.speed = self.player.baseStats.speed
+                        self.player.battleStats.attack = self.player.baseStats.attack
+                        self.player.battleStats.defense = self.player.baseStats.defense
                     end
                 end)
             end)
