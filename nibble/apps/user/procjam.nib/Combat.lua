@@ -60,9 +60,6 @@ function Combat:draw()
 
     self.menu:draw()
 
-    -- Draw particles
-    particleManager:draw()
-
     self.notifications:draw()
 end
 

@@ -119,11 +119,16 @@ function Player:checkAndMove(room, dx, dy)
             self.x += dx
             self.y += dy
             room:step()
+        else
+            room:useDecoration(x, y)
+            room:step()
         end
     end
 end
 
 function Player:step(room)
+    Character.step(self)
+
     -- Move right
     if self.x >= room.w then
         local room = room.dungeon:move(1, 0)
@@ -158,6 +163,14 @@ function Player:step(room)
         local combat = Combat:new(self, enemy)
 
         room.dungeon:startCombat(combat)
+    end
+
+    if room:hasItem(self.x, self.y) then
+        local item = room:getItem(self.x, self.y)
+
+        self.inventories[1]:addItem(item)
+
+        item.appear:start(item.x, item.y)
     end
 end
 

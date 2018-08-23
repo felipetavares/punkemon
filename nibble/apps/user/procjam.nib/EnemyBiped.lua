@@ -80,6 +80,8 @@ function EnemyBiped:battleDraw()
 end
 
 function EnemyBiped:step()
+    Character.step(self)
+
     if self.tick then
         self.position = (self.position%#self.path)+1
         self.tick = false

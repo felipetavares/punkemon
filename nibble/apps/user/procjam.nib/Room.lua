@@ -1,9 +1,13 @@
 require('AStar')
 
+local Effects = require('Effects')
+
 local EnemyTank = require('EnemyTank')
 local EnemyBiped = require('EnemyBiped')
 
 local Decoration = require('Decoration')
+local Item = require('Item')
+
 local Room = {}
 
 local tile_w, tile_h = 16, 16
@@ -30,9 +34,11 @@ function Room:new(tilemap, doormap, doors, w, h, x, y, dungeon, stage)
         doors = doors,
         decorations = {},
         characters = {},
+        items = {},
         paths = {},
         dungeon = dungeon or nil,
         stage = stage or 1,
+        explosionEffect = Effects.Explosion:new()
     }
 
     lang.instanceof(instance, Room)
@@ -167,6 +173,35 @@ function Room:hasDecoration(x, y)
     return false
 end
 
+function Room:destroyDecoration(x, y)
+    for i, decor in ipairs(self.decorations) do
+        if decor.x == x*16 and decor.y == y*16 then
+            table.remove(self.decorations, i)
+            return
+        end
+    end
+end
+
+function Room:hasItem(x, y)
+    for _, item in ipairs(self.items) do
+        if item.x == x*16 and item.y == y*16 then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Room:getItem(x, y)
+    for i, item in ipairs(self.items) do
+        if item.x == x*16 and item.y == y*16 then
+            return table.remove(self.items, i)
+        end
+    end
+
+    return nil
+end
+
 function Room:getCharacter(x, y)
     for _, char in ipairs(self.characters) do
         if char.x == x and char.y == y then
@@ -196,6 +231,11 @@ function Room:draw(camera)
 		end
     end
 
+    -- Draws items 
+    for _, item in ipairs(self.items) do
+        item:draw(camera)
+    end
+
     -- Draws decorations
     for _, decor in ipairs(self.decorations) do
         decor:draw(camera)
@@ -222,11 +262,44 @@ end
 function Room:update(dt)
     for i=#self.characters,1,-1 do
         if self.characters[i].battleStats.HP <= 0 then
+            local char = self.characters[i]
+            local x, y = char.x*16+8, char.y*16+8
+
+            Delayed.exec(0.3, function() 
+                self.explosionEffect:start(x, y)
+            end)
+            
+            self:spawnRandomItems(char.x, char.y, 4)
+
             table.remove(self.characters, i)
         end
     end
 
     player:update(self, dt)
+end
+
+function Room:spawnRandomItems(x, y, range, number)
+    number = number or 8
+
+    for i=1,number do
+        local ix, iy = x+math.floor((math.random()-0.5)*range), y+math.floor((math.random()-0.5)*range)
+
+        if not self:hasDecoration(ix, iy) and self.tilemap:get(ix, iy).kind == 07 then
+            local item = Item:new('Oyster', nil, math.floor(30*math.random()))
+            item.x, item.y = ix*16, iy*16
+
+            table.insert(self.items, item)
+
+            Delayed.exec(math.random()*0.5, function()
+                item.appear:start(ix*16+8, iy*16+8)
+            end)
+        end
+    end
+end
+
+function Room:useDecoration(x, y)
+    self:destroyDecoration(x, y)
+    self:spawnRandomItems(x, y, 4)
 end
 
 return Room

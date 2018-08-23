@@ -18,7 +18,9 @@ function Character:new()
 		
 		battleStats = {},
 		
-		moveset = {}
+		moveset = {},
+
+        alive = true
     }
 
     lang.instanceof(instance, Character)
@@ -116,6 +118,12 @@ end
 
 function Character:getCombatCenter()
     return 0, 0
+end
+
+function Character:step()
+    if self.battleStats.HP <= 0 then
+        self.alive = false
+    end
 end
 
 return Character
