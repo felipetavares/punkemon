@@ -26,6 +26,7 @@ function Attack:new(desc)
 		targetDescription = desc.target or nil,
         target = nil,
 		effect = desc.effect or nil,
+        basePP = desc.pp or 5,
         pp = desc.pp or 5,
         visualCreation = desc.visualCreation or function() end,
         visual = desc.visual or function() end

@@ -1,6 +1,7 @@
 local Character = require('Character')
 local Player = Character:new()
 
+local ItemDescription = require('ItemDescription')
 local Inventory = require('Inventory')
 local Item = require('Item')
 
@@ -43,8 +44,8 @@ function Player:new()
     table.insert(instance.moveset, Attack:new(Attacks.Diva))
 
     for i=1,6 do
-        instance.inventories[1]:addItem(Item:new('Oyster', nil, math.floor(30*math.random())))
-        instance.inventories[1]:addItem(Item:new('Magic Shit', nil, 0, math.floor(5*math.random())))
+        instance.inventories[1]:addItem(Item:new(ItemDescription.Oyster))
+        instance.inventories[1]:addItem(Item:new(ItemDescription.IncreasePP))
     end
 
     return instance

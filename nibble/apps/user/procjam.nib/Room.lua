@@ -6,6 +6,7 @@ local EnemyTank = require('EnemyTank')
 local EnemyBiped = require('EnemyBiped')
 
 local Decoration = require('Decoration')
+local ItemDescription = require('ItemDescription')
 local Item = require('Item')
 
 local Room = {}
@@ -285,7 +286,7 @@ function Room:spawnRandomItems(x, y, range, number)
         local ix, iy = x+math.floor((math.random()-0.5)*range), y+math.floor((math.random()-0.5)*range)
 
         if not self:hasDecoration(ix, iy) and self.tilemap:get(ix, iy).kind == 07 then
-            local item = Item:new('Oyster', nil, math.floor(30*math.random()))
+            local item = Item:new(ItemDescription.Oyster)
             item.x, item.y = ix*16, iy*16
 
             table.insert(self.items, item)
