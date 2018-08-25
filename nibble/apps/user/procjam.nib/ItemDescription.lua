@@ -22,7 +22,7 @@ local ItemDescriptions = {
     },
 
     ['IncreasePP'] = {
-        name = 'IncreasePP',
+        name = 'Oil',
         description = 'Restores PP of TECH moves',
         element = Attack.TECH,
 

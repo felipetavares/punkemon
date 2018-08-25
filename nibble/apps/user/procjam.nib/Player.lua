@@ -61,7 +61,7 @@ function Player:init(room)
         attack = 75,
         defense = 80,
         speed = 56,
-        element = Types.TECH,
+        element = Attack.NEUTRAL
     }
 
     self.battleStats = lang.copy(self.baseStats)

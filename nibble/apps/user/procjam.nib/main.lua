@@ -1,3 +1,8 @@
+--
+-- PUNKÉMON
+-- For the NIBBLE handheld console
+--
+
 Delayed = require('Delayed')
 ParticleManager = require('ParticleManager')
 particleManager = ParticleManager:new()
