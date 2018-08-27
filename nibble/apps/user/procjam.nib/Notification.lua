@@ -31,14 +31,14 @@ end
 
 function Notification:draw()
     rectf(self.position.x, self.position.y+self.height, self.width, 2, 1)
-    rectf(self.position.x, self.position.y, self.width, self.height, 13)
+    rectf(self.position.x, self.position.y, self.width, self.height, 10)
     rect(self.position.x+1, self.position.y, self.width, self.height, 1)
 
-    col(14, 1)
-    col(7, 0)
+    col(15, 1)
+    col(11, 0)
     print(self.text, self.position.x+8, self.position.y+4)
-    col(14, 14)
-    col(7, 7)
+    col(15, 15)
+    col(11, 11)
 end
 
 function Notification:update()

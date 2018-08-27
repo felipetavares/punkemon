@@ -162,12 +162,12 @@ function Combat:drawStats(x, y, character)
 
     local life_bar_length = 98
 
-    rectf(x, y+3, life_bar_length+1, 10, 13)
-    rectf(x, y+3, math.floor(life_bar_length*hp), 10, 11)
-    rect(x+3, y+3, math.floor(life_bar_length*hp)-2, 9, 7)
-    rectf(x, y+11, math.floor(life_bar_length*hp), 1, 7)
+    rectf(x, y+3, life_bar_length+1, 10, 10)
+    rectf(x, y+3, math.floor(life_bar_length*hp), 10, 13)
+    rect(x+3, y+3, math.floor(life_bar_length*hp)-2, 9, 11)
+    rectf(x, y+11, math.floor(life_bar_length*hp), 1, 11)
 
-    col(7, 1)
+    col(11, 1)
 
     print(hp_str, x+47-#hp_str*4, y+4)
 
@@ -191,8 +191,8 @@ function Combat:drawStats(x, y, character)
         local statBase = character.baseStats[statName]
         local statBattle = character.battleStats[statName]
         local statDelta = statBattle-statBase
-        local upColor = 11
-        local downColor = 8
+        local upColor = 13
+        local downColor = 9
 
         pspr(x, y, spr.x, spr.y, spr.w, spr.h)
         if statDelta ~= 0 then
@@ -213,7 +213,7 @@ function Combat:drawStats(x, y, character)
     end
 
     -- Stats BG
-    rectf(x+1, y+17, 100, 26, 2)
+    rectf(x+1, y+17, 100, 26, 3)
     rect(x+1, y+17, 100, 26, 1)
 
     -- Attack
@@ -225,7 +225,7 @@ function Combat:drawStats(x, y, character)
     -- Speed
     drawStat(x+2, y+36, 'speed', 'SPD', {x = 57, y = 82, w = 5, h = 6})
 
-    col(7, 7)
+    col(11, 11)
 
     spr(x, y, 0, 12)
     for i=1,5 do

@@ -2,7 +2,7 @@ local Camera = require('Camera')
 local Easing = require('Easing')
 
 local current_color = 2
-local colors = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+local colors = {2, 4, 5, 6, 7, 8, 9, 10, 11}
 
 local t = 0
 
@@ -38,7 +38,7 @@ function mod.draw_title_screen ()
     for _, color in ipairs(colors) do
         if color ~= 0 then
             if color == current_color then
-                col(color, 11)
+                col(color, 13)
             else
                 col(color, 0)
             end
@@ -72,9 +72,9 @@ function mod.draw_title_screen ()
     local startMessage = 'Press \09 to start'
     
     if math.floor(t)%2 == 0 then
-        col(7, 1)
+        col(11, 1)
         camera:print(startMessage, 160-4*#startMessage, 200)
-        col(7, 7)
+        col(11, 11)
     end
 
     if btp(RED) then

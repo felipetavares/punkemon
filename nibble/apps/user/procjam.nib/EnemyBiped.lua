@@ -44,9 +44,9 @@ function EnemyBiped:draw(camera)
 
         for i=2,8 do
             if i == c then
-                col(c, 13)
+                col(c, 10)
             else
-                col(i, 12)
+                col(i, 9)
             end
         end
 

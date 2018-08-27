@@ -84,7 +84,7 @@ function CombatMenu:drawItems(x)
             if item == sel then
                 print('\9', x-12, y)
 
-                col(0, 10)
+                col(0, 4)
                 print(item.name, x, y)
                 col(0, 0)
 
@@ -105,7 +105,7 @@ function CombatMenu:drawItems(x)
 
         local x = basex+MENU_OPEN_STATS.x+76
 
-        line(x, basey+12, x, 240-12, 13)
+        line(x, basey+16, x, 240-12, 10)
     end
 end
 
@@ -136,7 +136,7 @@ function CombatMenu:drawAttacks(x)
     local ampy = 48
 
     for i, _ in ipairs(self.attacks) do
-        col(9+i-1, (i == self.selectedAttackIndex) and 12 or 2)
+        col(9+i-1, (i == self.selectedAttackIndex) and 10 or 2)
     end
 
     pspr(basex, basey, 576, 336, 64, 64)
@@ -173,12 +173,12 @@ function CombatMenu:drawAttacks(x)
 
         if attack:loaded() then
             if not (i == self.selectedAttackIndex) then
-                col(14, 9)
-                col(7, 12)
+                col(15, 10)
+                col(11, 8)
             end
         else
-            col(14, 13)
-            col(7, 9)
+            col(15, 7)
+            col(11, 6)
         end
 
         print(attack.name, x, y-4)
@@ -186,14 +186,14 @@ function CombatMenu:drawAttacks(x)
         print(tostring(attack.pp), x+16, y+4)
 
         if not attack:loaded() then
-            line(x, y+3, x+#names[i]*8, y+3, 13)
+            line(x, y+1, x+#names[i]*8, y+1, 7)
         end
 
-        col(14, 14)
-        col(7, 7)
+        col(15, 15)
+        col(11, 11)
         
         if i == self.selectedAttackIndex then
-            col(1, 14)
+            col(1, 15)
         end
 
         local spr = Attack.ElementSprites[attack.element]

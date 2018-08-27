@@ -2,7 +2,6 @@
 
 ##SMALL STUFF
 
-1. Get all items from current position
 2. Destroying each type of decoration gives
 different items
 

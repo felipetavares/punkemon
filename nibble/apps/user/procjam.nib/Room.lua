@@ -291,7 +291,7 @@ function Room:spawnRandomItems(x, y, range, number)
 
             table.insert(self.items, item)
 
-            Delayed.exec(math.random()*0.5, function()
+            Delayed.exec(math.random()*0.2, function()
                 item.appear:start(ix*16+8, iy*16+8)
             end)
         end

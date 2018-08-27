@@ -165,13 +165,17 @@ function Dungeon:draw()
 
             local x, y = math.floor(self.camera.x/320+0.5), math.floor(self.camera.y/240+0.5)
 
-            for dx=-1,1 do
-                for dy=-1,1 do
-                    local room = self.rooms[(dy+y)*self.w+x+dx+1]
-                    if room then
-                        room:draw(self.camera)
+            if self.camera.interpolation.to.t > clock() then
+                for dx=-1,1 do
+                    for dy=-1,1 do
+                        local room = self.rooms[(dy+y)*self.w+x+dx+1]
+                        if room then
+                            room:draw(self.camera)
+                        end
                     end
                 end
+            else
+                self.rooms[self.current]:draw(self.camera)
             end
 
             -- Draws fishes
