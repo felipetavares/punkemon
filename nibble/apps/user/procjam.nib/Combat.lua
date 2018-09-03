@@ -147,40 +147,92 @@ function Combat:executeChoice(choice)
 end
 
 function Combat:drawStats(x, y, character)
-    local name_str = character.name .. ' Lvl ' .. tostring(character.level) .. ''
+    local name_str = character.name .. ' (' .. tostring(character.level) .. ')'
 
     local hp = character.battleStats.HP/character.baseStats.HP
     local hp_str = tostring(character.battleStats.HP) .. '/' .. tostring(character.baseStats.HP)
+
     local attack = character.battleStats.attack
     local defense = character.battleStats.defense
     local speed = character.battleStats.speed
 
-    rectf(x, y+3, 94, 10, 13)
-    rectf(x, y+3, math.floor(93*hp), 10, 11)
-    rect(x+3, y+3, math.floor(93*hp)-2, 9, 7)
-    rectf(x, y+11, math.floor(93*hp), 1, 7)
+    local attack_delta = attack-character.baseStats.attack
+    local defense_delta = defense-character.baseStats.defense
+    local speed_delta = speed-character.baseStats.speed
 
-    col(7, 1)
+    local life_bar_length = 98
+
+    rectf(x, y+3, life_bar_length+1, 10, 10)
+    rectf(x, y+3, math.floor(life_bar_length*hp), 10, 13)
+    rect(x+3, y+3, math.floor(life_bar_length*hp)-2, 9, 11)
+    rectf(x, y+11, math.floor(life_bar_length*hp), 1, 11)
+
+    col(11, 1)
 
     print(hp_str, x+47-#hp_str*4, y+4)
 
-    print(name_str, x, y-8)
+    if character.baseStats.element then
+        local elementSpr = Attack.ElementSprites[character.baseStats.element]
+        pspr(x, y-8, elementSpr.x, elementSpr.y, elementSpr.w, elementSpr.h)
+        print(name_str, x+16, y-8)
+    else
+        print(name_str, x, y-8)
+    end
 
-    pspr(x+2, y+20, 49, 82, 5, 6)
-    print('ATTACK ' .. tostring(attack), x+10, y+20-1)
-    pspr(x+2, y+28, 49, 90, 5, 6)
-    print('DEFENSE ' .. tostring(defense), x+10, y+28-1)
-    pspr(x+2, y+36, 57, 82, 5, 6)
-    print('SPEED ' .. tostring(speed), x+10, y+36-1)
+    function drawStat(x, y, statName, drawName, spr)
+        function plusSign(str)
+            if #str > 0 and str:sub(1, 1) ~= '-' then
+                return '+'..str
+            end
 
-    col(7, 7)
+            return str
+        end
+
+        local statBase = character.baseStats[statName]
+        local statBattle = character.battleStats[statName]
+        local statDelta = statBattle-statBase
+        local upColor = 13
+        local downColor = 9
+
+        pspr(x, y, spr.x, spr.y, spr.w, spr.h)
+        if statDelta ~= 0 then
+            print(drawName, x+8, y-1)
+
+            if statDelta > 0 then
+                col(0, upColor)
+            else
+                col(0, downColor)
+            end
+
+            print(tostring(statBase) .. plusSign(tostring(statDelta)), x+8+(#drawName+1)*8, y-1)
+
+            col(0, 0)
+        else
+            print(drawName .. ' ' .. tostring(statBase), x+8, y-1)
+        end
+    end
+
+    -- Stats BG
+    rectf(x+1, y+17, 100, 26, 3)
+    rect(x+1, y+17, 100, 26, 1)
+
+    -- Attack
+    drawStat(x+2, y+20, 'attack', 'ATK', {x = 49, y = 82, w = 5, h = 6})
+
+    -- Defense
+    drawStat(x+2, y+28, 'defense', 'DEF', {x = 49, y = 90, w = 5, h = 6})
+
+    -- Speed
+    drawStat(x+2, y+36, 'speed', 'SPD', {x = 57, y = 82, w = 5, h = 6})
+
+    col(11, 11)
 
     spr(x, y, 0, 12)
-    for i=1,4 do
-        x += 16
+    for i=1,5 do
+        x += 14
         spr(x, y, 1, 12)
     end
-    spr(x+16, y, 2, 12)
+    spr(x+15, y, 2, 12)
 end
 
 return Combat

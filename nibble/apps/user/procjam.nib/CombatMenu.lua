@@ -1,5 +1,6 @@
 local IV = require('InterpolatedVector')
 local Easing = require('Easing')
+local Attack = require('Attack')
 
 local CombatMenu = {}
 
@@ -83,13 +84,28 @@ function CombatMenu:drawItems(x)
             if item == sel then
                 print('\9', x-12, y)
 
-                col(0, 10)
+                col(0, 4)
                 print(item.name, x, y)
                 col(0, 0)
+
+                local blockSize = 8
+                for j=0,math.floor(#item.description/blockSize),1 do
+                    local endp = j*blockSize+blockSize
+
+                    if not item.description:sub(endp-1, endp):match(' ') and not (endp >= #item.description) then
+                        print(item.description:sub(j*blockSize, j*blockSize+blockSize-1)..'-', x+68, basey+8*(j+2))
+                    else
+                        print(item.description:sub(j*blockSize, j*blockSize+blockSize-1), x+68, basey+8*(j+2))
+                    end
+                end
             else
                 print(item.name, x, y)
             end
         end
+
+        local x = basex+MENU_OPEN_STATS.x+76
+
+        line(x, basey+16, x, 240-12, 10)
     end
 end
 
@@ -120,7 +136,7 @@ function CombatMenu:drawAttacks(x)
     local ampy = 48
 
     for i, _ in ipairs(self.attacks) do
-        col(9+i-1, (i == self.selectedAttackIndex) and 12 or 2)
+        col(9+i-1, (i == self.selectedAttackIndex) and 10 or 2)
     end
 
     pspr(basex, basey, 576, 336, 64, 64)
@@ -133,7 +149,7 @@ function CombatMenu:drawAttacks(x)
 
     for i=1,4 do
         if self.attacks[i] then
-            local name = self.attacks[i].name .. '/' .. tostring(self.attacks[i].pp)
+            local name = self.attacks[i].name
 
             table.insert(names, name)
         else
@@ -157,22 +173,33 @@ function CombatMenu:drawAttacks(x)
 
         if attack:loaded() then
             if not (i == self.selectedAttackIndex) then
-                col(14, 9)
-                col(7, 12)
+                col(15, 10)
+                col(11, 8)
             end
         else
-            col(14, 13)
-            col(7, 9)
+            col(15, 7)
+            col(11, 6)
         end
 
-        print(names[i], x, y)
+        print(attack.name, x, y-4)
+
+        print(tostring(attack.pp), x+16, y+4)
 
         if not attack:loaded() then
-            line(x, y+3, x+#names[i]*8, y+3, 13)
+            line(x, y+1, x+#names[i]*8, y+1, 7)
         end
 
-        col(14, 14)
-        col(7, 7)
+        col(15, 15)
+        col(11, 11)
+        
+        if i == self.selectedAttackIndex then
+            col(1, 15)
+        end
+
+        local spr = Attack.ElementSprites[attack.element]
+        pspr(x, y+4, spr.x, spr.y, spr.w, spr.h)
+
+        col(1, 1)
     end
 end
 

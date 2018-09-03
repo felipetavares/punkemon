@@ -17,8 +17,8 @@ Effects.Explosion = Effects.Effect
 
 function Effects.Explosion:new()
     local instance = {
-        system1 = ParticleSystem:new(60, {x = 0, y = 0}, 0, false, hitCreate, hitUpdate, hitDraw),
-        system2 = ParticleSystem:new(60, {x = 0, y = 0}, 0, false, sparklesCreate, sparklesUpdate, sparklesDraw)
+        system1 = ParticleSystem:new(10, {x = 0, y = 0}, 0, false, hitCreate, hitUpdate, hitDraw),
+        system2 = ParticleSystem:new(10, {x = 0, y = 0}, 0, false, sparklesCreate, sparklesUpdate, sparklesDraw)
     }
 
     lang.instanceof(instance, Effects.Explosion)
@@ -31,7 +31,7 @@ end
 
 function Effects.Explosion:start(x, y)
     self.system1:emit(x, y)
-    self.system2:emitLine(16/60, 0, x-8, y)
+    self.system2:emitLine(16/10, 0, x-8, y)
 end
 
 return Effects

@@ -61,7 +61,7 @@ function Player:init(room)
         attack = 75,
         defense = 80,
         speed = 56,
-        element = Types.TECH,
+        element = Attack.NEUTRAL
     }
 
     self.battleStats = lang.copy(self.baseStats)
@@ -166,12 +166,12 @@ function Player:step(room)
         room.dungeon:startCombat(combat)
     end
 
-    if room:hasItem(self.x, self.y) then
+    while room:hasItem(self.x, self.y) do
         local item = room:getItem(self.x, self.y)
 
         self.inventories[1]:addItem(item)
 
-        item.appear:start(item.x, item.y)
+        item.appear:start(item.x+8, item.y+8)
     end
 end
 
