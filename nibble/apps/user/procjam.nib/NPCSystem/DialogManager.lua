@@ -18,7 +18,7 @@ function DialogManager:new()
     return instance
 end
 
-function DialogManager:Load(path) -- Parser
+function DialogManager:load(path) -- Parser
     local file = io.open(path, "r") -- r read mode
     if not file then return nil end
     local content = file:read "*a" -- *a or *all reads the whole file
