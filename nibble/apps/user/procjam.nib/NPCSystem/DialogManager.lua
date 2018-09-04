@@ -1,3 +1,6 @@
+local Lexer = require('NPCSystem/Lexer')
+local Parser = require('NPCSystem/Parser')
+
 local DialogManager = {}
 
 function DialogManager:new()
@@ -19,12 +22,13 @@ function DialogManager:new()
 end
 
 function DialogManager:load(path) -- Parser
-    local file = io.open(path, "r") -- r read mode
-    if not file then return nil end
-    local content = file:read "*a" -- *a or *all reads the whole file
-    dprint(content)
-    file:close()
-    return content
+    local lexer = Lexer:new(path)
+    local parser = Parser:new(lexer)
+    local rawDialogs = parser:parse()
+    lexer:close()
+
+    -- Just use rawDialogs
+    -- the formatting is on Discord ;)
 end
 
 function DialogManager:draw()

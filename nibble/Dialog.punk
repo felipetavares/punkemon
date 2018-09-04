@@ -11,3 +11,55 @@ asldljalksdjalksdjaslkdjaslk
 
 (ok -> id1) (nope -> id2)
 ------------------------------
+---------[id -> next]--------
+Char (Angry):
+
+This [is my speech][a] [blabal
+asdkljasdlkasdlkajsd lasd
+asdkjlasdlask][b]
+asldljalksdjalksdjaslkdjaslk
+
+[a]: red, italic
+[b]: slow, green
+
+(ok -> id1) (nope -> id2)
+------------------------------
+---------[id -> next]--------
+Char (Angry):
+
+This [is my speech][a] [blabal
+asdkljasdlkasdlkajsd lasd
+asdkjlasdlask][b]
+asldljalksdjalksdjaslkdjaslk
+
+[a]: red, italic
+[b]: slow, green
+
+(ok -> id1) (nope -> id2)
+------------------------------
+---------[id -> next]--------
+Char (Angry):
+
+This [is my speech][a] [blabal
+asdkljasdlkasdlkajsd lasd
+asdkjlasdlask][b]
+asldljalksdjalksdjaslkdjaslk
+
+[a]: red, italic
+[b]: slow, green
+
+(ok -> id1) (nope -> id2)
+------------------------------
+---------[id -> next]--------
+Char (Angry):
+
+This [is my speech][a] [blabal
+asdkljasdlkasdlkajsd lasd
+asdkjlasdlask][b]
+asldljalksdjalksdjaslkdjaslk
+
+[a]: red, italic
+[b]: slow, green
+
+(ok -> id1) (nope -> id2)
+------------------------------
