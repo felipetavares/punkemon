@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DialogSystem</title>
+  <style type="text/css">
+      body,html{width: 100%;}
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+     p {
+         text-align: justify;
+     }
+     .container {
+         width: 600px;
+         margin: 0 auto;
+     }
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div class="container">
+<h1 id="the-punkémon-dialog-system">The Punkémon Dialog System</h1>
+<h2 id="conversations">1 Conversations</h2>
+<p>In Punkémon, interactions between the player and other characters (NPCs), or even between the player and other players, are grouped in units called <code>Conversations</code>.</p>
+<p>But in what consists such conversations? Before we dive into that, we must first define <strong>how</strong> we group interactions together in conversations. How we find out which interactions belong to the same group? This has a very simple answer, we group by the set of characters involved in that interaction.</p>
+<p>For example, let’s create two imaginary characters: <code>A</code> and <code>B</code>. There is also the player, which we will call <code>P</code>. If an interaction happens between <code>A</code> and <code>B</code>, we will put that interaction into the <code>(A, B)</code> conversation. If it happend between <code>P</code> and <code>A</code>, it goes into <code>(P, A)</code>. In case it happens between all three of them, it goes into <code>(P, A, B)</code>.</p>
+<p>Those sets are unordered sets of course, so it does not matter if I say we put something in the <code>(P, A)</code> conversation or in the <code>(A, P)</code> conversation, as they are the same.</p>
+<p>Now that we got that out of the way, we can discuss the more interesting stuff: what are those conversations? What do we put in them? What kind of “interactions” am I talking about?</p>
+<p>Conversations are sets of messages that are displayed onscreen. Simple as that. We can also imagine a conversation as a <strong>stream</strong> of messages:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode lua"><code class="sourceCode lua"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">function</span> Conversation<span class="op">:</span><span class="fu">next</span><span class="op">()</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">    <span class="op">...</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="cf">return</span> message</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="cf">end</span></a></code></pre></div>
+<p>This method, when called, would return the next message in the conversation.</p>
+<p>Now we arrive at the fundamental problem of the dialog system, since we must return a message for each call, how we decide <strong>which</strong> message to return? There can be several messages in the conversation, and a single one should be returned. Which one?</p>
+<p>Obviously we want to return the <strong>next</strong> message, so every message could just point to the next one and problem solved! Not so fast, tiger! What about player choices? Okay, so each message can have a few next messages, in such a way we form a graph. Problem solved? Not really, because context can also change as an <strong>indirect</strong> player choice, both at the start of a conversation and at every new message (and also <strong>inside</strong> messages!).</p>
+<p>It’s clear that we need some form of managing and accessing context, but at least we made some progress, now we know we need a <strong>graph</strong> to represent a conversation.</p>
+<p>One issue I hinted at but one that is fundamental is: since each messages knows the next one, how do we know the <strong>first</strong> message? The problem is that for the same set of characters there can be several first messages depending on context. We work around that by having a message that is in the graph and is always the first one, but it’s not displayed: it exists merely to choose to which message we should go next depending on the context.</p>
+<p>Another similar problem we face is: how do we know when to allow the player to leave the conversation? We must also have special messages that are not displayed: exit messages, those messages simply close the graph.</p>
+<h2 id="context">2 Context</h2>
+<p>Now we can go back to the issue of having a global (as in common to all conversations) and a local (only existis inside one conversation) context.</p>
+<p>The simplest way we can do that is by having one global set of (key, value) pairs and one local (key, value) set <strong>per conversation</strong>. We also need a few other things to make this useful:</p>
+<ol type="1">
+<li>A way of setting and getting values inside those contexts;</li>
+<li>A way of checking those values and executing actions based on that.</li>
+</ol>
+<p>Sowe essentially need as simple language with:</p>
+<ol type="a">
+<li>variable access;</li>
+<li>the <code>=</code> operator;</li>
+<li>the <code>if</code> keyword;</li>
+<li>boolean expressions support.</li>
+</ol>
+<p>Since this is not a language for programmers but rather for content designers, it makes sense if text is the focus rather than keywords: everything is a comment and “comments” are code.</p>
+<h2 id="syntax">3 Syntax</h2>
+<ul>
+<li>We need a way to separate messages inside a conversation</li>
+<li>A way to link messages together</li>
+<li>A way to accept user input on messages</li>
+<li>…</li>
+</ul>
+</div>
+</body>
+</html>
