@@ -2,23 +2,21 @@ local Tile = require('Tile')
 local TilemapBuilder = {}
 
 function TilemapBuilder:new(w, h)
-    local instance = {
+    local instance = new(TilemapBuilder, {
         stack = {},
         tiles = {},
         results = {},
         w = w or 20,
         h = h or 15
-    }
+    })
 
-    table.insert(instance.stack, {0, 0, instance.w, instance.h})
+    insert(instance.stack, {0, 0, instance.w, instance.h})
 
     for y=0,instance.h-1 do
         for x=0,instance.w-1 do
             instance.tiles[y*instance.w+x+1] = Tile:new(x, y, 1000)
         end
     end
-
-    lang.instanceof(instance, self)
 
     return instance
 end
@@ -33,13 +31,13 @@ function TilemapBuilder:copy()
     for i, tile in ipairs(self.tiles) do
         copy.tiles[i] = Tile:new(self.tiles[i].x, self.tiles[i].y, self.tiles[i].kind)
     end
-    
-    return copy 
+
+    return copy
 end
 
 function TilemapBuilder:from(tilemap)
     self.tiles = tilemap.tiles
-    
+
     return self
 end
 
@@ -57,23 +55,23 @@ end
 function TilemapBuilder:use(x, y, w, h)
     local bounds = self:bounds()
 
-    table.insert(self.stack, {
-        math.floor(bounds.x+bounds.w*x),
-        math.floor(bounds.y+bounds.h*y),
-        math.ceil(bounds.w*w),
-        math.ceil(bounds.h*h)
+    insert(self.stack, {
+               math.floor(bounds.x+bounds.w*x),
+               math.floor(bounds.y+bounds.h*y),
+               math.ceil(bounds.w*w),
+               math.ceil(bounds.h*h)
     })
 end
 
 function TilemapBuilder:use_exact(x, y, w, h)
-    table.insert(self.stack, {
-        x, y, w, h
+    insert(self.stack, {
+               x, y, w, h
     })
 end
 
 function TilemapBuilder:restore()
     if #self.stack > 0 then
-        table.remove(self.stack, #self.stack)
+        remove(self.stack, #self.stack)
     end
 end
 
@@ -285,7 +283,7 @@ function TilemapBuilder:tilemap()
 
     for y=bounds.y,bounds.y+bounds.h-1 do
         for x=bounds.x,bounds.x+bounds.w-1 do
-            table.insert(tilemap, self:get(x, y).kind)
+            insert(tilemap, self:get(x, y).kind)
         end
     end
 
@@ -298,7 +296,7 @@ function TilemapBuilder:tilemapWithTiles()
 
     for y=bounds.y,bounds.y+bounds.h-1 do
         for x=bounds.x,bounds.x+bounds.w-1 do
-            table.insert(tilemap, self:get(x, y))
+            insert(tilemap, self:get(x, y))
         end
     end
 

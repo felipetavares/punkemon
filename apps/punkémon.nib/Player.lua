@@ -17,31 +17,29 @@ require ('ParticleFunctions')
 local Attacks = require('AttackDescription')
 
 function Player:new()
-    local instance = {
-        x = 10, y = 7,
-		
-        equipment = {shield = nil, sword = nil},
-	    inventories = {Inventory:new('Pouch')},
-		
-		moveset = {},
-		oldX = x, oldY = y,
+    local instance = new(Player, {
+                             x = 10, y = 7,
 
-        frame = 0,
-        elapsed = 0,
+                             equipment = {shield = nil, sword = nil},
+                             inventories = {Inventory:new('Pouch')},
 
-        direction = D_RIGHT,
-        name = 'Player',
+                             moveset = {},
+                             oldX = x, oldY = y,
 
-        baseStats = {},
-        battleStats = {}
-    }
+                             frame = 0,
+                             elapsed = 0,
 
-    lang.instanceof(instance, Player)
+                             direction = D_RIGHT,
+                             name = 'Player',
 
-    table.insert(instance.moveset, Attack:new(Attacks.Slash))
-    table.insert(instance.moveset, Attack:new(Attacks.Scales))
-    table.insert(instance.moveset, Attack:new(Attacks.Bubbles))
-    table.insert(instance.moveset, Attack:new(Attacks.Diva))
+                             baseStats = {},
+                             battleStats = {}
+    })
+
+    insert(instance.moveset, Attack:new(Attacks.Slash))
+    insert(instance.moveset, Attack:new(Attacks.Scales))
+    insert(instance.moveset, Attack:new(Attacks.Bubbles))
+    insert(instance.moveset, Attack:new(Attacks.Diva))
 
     for i=1,6 do
         instance.inventories[1]:addItem(Item:new(ItemDescription.Oyster))
@@ -64,7 +62,7 @@ function Player:init(room)
         element = Attack.NEUTRAL
     }
 
-    self.battleStats = lang.copy(self.baseStats)
+    self.battleStats = copy(self.baseStats)
 
     for x=0,room.w do
         for y=0,room.h do
@@ -74,13 +72,13 @@ function Player:init(room)
             end
         end
     end
-end 
+end
 
 function Player:hitEffect()
     self.ps:emitLine(2, 2, -50, -60)
 
     Delayed.exec(0.1, function()
-        self.ps:emitLine(-2, 2, 50, -60)
+                     self.ps:emitLine(-2, 2, 50, -60)
     end)
 end
 
@@ -99,24 +97,24 @@ function Player:battleDraw()
     local deltay = math.sin(t*2)*6
     local deltax = math.cos(t*2)*3
 
-	-- Draw sword
-	pspr(100+deltax, 75+deltay, 0, 208, 48, 80)
+    -- Draw sword
+    custom_sprite(100+deltax, 75+deltay, 0, 208, 48, 80)
 
-	-- Draw sereia comedora de cu
-	pspr(10+deltax, 75+deltay, 320,240, 128,128)
-	
-	-- Draw shield
-    pspr(112+deltax, 130+deltay, 0, 112, 48, 80)
+    -- Draw sereia comedora de cu
+    custom_sprite(10+deltax, 75+deltay, 320,240, 128,128)
+
+    -- Draw shield
+    custom_sprite(112+deltax, 130+deltay, 0, 112, 48, 80)
 end
 
 function Player:checkAndMove(room, dx, dy)
     local x, y = self.x+dx, self.y+dy
 
     if room.tilemap:get(x, y).kind == 07 or
-       room.tilemap:get(x, y).kind == 06 or
-       room.tilemap:get(x, y).kind == 2000 then
+        room.tilemap:get(x, y).kind == 06 or
+    room.tilemap:get(x, y).kind == 2000 then
         if not room:hasDecoration(x, y) then
-			self.oldX , self.oldY = self.x , self.y
+            self.oldX , self.oldY = self.x , self.y
             self.x += dx
             self.y += dy
             room:step()
@@ -136,19 +134,19 @@ function Player:step(room)
 
         self.x = room.doors[D_LEFT].x
         self.y = room.doors[D_LEFT].y
-    -- Move left
+        -- Move left
     elseif self.x < 0 then
         local room = room.dungeon:move(-1, 0)
 
         self.x = room.doors[D_RIGHT].x
         self.y = room.doors[D_RIGHT].y
-    -- Move top
+        -- Move top
     elseif self.y < 0 then
         local room = room.dungeon:move(0, -1)
 
         self.x = room.doors[D_BOTTOM].x
         self.y = room.doors[D_BOTTOM].y
-    -- Move bottom
+        -- Move bottom
     elseif self.y >= room.h then
         local room = room.dungeon:move(0, 1)
 
@@ -183,14 +181,14 @@ function Player:update(room, dt)
         self.frame = (self.frame+1)%5
     end
 
-    if btd(DOWN) and self:moveAllowed() then
+    if button_down(DOWN) and self:moveAllowed() then
         self:checkAndMove(room, 0, 1)
-    elseif btd(UP) and self:moveAllowed() then
+    elseif button_down(UP) and self:moveAllowed() then
         self:checkAndMove(room, 0, -1)
-    elseif btd(LEFT) and self:moveAllowed() then
+    elseif button_down(LEFT) and self:moveAllowed() then
         self:checkAndMove(room, -1, 0)
         self.direction = D_LEFT
-    elseif btd(RIGHT) and self:moveAllowed() then
+    elseif button_down(RIGHT) and self:moveAllowed() then
         self:checkAndMove(room, 1, 0)
         self.direction = D_RIGHT
     end

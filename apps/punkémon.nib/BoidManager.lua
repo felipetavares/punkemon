@@ -1,13 +1,9 @@
 local BoidManager = {}
 
 function BoidManager:new()
-    local instance = {
+    return new(BoidManager, {
         boids = {}
-    }
-
-    lang.instanceof(instance, BoidManager)
-
-    return instance
+    })
 end
 
 function BoidManager:draw(camera)
@@ -36,7 +32,7 @@ function BoidManager:closeTo(boid, distance)
     for _, other in ipairs(self.boids) do
         if self.distance(boid, other) < distance and 
            boid.color == other.color then
-            table.insert(close, other)
+            insert(close, other)
 
             intensity += self.distance(boid, other)
         end
@@ -76,7 +72,7 @@ function BoidManager.findCenter(boids)
 end
 
 function BoidManager:add(boid)
-    table.insert(self.boids, boid)
+    insert(self.boids, boid)
 end
 
 return BoidManager

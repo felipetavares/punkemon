@@ -43,20 +43,20 @@ local bg_init = coroutine.create(background_init)
 
 function init()
     -- Set palette
-    kernel.write(32, '\x1e\x1c\x2e\x00\x1d\x1b\x29\xff\x3c\x41\x8a\xff\x36\x4f\x8f\xff\x25\x9e\xce\xff\x66\x30\x6d\xff\x8d\x39\x7c\xff\xb6\x44\x75\xff\xdd\x80\x5d\xff\xdb\xbc\x4b\xff\xe2\xea\x5a\xff\x22\x6d\x6f\xff\x20\x91\x76\xff\x1f\x9e\x5f\xff\xff\xff\xff\xff\xff\xff\xff\xff')
+    write(0, '\x1e\x1c\x2e\x00\x1d\x1b\x29\xff\x3c\x41\x8a\xff\x36\x4f\x8f\xff\x25\x9e\xce\xff\x66\x30\x6d\xff\x8d\x39\x7c\xff\xb6\x44\x75\xff\xdd\x80\x5d\xff\xdb\xbc\x4b\xff\xe2\xea\x5a\xff\x22\x6d\x6f\xff\x20\x91\x76\xff\x1f\x9e\x5f\xff\xff\xff\xff\xff\xff\xff\xff\xff')
     --kernel.write(32, '\x1e\x1c\x2e\xff\x1d\x1b\x29\xff\x3b\x40\x7f\xff\x29\x43\x50\xff\x66\x30\x6d\xff\x8d\x39\x7c\xff\x3b\x52\x8d\xff\x30\x66\x6d\xff\xb6\x44\x75\xff\xdd\x80\x5d\xff\x43\xa5\xcd\xff\x46\xb4\x7e\xff\xdb\xbc\x4b\xff\xe2\xea\x5a\xff\xff\xff\xff\xff\xff\xff\xff\xff')
 
-    cppal(0, 1)
-    cppal(1, 2)
+    copy_palette(0, 1)
+    copy_palette(1, 2)
 
     -- Color 0 is transparent
-    mask(0)
-    mask(3*16)
+    mask_color(0)
+    mask_color(3*16)
 
-	-- Getting a seed from the OS
+    -- Getting a seed from the OS
     -- Strange non-standard nibble
     -- function: time()
-	math.randomseed( time() )
+    math.randomseed( time() )
 
     --start_recording('combat.gif')
 end
@@ -86,7 +86,7 @@ function draw()
     if scene == 'title' then
         TitleScreen.draw_title_screen()
     elseif scene == 'loading' then
-        clr(1)
+        clear(1)
 
         _, percent = coroutine.resume(bg_init)
 
@@ -97,7 +97,7 @@ function draw()
             bottom_msg = "" .. dumb_messages[i] .. ""
 
             if #dumb_messages > 1 then
-                table.remove(dumb_messages, i)
+                remove(dumb_messages, i)
             end
         end
 
@@ -106,10 +106,15 @@ function draw()
             local x = math.cos(t)*20
             local y = math.sin(t)*20
 
-            circf(x+160, y+120, 3, i+4)
+            fill_circ(x+160, y+120, 3, i+4)
+        end
+
+        if completed and type(completed) == "string" then
+            debug(completed)
         end
 
         local str = tostring(math.floor(completed*100)) .. '%'
+        --local str = ""
         print(str, 160-4*#str, 120-4)
 
         local top_msg = "Eroding deep sea caves..."
@@ -119,9 +124,9 @@ function draw()
             local bottom_intro = "Presently:"
             print(bottom_intro, 160-4*#bottom_intro, 170)
 
-            col(14, 13)
+            swap_colors(14, 13)
             print(string.upper(bottom_msg), 160-4*#bottom_msg, 190)
-            col(14, 14)
+            swap_colors(14, 14)
         end
 
         if dungeon then
@@ -135,14 +140,14 @@ function draw()
             scene = 'death'
         end
     elseif scene == 'death' then
-        clr(1)
+        clear(1)
 
         local startMessage = 'Press \09 to continue'
 
         if math.floor(clock()*8)%2 == 0 then
-            col(7, 1)
+            swap_colors(7, 1)
             print(startMessage, 160-4*#startMessage, 210)
-            col(7, 7)
+            swap_colors(7, 7)
         end
 
         if btp(RED) then

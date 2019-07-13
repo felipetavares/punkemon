@@ -26,18 +26,18 @@ local function findNeighbours(tile, tilemap, w, h)
     local neighbours = {}
 
     local x, y = tile.x, tile.y
-    
+
     for dx=-1,1 do
         for dy=-1,1 do
             if math.abs(dx)+math.abs(dy) < 2 then
                 -- Current tilex, tiley
                 local tx, ty = x+dx, y+dy
 
-                if tx >= 0 and tx < w and 
+                if tx >= 0 and tx < w and
                    ty >= 0 and ty < h and
-                   (tilemap[ty*w+tx+1].kind == 6 or 
-                    tilemap[ty*w+tx+1].kind == 7) then
-                    table.insert(neighbours, tilemap[ty*w+tx+1])
+                    (tilemap[ty*w+tx+1].kind == 6 or
+                     tilemap[ty*w+tx+1].kind == 7) then
+                        insert(neighbours, tilemap[ty*w+tx+1])
                 end
             end
         end
@@ -48,10 +48,10 @@ end
 
 local function generatePath(tmpPath, current)
     local path = {current}
-    
+
     while tmpPath[cantor(current.x, current.y)] do
         current = tmpPath[cantor(current.x, current.y)]
-        table.insert(path, current)
+        insert(path, current)
     end
 
     return path
@@ -108,7 +108,7 @@ function aStar(start, finish, tilemap, w, h)
                 end
 
                 tentativeScoreG = nil2infinity(scoreG[cantor(current.x, current.y)]) + distance(current, neighbour)
-                
+
                 local neighbourIndex = cantor(neighbour.x, neighbour.y)
                 if tentativeScoreG < nil2infinity(scoreG[neighbourIndex]) then
                     path[neighbourIndex] = current

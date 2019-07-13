@@ -5,13 +5,9 @@ local Attack = require('Attack')
 EnemyAI = {}
 
 function EnemyAI:new(controlledCharacter)
-    local instance = {
-    chara = controlledCharacter,
-    }
-
-    lang.instanceof(instance, EnemyAI)
-
-    return instance
+    return new(EnemyAI, {
+        chara = controlledCharacter,
+    })
 end
 
 function EnemyAI:decision(player)
@@ -23,7 +19,7 @@ function EnemyAI:decision(player)
         local multiplayer = 1
 
         if shield then
-          multiplayer = Attack.elementalMultiplier[attack.element][shield.kind]
+            multiplayer = Attack.elementalMultiplier[attack.element][shield.kind]
         end
 
         return attack.power*attack.accuracy*multiplayer
@@ -34,19 +30,19 @@ function EnemyAI:decision(player)
     end
 
     local attacks = {}
-    
+
     for _, move in ipairs(self.chara.moveset) do
         if move:loaded() then
-            table.insert(attacks, move)
+            insert(attacks, move)
         end
     end
 
-    table.sort(attacks, compare)  
+    sort(attacks, compare)
 
-    dprint('Sorted attacks:')
+    terminal_print('Sorted attacks:')
 
     for i, atk in ipairs(attacks) do
-        dprint(i, atk.name)
+        terminal_print(i, atk.name)
     end
 
     local normalized_p_hp = player.battleStats.HP/player.baseStats.HP
@@ -58,7 +54,7 @@ function EnemyAI:decision(player)
         index = math.min(math.floor(math.min(normalized_p_hp/normalized_e_hp, 1.5)/1.5*#attacks), #attacks-1)
     end
 
-    dprint('Choosing ', index+1, attacks[index+1])
+    terminal_print('Choosing ', index+1, attacks[index+1])
 
     return Choice:new(attacks[index+1], nil)
 end

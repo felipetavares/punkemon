@@ -20,38 +20,35 @@ local function setMovesetTarget(moveset, self, enemy)
         end
     end
 
-    return moveset 
+    return moveset
 end
 
 function Combat:new(player, character, battleStarter)
     character.moveset = setMovesetTarget(character.moveset, character, player)
 
-    local instance = {
+    return new(Combat, {
         player = player or nil,
         character = character or nil,
-		turn = 0,
-		battleStarter = player,
+        turn = 0,
+        battleStarter = player,
         menu = CombatMenu:new(setMovesetTarget(player.moveset, player, character), player.inventories),
-		enemyAI = EnemyAI:new(character),
+        enemyAI = EnemyAI:new(character),
         notifications = NotificationManager:new()
-    }
-
-    lang.instanceof(instance, Combat)
-    return instance
+    })
 end
 
 function Combat:draw()
-	-- Draw background
-	pspr(0,0 , 320,0 , 320, 240)
-	-- Draw boneco
-	self.character:battleDraw()
-	
-	-- Draw sereia comedora de cu
-	self.player:battleDraw()
-	
-	-- Draw static UI
-	
-	-- Draw dynamic UI
+    -- Draw background
+    custom_sprite(0,0 , 320,0 , 320, 240)
+    -- Draw boneco
+    self.character:battleDraw()
+
+    -- Draw sereia comedora de cu
+    self.player:battleDraw()
+
+    -- Draw static UI
+
+    -- Draw dynamic UI
 
     -- Player stats
     self:drawStats(206, 186, self.player)
@@ -65,8 +62,8 @@ end
 
 function Combat:update(dt)
     if self.menu.selectedAttack then
-		playerChoice = Choice:new(self.menu.selectedAttack, nil)
-		enemyChoice = self.enemyAI:decision(self.player)
+        playerChoice = Choice:new(self.menu.selectedAttack, nil)
+        enemyChoice = self.enemyAI:decision(self.player)
         self:nextTurn(playerChoice, enemyChoice)
 
         self.menu.selectedAttack = nil
@@ -83,67 +80,67 @@ function Combat:update(dt)
 end
 
 function Combat:nextTurn(playerChoice, enemyChoice)
-	dprint('Turn:' .. tostring(self.turn))
+    terminal_print('Turn:' .. tostring(self.turn))
 
-	local first = playerChoice
+    local first = playerChoice
     local firstCharacter = self.player
-	local second = enemyChoice
+    local second = enemyChoice
     local secondCharacter = self.character
 
-	if self.player.battleStats.speed < self.character.battleStats.speed then
-		first = enemyChoice		
-		second = playerChoice
+    if self.player.battleStats.speed < self.character.battleStats.speed then
+        first = enemyChoice
+        second = playerChoice
         firstCharacter = self.character
         secondCharacter = self.player
         self.notifications:add(Notification:new('The enemy was faster!', 0.3))
     else
         self.notifications:add(Notification:new('You were faster!', 0.3))
-	end
+    end
 
-	Delayed.exec(0.7, function()
-        self:executeChoice(first)
+    Delayed.exec(0.7, function()
+                     self:executeChoice(first)
 
-        Delayed.exec(0.7, function()
-            if secondCharacter.battleStats.HP > 0 then
-                self:executeChoice(second)
-            end
+                     Delayed.exec(0.7, function()
+                                      if secondCharacter.battleStats.HP > 0 then
+                                          self:executeChoice(second)
+                                      end
 
-            self.turn += 1
+                                      self.turn += 1
 
-            Delayed.exec(0.7, function()
-                self.menu:open()
-            
-                Delayed.exec(0.3, function()
-                    if self.character.battleStats.HP <= 0 or self.escape then
-                        self.finished = true
+                                      Delayed.exec(0.7, function()
+                                                       self.menu:open()
 
-                        self.player.battleStats.speed = self.player.baseStats.speed
-                        self.player.battleStats.attack = self.player.baseStats.attack
-                        self.player.battleStats.defense = self.player.baseStats.defense
-                    end
-                end)
-            end)
-        end)
+                                                       Delayed.exec(0.3, function()
+                                                                        if self.character.battleStats.HP <= 0 or self.escape then
+                                                                            self.finished = true
+
+                                                                            self.player.battleStats.speed = self.player.baseStats.speed
+                                                                            self.player.battleStats.attack = self.player.baseStats.attack
+                                                                            self.player.battleStats.defense = self.player.baseStats.defense
+                                                                        end
+                                                       end)
+                                      end)
+                     end)
     end)
-end 
+end
 
 function Combat:executeChoice(choice)
-	if choice.attack ~= nil then
+    if choice.attack ~= nil then
         if choice.attack == true then
             self.notifications:add(Notification:new('Running Away!', 0.6))
             self.escape = true
         else
-            dprint('Attack')
+            terminal_print('Attack')
             choice.attack:use()
             choice.attack:effect()
             choice.attack.target:hit(choice.attack)
             choice.attack:visual()
             self.notifications:add(Notification:new(choice.attack.name..'!', 0.3))
         end
-	elseif choice.item ~= nil then
+    elseif choice.item ~= nil then
         self.notifications:add(Notification:new(choice.item.name, 0.3))
         choice.item:use(choice.target)
-	end
+    end
 end
 
 function Combat:drawStats(x, y, character)
@@ -162,18 +159,18 @@ function Combat:drawStats(x, y, character)
 
     local life_bar_length = 98
 
-    rectf(x, y+3, life_bar_length+1, 10, 10)
-    rectf(x, y+3, math.floor(life_bar_length*hp), 10, 13)
+    fill_rect(x, y+3, life_bar_length+1, 10, 10)
+    fill_rect(x, y+3, math.floor(life_bar_length*hp), 10, 13)
     rect(x+3, y+3, math.floor(life_bar_length*hp)-2, 9, 11)
-    rectf(x, y+11, math.floor(life_bar_length*hp), 1, 11)
+    fill_rect(x, y+11, math.floor(life_bar_length*hp), 1, 11)
 
-    col(11, 1)
+    swap_colors(11, 1)
 
     print(hp_str, x+47-#hp_str*4, y+4)
 
     if character.baseStats.element then
         local elementSpr = Attack.ElementSprites[character.baseStats.element]
-        pspr(x, y-8, elementSpr.x, elementSpr.y, elementSpr.w, elementSpr.h)
+        custom_sprite(x, y-8, elementSpr.x, elementSpr.y, elementSpr.w, elementSpr.h)
         print(name_str, x+16, y-8)
     else
         print(name_str, x, y-8)
@@ -194,26 +191,26 @@ function Combat:drawStats(x, y, character)
         local upColor = 13
         local downColor = 9
 
-        pspr(x, y, spr.x, spr.y, spr.w, spr.h)
+        custom_sprite(x, y, spr.x, spr.y, spr.w, spr.h)
         if statDelta ~= 0 then
             print(drawName, x+8, y-1)
 
             if statDelta > 0 then
-                col(0, upColor)
+                swap_colors(0, upColor)
             else
-                col(0, downColor)
+                swap_colors(0, downColor)
             end
 
             print(tostring(statBase) .. plusSign(tostring(statDelta)), x+8+(#drawName+1)*8, y-1)
 
-            col(0, 0)
+            swap_colors(0, 0)
         else
             print(drawName .. ' ' .. tostring(statBase), x+8, y-1)
         end
     end
 
     -- Stats BG
-    rectf(x+1, y+17, 100, 26, 3)
+    fill_rect(x+1, y+17, 100, 26, 3)
     rect(x+1, y+17, 100, 26, 1)
 
     -- Attack
@@ -225,14 +222,14 @@ function Combat:drawStats(x, y, character)
     -- Speed
     drawStat(x+2, y+36, 'speed', 'SPD', {x = 57, y = 82, w = 5, h = 6})
 
-    col(11, 11)
+    swap_colors(11, 11)
 
-    spr(x, y, 0, 12)
+    sprite(x, y, 0, 12)
     for i=1,5 do
         x += 14
-        spr(x, y, 1, 12)
+        sprite(x, y, 1, 12)
     end
-    spr(x+15, y, 2, 12)
+    sprite(x+15, y, 2, 12)
 end
 
 return Combat

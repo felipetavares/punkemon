@@ -13,22 +13,20 @@ local MENU_OPEN_STATS = {x = 140, y = 160 , t = 0.3}
 local MENU_CLOSED_STATS = {x = 320, y = 160, t = 0.3}
 
 function CombatMenu:new(attacks, inventories)
-    local instance = {
+    local instance = new(CombatMenu, {
         attacks = attacks or nil,
         inventories = inventories or nil,
 
         selectedAttackIndex = 1,
         selectedInventoryIndex = 1,
         selectedItemIndex = 1,
-        
+
         selectedAttack = nil,
         selectedItem = nil,
-		
-		base  = IV:new(),
-        mode = Modes.ATTACKS
-    }
 
-    lang.instanceof(instance, CombatMenu)
+        base  = IV:new(),
+        mode = Modes.ATTACKS
+    })
 
     instance:open()
 
@@ -37,8 +35,8 @@ end
 
 function CombatMenu:open()
     self.base.x = MENU_CLOSED_STATS.x
-	self.base.y = MENU_CLOSED_STATS.y
-	self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
+    self.base.y = MENU_CLOSED_STATS.y
+    self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
 end
 
 function CombatMenu:draw()
@@ -84,9 +82,9 @@ function CombatMenu:drawItems(x)
             if item == sel then
                 print('\9', x-12, y)
 
-                col(0, 4)
+                swap_colors(0, 4)
                 print(item.name, x, y)
-                col(0, 0)
+                swap_colors(0, 0)
 
                 local blockSize = 8
                 for j=0,math.floor(#item.description/blockSize),1 do
@@ -136,14 +134,14 @@ function CombatMenu:drawAttacks(x)
     local ampy = 48
 
     for i, _ in ipairs(self.attacks) do
-        col(9+i-1, (i == self.selectedAttackIndex) and 10 or 2)
+        swap_colors(9+i-1, (i == self.selectedAttackIndex) and 10 or 2)
     end
 
-    pspr(basex, basey, 576, 336, 64, 64)
-    col(9, 9)
-    col(10, 10)
-    col(11, 11)
-    col(12, 12)
+    custom_sprite(basex, basey, 576, 336, 64, 64)
+    swap_colors(9, 9)
+    swap_colors(10, 10)
+    swap_colors(11, 11)
+    swap_colors(12, 12)
 
     local names = {}
 
@@ -151,9 +149,9 @@ function CombatMenu:drawAttacks(x)
         if self.attacks[i] then
             local name = self.attacks[i].name
 
-            table.insert(names, name)
+            insert(names, name)
         else
-            table.insert(names, '')
+            insert(names, '')
         end
     end
 
@@ -173,12 +171,12 @@ function CombatMenu:drawAttacks(x)
 
         if attack:loaded() then
             if not (i == self.selectedAttackIndex) then
-                col(15, 10)
-                col(11, 8)
+                swap_colors(15, 10)
+                swap_colors(11, 8)
             end
         else
-            col(15, 7)
-            col(11, 6)
+            swap_colors(15, 7)
+            swap_colors(11, 6)
         end
 
         print(attack.name, x, y-4)
@@ -189,34 +187,34 @@ function CombatMenu:drawAttacks(x)
             line(x, y+1, x+#names[i]*8, y+1, 7)
         end
 
-        col(15, 15)
-        col(11, 11)
-        
+        swap_colors(15, 15)
+        swap_colors(11, 11)
+
         if i == self.selectedAttackIndex then
-            col(1, 15)
+            swap_colors(1, 15)
         end
 
         local spr = Attack.ElementSprites[attack.element]
-        pspr(x, y+4, spr.x, spr.y, spr.w, spr.h)
+        custom_sprite(x, y+4, spr.x, spr.y, spr.w, spr.h)
 
-        col(1, 1)
+        swap_colors(1, 1)
     end
 end
 
 function CombatMenu:update(dt)
-    if btp(WHITE) then
-        self.mode = Modes.ATTACKS 
-		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
-    elseif btp(BLACK) then
+    if button_press(WHITE) then
+        self.mode = Modes.ATTACKS
+        self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
+    elseif button_press(BLACK) then
         self.mode = Modes.ITEMS
-		self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
+        self.base:set(MENU_OPEN_STATS.x, MENU_OPEN_STATS.y, MENU_OPEN_STATS.t, Easing.InOutCubic)
     end
 
     if self.base.x == MENU_OPEN_STATS.x and self.mode == Modes.ATTACKS then
         local buttons = {UP, RIGHT, DOWN, LEFT}
 
         for i, button in ipairs(buttons) do
-            if btp(button) then
+            if button_press(button) then
                 if self.attacks[i] and self.attacks[i]:loaded() then
                     if self.selectedAttackIndex == i then
                         self.selectedAttack = self.attacks[self.selectedAttackIndex]
@@ -228,7 +226,7 @@ function CombatMenu:update(dt)
             end
         end
 
-        if btp(BLUE) then
+        if button_press(BLUE) then
             self.selectedAttack = true
             self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
         end
@@ -238,24 +236,24 @@ function CombatMenu:update(dt)
         local inventory = self.inventories[self.selectedInventoryIndex]
 
         if inventory then
-            if btd(DOWN) and self:moveAllowed() then
+            if button_down(DOWN) and self:moveAllowed() then
                 inventory:moveCursor(1)
-            elseif btd(UP) and self:moveAllowed() then
+            elseif button_down(UP) and self:moveAllowed() then
                 inventory:moveCursor(-1)
             end
 
-            if btp(RED) then
+            if button_press(RED) then
                 self.selectedItem = inventory:popItem()
                 self.base:set(MENU_CLOSED_STATS.x, MENU_CLOSED_STATS.y, MENU_CLOSED_STATS.t, Easing.InOutCubic)
             end
         end
     end
 
-	self.base:update(dt)
+    self.base:update(dt)
 end
 
 function CombatMenu:drawBase(x)
-    pspr(-x, 152, 320, 400, 320, 80)
+    custom_sprite(-x, 152, 320, 400, 320, 80)
 
     print('\8', 240, 4+math.sin(clock()*8)*2)
     print('Escape!', 248+8, 4)
@@ -265,15 +263,15 @@ function CombatMenu:drawButtons(x, attackb, itemsb)
     local bth = 16
 
     if attackb then
-        pspr(320-x, 160+bth, 320, 384, 16, 16)
+        custom_sprite(320-x, 160+bth, 320, 384, 16, 16)
     else
-        pspr(320-x, 160+bth, 336, 384, 16, 16)
+        custom_sprite(320-x, 160+bth, 336, 384, 16, 16)
     end
 
     if itemsb then
-        pspr(320-x, 162+bth*2, 352, 384, 16, 16)
+        custom_sprite(320-x, 162+bth*2, 352, 384, 16, 16)
     else
-        pspr(320-x, 162+bth*2, 368, 384, 16, 16)
+        custom_sprite(320-x, 162+bth*2, 368, 384, 16, 16)
     end
 end
 

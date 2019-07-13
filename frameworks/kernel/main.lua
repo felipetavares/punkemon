@@ -321,6 +321,8 @@ function nib_api(entrypoint, proc)
         concat = lang.concat,
         zip = lang.zip,
         debug = error,
+        coroutine = coroutine,
+        string = string,
         -- Funções matemática
         math = math,
         -- Funções gerais

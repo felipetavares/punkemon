@@ -7,7 +7,7 @@ local Easing = require('Easing')
 local Camera = {}
 
 function Camera:new()
-    local instance = {
+    return new(Camera, {
         -- Stack of positions
         stack = {},
 
@@ -27,19 +27,15 @@ function Camera:new()
             },
             easing = Easing.Linear
         }
-    }
-
-    lang.instanceof(instance, Camera)
-
-    return instance
+    })
 end
 
 function Camera:push_position(x, y)
-    table.insert(self.stack, {x = x, y = y})
+    insert(self.stack, {x = x, y = y})
 end
 
 function Camera:pop_position()
-    table.remove(self.stack)
+    remove(self.stack)
 end
 
 function Camera:calc_x()
@@ -98,11 +94,11 @@ function Camera:update(dt)
 end
 
 function Camera:spr(x, y, sprx, spry, pal)
-    spr(x-self:calc_x(), y-self:calc_y(), sprx, spry, pal)
+    sprite(x-self:calc_x(), y-self:calc_y(), sprx, spry, pal)
 end
 
 function Camera:pspr(x, y, sx, sy, w, h, pal)
-    pspr(x-self:calc_x(), y-self:calc_y(), sx, sy, w, h, pal)
+    custom_sprite(x-self:calc_x(), y-self:calc_y(), sx, sy, w, h, pal)
 end
 
 function Camera:rectf(x, y, w, h, color)

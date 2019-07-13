@@ -11,10 +11,10 @@ Attack.NAT = NAT
 Attack.MAGE = MAGE
 
 Attack.elementalMultiplier = {
-	NEUTRAL 	= { TECH = 1, 	NAT = 1, 	MAGE = 1,   NEUTRAL = 1},
-	TECH 	    = { TECH = 1, 	NAT = 2, 	MAGE = 0.5, NEUTRAL = 1},
-	NAT	    	= { TECH = 0.5, NAT = 1, 	MAGE = 2,   NEUTRAL = 1},
-	MAGE		= { TECH = 2,	NAT = 0.5,  MAGE = 1,   NEUTRAL = 1},
+    NEUTRAL = { TECH = 1,   NAT = 1,    MAGE = 1,   NEUTRAL = 1},
+    TECH    = { TECH = 1,   NAT = 2,    MAGE = 0.5, NEUTRAL = 1},
+    NAT     = { TECH = 0.5, NAT = 1,    MAGE = 2,   NEUTRAL = 1},
+    MAGE    = { TECH = 2,   NAT = 0.5,  MAGE = 1,   NEUTRAL = 1},
 }
 
 Attack.ElementSprites = {
@@ -25,21 +25,19 @@ Attack.ElementSprites = {
 }
 
 function Attack:new(desc)
-    local instance = {
+    local instance = new(Attack, {
         name = desc.name or '',
-		power = desc.power or 10,
-		accuracy = desc.accuracy or 1,
-		element = desc.element or NEUTRAL,
-		targetDescription = desc.target or nil,
+        power = desc.power or 10,
+        accuracy = desc.accuracy or 1,
+        element = desc.element or NEUTRAL,
+        targetDescription = desc.target or nil,
         target = nil,
-		effect = desc.effect or nil,
+        effect = desc.effect or nil,
         basePP = desc.pp or 5,
         pp = desc.pp or 5,
         visualCreation = desc.visualCreation or function() end,
         visual = desc.visual or function() end
-    }
-
-    lang.instanceof(instance, Attack)
+    })
 
     instance:visualCreation()
 

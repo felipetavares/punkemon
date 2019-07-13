@@ -6,31 +6,27 @@ local ParticleSystem = require('ParticleSystem')
 require ('ParticleFunctions')
 
 function Character:new()
-    local instance = {
+    return new(Character, {
         x = 0,
         y = 0,
         path = {},
         position = 1,
         level = 1,
         name = 'Basic',
-		
-		baseStats = {},
-		
-		battleStats = {},
-		
-		moveset = {},
+
+        baseStats = {},
+
+        battleStats = {},
+
+        moveset = {},
 
         alive = true
-    }
-
-    lang.instanceof(instance, Character)
-
-    return instance
+    })
 end
 
 function Character:init(path)
     local init = {x = 0, y = 0}
-    
+
     if path and path[self.position] then
         init = path[self.position]
     end
@@ -40,8 +36,8 @@ function Character:init(path)
     self.path = path or {}
 
     -- Load the character stats
-    self.baseStats   = lang.copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
-    self.battleStats = lang.copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
+    self.baseStats   = copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
+    self.battleStats = copy(EnemyDescription.basicStats[self.name .. tostring(self.level) ])
 
     self.moveset     = self:buildAttacks(EnemyDescription.moveset[self.name .. tostring(self.level)])
 end
@@ -50,7 +46,7 @@ function Character:buildAttacks(desc)
     local attacks = {}
 
     for _, d in ipairs(desc) do
-        table.insert(attacks, Attack:new(d))
+        insert(attacks, Attack:new(d))
     end
 
     return attacks
@@ -83,7 +79,7 @@ function Character:findDirection()
 end
 
 function Character:battleDraw()
-	dprint('Opa coleguinha, precisa desenhar esse inimigo maneiro aqui')
+    terminal_print('Opa coleguinha, precisa desenhar esse inimigo maneiro aqui')
 end
 
 function Character:print()
@@ -93,21 +89,21 @@ function Character:print()
     s = s .. tostring(self.baseStats) .. '\n'
     s = s .. tostring(self.battleStats) .. '\n'
     s = s .. tostring(self.moveset) .. '\n'
-    dprint(s)
+    terminal_print(s)
 end
 
 function Character:hit(move)
     Delayed.exec(0.0, function()
-        self:hitDamage(move)
+                     self:hitDamage(move)
     end)
 end
 
 function Character:hitDamage(move)
-	damage = move.power * self.battleStats.attack / move.target.battleStats.defense * (0.85 + math.random() * 0.15)
-    
-	damage = damage * Attack.elementalMultiplier[move.element][move.target.baseStats.element]
+    damage = move.power * self.battleStats.attack / move.target.battleStats.defense * (0.85 + math.random() * 0.15)
 
-    dprint('Damage:', math.floor(damage))
+    damage = damage * Attack.elementalMultiplier[move.element][move.target.baseStats.element]
+
+    terminal_print('Damage:', math.floor(damage))
 
     self.battleStats.HP = self.battleStats.HP-math.floor(damage+0.5)
 

@@ -15,7 +15,7 @@ local mod = {
 local camera = Camera:new()
 
 for i=1,6 do
-    table.insert(clouds, {
+    insert(clouds, {
         x = math.random(0, 320),
         y = math.random(0, 120),
         v = -math.random(30, 50),
@@ -24,7 +24,7 @@ for i=1,6 do
 end
 
 function mod.draw_title_screen ()
-    clr(1)
+    clear(1)
 
     camera:pspr(0, 0, 640, 0, 320, 240)
 
@@ -38,9 +38,9 @@ function mod.draw_title_screen ()
     for _, color in ipairs(colors) do
         if color ~= 0 then
             if color == current_color then
-                col(color, 13)
+                swap_colors(color, 13)
             else
-                col(color, 0)
+                swap_colors(color, 0)
             end
         end
     end
@@ -58,7 +58,7 @@ function mod.draw_title_screen ()
 
     -- Restore colors
     for i=0,15 do
-        col(i, i)
+        swap_colors(i, i)
     end
 
     -- Draw clouds
@@ -70,14 +70,14 @@ function mod.draw_title_screen ()
     camera:pspr(32, math.cos(t*2-1)*8+4, 672, 240, 256, 96)
 
     local startMessage = 'Press \09 to start'
-    
+
     if math.floor(t)%2 == 0 then
-        col(11, 1)
+        swap_colors(11, 1)
         camera:print(startMessage, 160-4*#startMessage, 200)
-        col(11, 11)
+        swap_colors(11, 11)
     end
 
-    if btp(RED) then
+    if button_press(RED) then
         mod.done = true
     end
 end

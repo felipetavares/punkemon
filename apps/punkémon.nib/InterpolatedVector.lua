@@ -3,7 +3,7 @@ local Easing = require('Easing')
 local InterpolatedVector = {}
 
 function InterpolatedVector:new()
-    local instance = {
+    return new(InterpolatedVector, {
         x = 0,
         y = 0,
 
@@ -20,11 +20,7 @@ function InterpolatedVector:new()
             },
             easing = Easing.Linear
         }
-    }
-
-    lang.instanceof(instance, InterpolatedVector)
-
-    return instance
+    })
 end
 
 function InterpolatedVector:set(x, y, time, easing)

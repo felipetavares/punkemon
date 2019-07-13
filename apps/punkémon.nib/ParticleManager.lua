@@ -21,7 +21,7 @@ function ParticleManager:update(dt)
 end
 
 function ParticleManager:add(particleSystem)
-    table.insert(self.particleSystems, particleSystem)
+    insert(self.particleSystems, particleSystem)
 end
 
 

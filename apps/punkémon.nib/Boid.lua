@@ -1,7 +1,7 @@
 local Boid = {}
 
 function Boid:new(color, accent, animation)
-    local instance = {
+    local instance = new(Boid, {
         -- Where is this boid off to?
         dir = {
             x = math.random()-0.5, y = math.random()-0.5
@@ -23,14 +23,12 @@ function Boid:new(color, accent, animation)
         animation = animation or {},
         animationPos = 1,
         elapsedFrameTime = 0
-    }
+    })
 
     local l = math.sqrt(instance.dir.x^2+instance.dir.y^2)
 
     instance.dir.x = instance.dir.x/l
     instance.dir.y = instance.dir.y/l
-
-    lang.instanceof(instance, Boid)
 
     return instance
 end
@@ -38,16 +36,16 @@ end
 function Boid:drawAround(x, y)
     local p
 
-    putp(x-1, y, self.contour)
-    putp(x+1, y, self.contour)
-    putp(x, y-1, self.contour)
-    putp(x, y+1, self.contour)
+    put_pixel(x-1, y, self.contour)
+    put_pixel(x+1, y, self.contour)
+    put_pixel(x, y-1, self.contour)
+    put_pixel(x, y+1, self.contour)
 end
 
 function Boid:draw(camera)
     if self.animated then
-        spr(self.pos.x-20, self.pos.y-20,
-            self.animation[self.animationPos][1], self.animation[self.animationPos][2])
+        sprite(self.pos.x-20, self.pos.y-20,
+               self.animation[self.animationPos][1], self.animation[self.animationPos][2])
     else
         -- Draw shadows
         for i, p in ipairs(self.snake) do
@@ -57,27 +55,27 @@ function Boid:draw(camera)
         -- Draw fish
         for i, p in ipairs(self.snake) do
             if i == 3 then
-                putp(p.x, p.y, self.accent)
+                put_pixel(p.x, p.y, self.accent)
             else
-                putp(p.x, p.y, self.color)
+                put_pixel(p.x, p.y, self.color)
             end
 
-            local color = getp(p.x, p.y+self.height)
+            local color = get_pixel(p.x, p.y+self.height)
             if (color ~= self.color and color ~= self.accent) then
-                putp(p.x, p.y+self.height, self.contour)
+                put_pixel(p.x, p.y+self.height, self.contour)
             end
         end
 
         if #self.snake > self.length then
             -- Remove the first snake position
-            table.remove(self.snake, 1)
+            remove(self.snake, 1)
         end
 
         -- Add a new one
         if #self.snake == 0 or
            self.snake[#self.snake].x ~= math.floor(self.pos.x) or
            self.snake[#self.snake].y ~= math.floor(self.pos.y) then
-            table.insert(self.snake, {x = math.floor(self.pos.x), y = math.floor(self.pos.y)})
+            insert(self.snake, {x = math.floor(self.pos.x), y = math.floor(self.pos.y)})
         end
     end
 end

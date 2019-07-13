@@ -1,15 +1,11 @@
 local Decoration = {}
 
 function Decoration:new(x, y, spr)
-    local instance = {
+    return new(Decoration, {
         x = x or 0,
         y = y or 0,
         spr = spr or {x = 0, y = 0, w = 16, h = 16}
-    }
-
-    lang.instanceof(instance, Decoration)
-
-    return instance
+    })
 end
 
 function Decoration:draw(camera)

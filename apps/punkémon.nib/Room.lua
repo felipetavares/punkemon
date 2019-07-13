@@ -25,7 +25,7 @@ local function cantor(x, y)
 end
 
 function Room:new(tilemap, doormap, doors, w, h, x, y, dungeon, stage)
-    local instance = {
+    local instance = new(Room, {
         x = x or 0,
         y = y or 0,
         w = w or 0,
@@ -40,9 +40,7 @@ function Room:new(tilemap, doormap, doors, w, h, x, y, dungeon, stage)
         dungeon = dungeon or nil,
         stage = stage or 1,
         explosionEffect = Effects.Explosion:new()
-    }
-
-    lang.instanceof(instance, Room)
+    })
 
     instance:generateDecorations()
     instance:generateCharacters()
@@ -54,9 +52,9 @@ function Room:generateCharacters()
     for i, path in ipairs(self.paths) do
         if i ~= #self.paths then
             --if math.random() < 0.5 then
-            table.insert(self.characters, EnemyBiped:new(path, self.stage))
+            insert(self.characters, EnemyBiped:new(path, self.stage))
             --else
-            --    table.insert(self.characters, EnemyTank:new(path, self.stage))
+            --    insert(self.characters, EnemyTank:new(path, self.stage))
             --end
         end
     end
@@ -86,7 +84,7 @@ function Room:generateDecorations()
                     visited[i+j] = true
 
                     local path = aStar(tiles[doorA.y*self.w+doorA.x+1], tiles[doorB.y*self.w+doorB.x+1], tiles, self.w, self.h)
-                    table.insert(self.paths, path)
+                    insert(self.paths, path)
 
                     for i, pathStep in ipairs(path) do
                         self.tilemap:setPath(pathStep.x, pathStep.y, true)
@@ -107,7 +105,7 @@ function Room:generateDecorations()
         end
 
         local path = aStar(floorTile, tiles[door.y*self.w+door.x+1], tiles, self.w, self.h)
-        table.insert(self.paths, path)
+        insert(self.paths, path)
 
         for _, pathStep in ipairs(path) do
             self.tilemap:setPath(pathStep.x, pathStep.y, true)
@@ -126,13 +124,13 @@ function Room:generateDecorations()
             --   self.tilemap:get(x, y+1).kind == 07 and
             --   self:minimumDecorationDistance(x*16, y*16) > math.random(32^2, 64^2) and
             --   math.random() > 0.8 and self:decorationFits(x, y, decoration.w/16+1, decoration.h/16+1) then
-            --    table.insert(self.decorations, Decoration:new(x*16, y*16, decoration))
+            --    insert(self.decorations, Decoration:new(x*16, y*16, decoration))
             --end
             --
             if self:minimumDecorationDistance(x*16, y*16) > math.random(16^2, 24^2) and
                self:decorationFits(x, y, 1, 1) and
                math.random() > 0.9 then
-                table.insert(self.decorations, Decoration:new(x*16, y*16, decoration))
+                insert(self.decorations, Decoration:new(x*16, y*16, decoration))
             end
         end
     end
@@ -177,7 +175,7 @@ end
 function Room:destroyDecoration(x, y)
     for i, decor in ipairs(self.decorations) do
         if decor.x == x*16 and decor.y == y*16 then
-            table.remove(self.decorations, i)
+            remove(self.decorations, i)
             return
         end
     end
@@ -196,7 +194,7 @@ end
 function Room:getItem(x, y)
     for i, item in ipairs(self.items) do
         if item.x == x*16 and item.y == y*16 then
-            return table.remove(self.items, i)
+            return remove(self.items, i)
         end
     end
 
@@ -272,7 +270,7 @@ function Room:update(dt)
             
             self:spawnRandomItems(char.x, char.y, 4)
 
-            table.remove(self.characters, i)
+            remove(self.characters, i)
         end
     end
 
@@ -289,7 +287,7 @@ function Room:spawnRandomItems(x, y, range, number)
             local item = Item:new(ItemDescription.Oyster)
             item.x, item.y = ix*16, iy*16
 
-            table.insert(self.items, item)
+            insert(self.items, item)
 
             Delayed.exec(math.random()*0.2, function()
                 item.appear:start(ix*16+8, iy*16+8)

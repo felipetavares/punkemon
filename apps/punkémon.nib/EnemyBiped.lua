@@ -3,14 +3,12 @@ local EnemyBiped = Character:new()
 local EnemyDescription = require('EnemyDescription')
 
 function EnemyBiped:new(path, level)
-    local instance = {
+    local instance = new(EnemyBiped, {
         tick = false,
 
         name = "Biped",
         level = level,
-    }
-
-    lang.instanceof(instance, lang.copy(EnemyBiped))
+    })
 
     instance:init(path)
 
@@ -44,9 +42,9 @@ function EnemyBiped:draw(camera)
 
         for i=2,8 do
             if i == c then
-                col(c, 10)
+                swap_colors(c, 10)
             else
-                col(i, 9)
+                swap_colors(i, 9)
             end
         end
 
@@ -55,7 +53,7 @@ function EnemyBiped:draw(camera)
         camera:spr(self.x*16+arrow.dx*offset, self.y*16+arrow.dy*offset, arrow.x, arrow.y)
 
         for i=2,8 do
-            col(i, i)
+            swap_colors(i, i)
         end
     end
 end
@@ -67,16 +65,16 @@ function EnemyBiped:battleDraw()
     local deltax = math.sin(t*6)*4;
 
     -- Draws body
-	pspr(190, 99, 448, 336, 48, 48)
+    custom_sprite(190, 99, 448, 336, 48, 48)
 
     -- Draws head 
-	pspr(190, 20+deltay/2+2, 448, 240, 48, 96)
+    custom_sprite(190, 20+deltay/2+2, 448, 240, 48, 96)
 
     -- Right arm
-    pspr(160+deltax/2, 90+deltay, 496, 304, 48, 64)
+    custom_sprite(160+deltax/2, 90+deltay, 496, 304, 48, 64)
 
     -- Left arm
-    pspr(210-deltax, 92+deltay, 496, 240, 64, 64)
+    custom_sprite(210-deltax, 92+deltay, 496, 240, 64, 64)
 end
 
 function EnemyBiped:step()

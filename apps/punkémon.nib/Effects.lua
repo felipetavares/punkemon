@@ -16,12 +16,10 @@ end
 Effects.Explosion = Effects.Effect
 
 function Effects.Explosion:new()
-    local instance = {
+    local instance = new(Effects.Explosion, {
         system1 = ParticleSystem:new(10, {x = 0, y = 0}, 0, false, hitCreate, hitUpdate, hitDraw),
         system2 = ParticleSystem:new(10, {x = 0, y = 0}, 0, false, sparklesCreate, sparklesUpdate, sparklesDraw)
-    }
-
-    lang.instanceof(instance, Effects.Explosion)
+    })
 
     particleManager:add(instance.system1)
     particleManager:add(instance.system2)

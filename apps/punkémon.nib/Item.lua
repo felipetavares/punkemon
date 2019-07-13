@@ -3,10 +3,10 @@ local Effects = require('Effects')
 local Item = {}
 
 function Item:new(desc)
-    local instance = { 
-        name = name or desc.name, 
-		element = desc.element,
-		description = desc.description,
+    return new(Item, {
+        name = name or desc.name,
+        element = desc.element,
+        description = desc.description,
 
         effect = desc.effect,
 
@@ -14,15 +14,11 @@ function Item:new(desc)
         x = x or 0,
         y = y or 0,
         -- World map sprite
-        spr = lang.copy(desc.spr),
+        spr = copy(desc.spr),
 
         -- Appear effect
         appear = Effects.Explosion:new()
-    }
-
-    lang.instanceof(instance, Item)
-
-    return instance
+    })
 end
 
 function Item:draw(camera)
